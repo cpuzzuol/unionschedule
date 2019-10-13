@@ -2,14 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4e630b76-fc20-462e-9df8-cfcc7e288b59" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/," beforeDir="false" afterPath="$PROJECT_DIR$/.ebextensions/01-environment.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ebextensions/01_setup.config" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.ebextensions/99_artisan_after_deploy.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ebextensions/01-environment.config" beforeDir="false" afterPath="$PROJECT_DIR$/.ebextensions/01-environment.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ebextensions/02-deploy.config" beforeDir="false" afterPath="$PROJECT_DIR$/.ebextensions/02-deploy.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mysql," beforeDir="false" afterPath="$PROJECT_DIR$/.ebextensions/02-deploy.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/null," beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/true," beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utf8mb4," beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utf8mb4_unicode_ci," beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -178,7 +175,7 @@
       <workItem from="1570127167458" duration="5154000" />
       <workItem from="1570386679523" duration="4082000" />
       <workItem from="1570455207865" duration="368000" />
-      <workItem from="1570977087139" duration="969000" />
+      <workItem from="1570977087139" duration="3188000" />
     </task>
     <servers />
   </component>
