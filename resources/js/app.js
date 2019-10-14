@@ -5,6 +5,7 @@
  */
 
 require('./bootstrap');
+require('@mdi/font/css/materialdesignicons.css')
 
 window.Vue = require('vue');
 window.Vuetify = require('vuetify');
@@ -30,5 +31,19 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
-    vuetify: new Vuetify()
+    vuetify: new Vuetify({
+        iconfont: 'mdi'
+    }),
+    mounted() {
+        console.log('Main container created.')
+    },
+    data: () => ({
+        drawer: false,
+    }),
+    methods: {
+        // #logout-form devined in app.blade.php
+        logout() {
+            document.getElementById('logout-form').submit();
+        }
+    }
 });
