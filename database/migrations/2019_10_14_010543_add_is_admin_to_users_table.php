@@ -14,9 +14,9 @@ class AddIsAdminToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->tinyInteger('is_admin');
-            $table->integer('vacation_days');
-            $table->string('role');
+            $table->tinyInteger('is_admin')->default(0);
+            $table->integer('vacation_days')->default(0);
+            $table->tinyInteger('is_active')->default(1);
         });
     }
 
@@ -30,7 +30,7 @@ class AddIsAdminToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('is_admin');
             $table->dropColumn('vacation_days');
-            $table->dropColumn('role');
+            $table->dropColumn('is_active');
         });
     }
 }

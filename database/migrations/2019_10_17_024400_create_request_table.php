@@ -20,8 +20,8 @@ class CreateRequestTable extends Migration
             $table->string('decision')->nullable(true);
             $table->dateTime('decision_date')->nullable(true);
             $table->unsignedBigInteger('decision_by')->nullable();
-            $table->foreign('requested_by')->references('id')->on('users');
-            $table->foreign('decision_by')->references('id')->on('users');
+            $table->foreign('requested_by')->references('id')->on('users')->onDelete('CASCADE');
+            $table->foreign('decision_by')->references('id')->on('users')->onDelete('SET NULL');
             $table->timestamps();
         });
     }

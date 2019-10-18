@@ -25,4 +25,13 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function newRequest() {
+        $user = auth()->user();
+        return view('vacationrequest', ['user' => $user]);
+    }
+
+    public function saveRequest(Request $request) {
+        return response()->json("baba booey");
+    }
 }

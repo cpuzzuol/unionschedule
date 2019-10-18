@@ -6,10 +6,30 @@
 
 require('./bootstrap');
 require('@mdi/font/css/materialdesignicons.css')
+const moment = require('moment')
+const axios = require('axios')
 
 window.Vue = require('vue');
 window.Vuetify = require('vuetify');
 Vue.use(Vuetify)
+Vue.prototype.$moment = moment
+Vue.prototype.$http = axios
+
+Vue.filter('slashdatetime', function (value) {
+    if (!value) return ''
+    let dt = Vue.prototype.$moment(value) // moment JS
+    return dt.format("MM/DD/YYYY @ h:mm A")
+})
+Vue.filter('slashdate', function (value) {
+    if (!value) return ''
+    let dt = Vue.prototype.$moment(value) // moment JS
+    return dt.format("MM/DD/YYYY")
+})
+Vue.filter('slashdateabbrev', function (value) {
+    if (!value) return ''
+    let dt = Vue.prototype.$moment(value) // moment JS
+    return dt.format("M/D/YY")
+})
 
 /**
  * The following block of code may be used to automatically register your
@@ -19,10 +39,12 @@ Vue.use(Vuetify)
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+//const files = require.context('./', true, /\.vue$/i)
+//files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('vacation-selection', require('./components/VacationSelection.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
