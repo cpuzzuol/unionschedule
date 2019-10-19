@@ -17,4 +17,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/request', 'HomeController@saveRequest')->name('saveRequest');
+// How to use api tokens: https://laravel.com/docs/5.8/api-authentication
+Route::apiResource('vacationrequests', 'VacationRequestController');

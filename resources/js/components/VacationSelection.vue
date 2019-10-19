@@ -1,13 +1,23 @@
 <template>
     <div class="vacation-container">
+        {{ restrictedDates }}
         <v-row>
             <v-col cols="12" sm="6" lg="4">
                 <v-date-picker
                     v-model="dates"
                     multiple
+                    full-width
                     :min="minDate"
                     :max="maxDate"
+                    :allowed-dates="allowedDates"
+                    :events="previousRequestMarkers"
+                    :event-color="previousRequestMarkerColor"
                 ></v-date-picker>
+                <p>
+                    <span class="success--text">&#x25CF;</span> = request approved on this date.<br>
+                    <span class="error--text">&#x25CF;</span> = request denied on this date.<br>
+                    <span class="warning--text">&#x25CF;</span> = request pending on this date.
+                </p>
             </v-col>
             <v-col cols="12" sm="6" lg="8">
                 <v-card
@@ -47,8 +57,16 @@
     import Vue from 'vue'
 	export default {
 		props: {
-            remainingDays: {
-            	type: Number|String,
+			previousRequests: {
+			    type: Array,
+                required: true
+            },
+			restrictedDates: {
+				type: Array,
+                required: true
+            },
+            user: {
+				type: Object,
                 required: true
             }
 		},
@@ -56,25 +74,77 @@
 		data: () => ({
             dates: [],
             menu: false,
-            minDate: Vue.prototype.$moment().add(1, 'days').format('YYYY-MM-DD'),
+            minDate: Vue.prototype.$moment().format('YYYY-MM-DD'),
             maxDate: Vue.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
             submitting: false
 		}),
         computed: {
 			daysLeft() {
-				return parseInt(this.remainingDays) - this.dates.length
+				return parseInt(this.user.vacation_days) - this.dates.length
+            },
+            previousRequestMarkers() {
+				let datesWithMarkers = []
+                this.previousRequests.forEach(pr => {
+                	datesWithMarkers.push(pr.date_requested)
+                })
+				return datesWithMarkers
             }
         },
         methods: {
+            allowedDates(val) {
+                const dt = Vue.prototype.$moment(val, 'YYYY-MM-DD')
+            	// Weekends not allowed
+                if(dt.weekday() == 0 || dt.weekday() == 6) {
+                	return false
+                }
+                // Loop through restricted dates
+                let requestable = true
+                this.restrictedDates.forEach(rd => {
+                	if(rd.date == val) {
+                        requestable = false
+                    }
+                })
+                // Loop through previously-requested dates
+                this.previousRequests.forEach(pr => {
+                	if(pr.date_requested == val) {
+                		requestable = false
+                    }
+                })
+                return requestable
+            },
 			clearDates() {
 				this.dates = []
+            },
+            // Based on the user's previous requests, return a different event color for the date picker
+            previousRequestMarkerColor(val) {
+                const matchingDate = this.previousRequests.find(pr => {
+                	return pr.date_requested == val
+                })
+                if(!matchingDate) return false
+                if(matchingDate.decision == 'approved') {
+                	return 'success'
+                } else if ( matchingDate.decision == 'denied' ) {
+                	return 'error'
+                }
+                return 'warning'
             },
 			removeDate(date) {
 				this.dates.splice(this.dates.indexOf(date), 1)
             },
             submit() {
 				this.submitting = true
-				Vue.prototype.$http.post('/api/request', this.dates)
+				Vue.prototype.$http.post('/api/vacationrequests',
+                  {
+                  	requestedDates: this.dates,
+                    userID: this.user.id
+                  },
+                  {
+                  	headers: {
+                  		'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + this.user.api_token
+                    }
+                  }
+                )
                 .then(response => {
                 	console.log(response.data)
                     this.submitting = false
@@ -88,7 +158,6 @@
 			// Do not add dates to the array of selected dates if the employees run out of days
 			dates() {
 				if(this.daysLeft < 0) {
-					console.log("TOO MUCH!")
 					this.dates.splice(this.dates.length - 1, 1)
                 }
             }

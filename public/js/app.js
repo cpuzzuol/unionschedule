@@ -2037,11 +2037,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    remainingDays: {
-      type: Number | String,
+    previousRequests: {
+      type: Array,
+      required: true
+    },
+    restrictedDates: {
+      type: Array,
+      required: true
+    },
+    user: {
+      type: Object,
       required: true
     }
   },
@@ -2050,19 +2068,63 @@ __webpack_require__.r(__webpack_exports__);
     return {
       dates: [],
       menu: false,
-      minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().add(1, 'days').format('YYYY-MM-DD'),
+      minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'),
       maxDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
       submitting: false
     };
   },
   computed: {
     daysLeft: function daysLeft() {
-      return parseInt(this.remainingDays) - this.dates.length;
+      return parseInt(this.user.vacation_days) - this.dates.length;
+    },
+    previousRequestMarkers: function previousRequestMarkers() {
+      var datesWithMarkers = [];
+      this.previousRequests.forEach(function (pr) {
+        datesWithMarkers.push(pr.date_requested);
+      });
+      return datesWithMarkers;
     }
   },
   methods: {
+    allowedDates: function allowedDates(val) {
+      var dt = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment(val, 'YYYY-MM-DD'); // Weekends not allowed
+
+      if (dt.weekday() == 0 || dt.weekday() == 6) {
+        return false;
+      } // Loop through restricted dates
+
+
+      var requestable = true;
+      this.restrictedDates.forEach(function (rd) {
+        if (rd.date == val) {
+          requestable = false;
+        }
+      }); // Loop through previously-requested dates
+
+      this.previousRequests.forEach(function (pr) {
+        if (pr.date_requested == val) {
+          requestable = false;
+        }
+      });
+      return requestable;
+    },
     clearDates: function clearDates() {
       this.dates = [];
+    },
+    // Based on the user's previous requests, return a different event color for the date picker
+    previousRequestMarkerColor: function previousRequestMarkerColor(val) {
+      var matchingDate = this.previousRequests.find(function (pr) {
+        return pr.date_requested == val;
+      });
+      if (!matchingDate) return false;
+
+      if (matchingDate.decision == 'approved') {
+        return 'success';
+      } else if (matchingDate.decision == 'denied') {
+        return 'error';
+      }
+
+      return 'warning';
     },
     removeDate: function removeDate(date) {
       this.dates.splice(this.dates.indexOf(date), 1);
@@ -2071,7 +2133,15 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.submitting = true;
-      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.post('/api/request', this.dates).then(function (response) {
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.post('/api/vacationrequests', {
+        requestedDates: this.dates,
+        userID: this.user.id
+      }, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.user.api_token
+        }
+      }).then(function (response) {
         console.log(response.data);
         _this.submitting = false;
       })["catch"](function (e) {
@@ -2083,7 +2153,6 @@ __webpack_require__.r(__webpack_exports__);
     // Do not add dates to the array of selected dates if the employees run out of days
     dates: function dates() {
       if (this.daysLeft < 0) {
-        console.log("TOO MUCH!");
         this.dates.splice(this.dates.length - 1, 1);
       }
     }
@@ -55642,6 +55711,7 @@ var render = function() {
     "div",
     { staticClass: "vacation-container" },
     [
+      _vm._v("\n    " + _vm._s(_vm.restrictedDates) + "\n    "),
       _c(
         "v-row",
         [
@@ -55650,7 +55720,15 @@ var render = function() {
             { attrs: { cols: "12", sm: "6", lg: "4" } },
             [
               _c("v-date-picker", {
-                attrs: { multiple: "", min: _vm.minDate, max: _vm.maxDate },
+                attrs: {
+                  multiple: "",
+                  "full-width": "",
+                  min: _vm.minDate,
+                  max: _vm.maxDate,
+                  "allowed-dates": _vm.allowedDates,
+                  events: _vm.previousRequestMarkers,
+                  "event-color": _vm.previousRequestMarkerColor
+                },
                 model: {
                   value: _vm.dates,
                   callback: function($$v) {
@@ -55658,7 +55736,20 @@ var render = function() {
                   },
                   expression: "dates"
                 }
-              })
+              }),
+              _vm._v(" "),
+              _c("p", [
+                _c("span", { staticClass: "success--text" }, [_vm._v("●")]),
+                _vm._v(" = request approved on this date."),
+                _c("br"),
+                _vm._v(" "),
+                _c("span", { staticClass: "error--text" }, [_vm._v("●")]),
+                _vm._v(" = request denied on this date."),
+                _c("br"),
+                _vm._v(" "),
+                _c("span", { staticClass: "warning--text" }, [_vm._v("●")]),
+                _vm._v(" = request pending on this date.\n            ")
+              ])
             ],
             1
           ),

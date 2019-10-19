@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRestrictedDateTable extends Migration
+class AddSoftDeletesToUser extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateRestrictedDateTable extends Migration
      */
     public function up()
     {
-        Schema::create('restricted_dates', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->date('date');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -27,6 +25,8 @@ class CreateRestrictedDateTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('restricted_dates');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 }

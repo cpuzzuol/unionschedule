@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\RestrictedDate;
+use App\VacationRequest;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -24,14 +27,5 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
-    }
-
-    public function newRequest() {
-        $user = auth()->user();
-        return view('vacationrequest', ['user' => $user]);
-    }
-
-    public function saveRequest(Request $request) {
-        return response()->json("baba booey");
     }
 }

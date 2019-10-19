@@ -13,12 +13,12 @@ class CreateLogTable extends Migration
      */
     public function up()
     {
-        Schema::create('log', function (Blueprint $table) {
+        Schema::create('logs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('request_id')->nullable();
             $table->text('description');
             $table->unsignedBigInteger('action_by')->nullable();
-            $table->foreign('request_id')->references('id')->on('request')->onDelete('CASCADE');
+            $table->foreign('request_id')->references('id')->on('vacation_requests')->onDelete('CASCADE');
             $table->foreign('action_by')->references('id')->on('users')->onDelete('SET NULL');
             $table->timestamps();
         });
@@ -31,6 +31,6 @@ class CreateLogTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('log');
+        Schema::dropIfExists('logs');
     }
 }
