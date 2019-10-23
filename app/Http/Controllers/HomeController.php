@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\RestrictedDate;
 use App\VacationRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -26,6 +27,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        Mail::raw('FROM HOME CONTROLLER', function ($message){
+            $message->to('contact@contact.com');
+            $message->subject('LIVE!');
+        });
         return view('home');
     }
 }
