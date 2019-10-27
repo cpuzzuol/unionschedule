@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -35,5 +36,21 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * Admins should go to the admin homepage. Regular users should go to the regular homepage.
+     * CP 10/26/19
+     *
+     * https://laracasts.com/discuss/channels/laravel/login-redirect-not-working-in-55
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    protected function authenticated()
+    {
+        if(auth()->user()->is_admin) {
+            return redirect('/admin'); //put your redirect url here
+        }
+        return redirect('/home');
     }
 }

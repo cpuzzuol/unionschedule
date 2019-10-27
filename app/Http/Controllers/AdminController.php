@@ -26,4 +26,8 @@ class AdminController extends Controller
     {
         return view('admin/index');
     }
+
+    public function users() {
+        return view('admin/users/index');
+    }
 }

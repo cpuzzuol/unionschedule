@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // How to use api tokens: https://laravel.com/docs/5.8/api-authentication
 Route::apiResource('vacationrequests', 'VacationRequestController');
+Route::apiResource('users', 'UserController');

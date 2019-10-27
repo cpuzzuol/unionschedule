@@ -44,6 +44,7 @@ Vue.filter('slashdateabbrev', function (value) {
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('vacation-selection', require('./components/VacationSelection.vue').default);
+Vue.component('system-users', require('./components/SystemUsers.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -63,7 +64,7 @@ const app = new Vue({
         drawer: false,
     }),
     methods: {
-        // #logout-form devined in app.blade.php
+        // #logout-form defined in app.blade.php
         logout() {
             document.getElementById('logout-form').submit();
         }

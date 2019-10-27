@@ -27,10 +27,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        Mail::raw('FROM HOME CONTROLLER', function ($message){
-            $message->to('contact@contact.com');
-            $message->subject('LIVE!');
-        });
+//        Mail::raw('FROM HOME CONTROLLER', function ($message){
+//            $message->to('contact@contact.com');
+//            $message->subject('LIVE!');
+//        });
         return view('home');
     }
 }
