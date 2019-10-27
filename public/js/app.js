@@ -2123,7 +2123,13 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
-  watch: {}
+  watch: {
+    dialog: function dialog() {
+      if (this.dialog == true) {
+        this.setUser();
+      }
+    }
+  }
 });
 
 /***/ }),

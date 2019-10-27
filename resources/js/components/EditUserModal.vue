@@ -179,6 +179,11 @@
             }
         },
         watch: {
+			dialog() {
+				if(this.dialog == true) {
+					this.setUser()
+                }
+            }
         }
 	}
 </script>
