@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller {
 
@@ -32,7 +33,12 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(){
-        $users = User::orderBy('last_name')->get();
+        //$users = User::orderBy('last_name')->get();
+        $users = DB::table('users')
+            ->leftJoin('vacation_requests', 'users.id', '=', 'vacation_requests.requested_by')
+            ->select('users.*', DB::raw('(SELECT COUNT(vacation_requests.date_requested) FROM vacation_requests WHERE decision = "pending") AS outstanding_requests'))
+            ->groupBy('id')
+            ->get();
         return response()->json($users);
     }
 

@@ -9,6 +9,9 @@ require('@mdi/font/css/materialdesignicons.css')
 const moment = require('moment')
 const axios = require('axios')
 
+// const CSRFToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+// axios.defaults.headers.common['X-CSRF-TOKEN'] = CSRFToken;
+
 window.Vue = require('vue');
 window.Vuetify = require('vuetify');
 window.Vuelidate = require('vuelidate');
@@ -16,6 +19,7 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 Vue.prototype.$moment = moment
 Vue.prototype.$http = axios
+
 
 Vue.filter('slashdatetime', function (value) {
     if (!value) return ''

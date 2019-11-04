@@ -2692,6 +2692,9 @@ __webpack_require__.r(__webpack_exports__);
         text: 'Email',
         value: 'email'
       }, {
+        text: 'Outstanding Requests',
+        value: 'outstanding_requests'
+      }, {
         text: 'Vacation Days',
         value: 'vacation_days'
       }, {
@@ -2712,7 +2715,6 @@ __webpack_require__.r(__webpack_exports__);
           'Authorization': 'Bearer ' + this.user.api_token
         }
       }).then(function (response) {
-        // console.log(response.data)
         _this.users = response.data;
       })["catch"](function (e) {
         console.log(e);
@@ -108916,7 +108918,9 @@ __webpack_require__(/*! @mdi/font/css/materialdesignicons.css */ "./node_modules
 
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
-var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js"); // const CSRFToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+// axios.defaults.headers.common['X-CSRF-TOKEN'] = CSRFToken;
+
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 window.Vuetify = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");

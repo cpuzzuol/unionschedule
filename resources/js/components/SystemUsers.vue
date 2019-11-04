@@ -59,6 +59,7 @@
                 return [
                 	{ text: 'Name', value: 'last_name' },
                     { text: 'Email', value: 'email' },
+                    { text: 'Outstanding Requests', value: 'outstanding_requests'},
                     { text: 'Vacation Days', value: 'vacation_days' },
                     { text: 'Actions', value: 'id', sortable: false }
                 ]
@@ -76,7 +77,6 @@
                   }
                 )
                 .then(response => {
-                	// console.log(response.data)
                     this.users = response.data
                 })
                 .catch(e => {
