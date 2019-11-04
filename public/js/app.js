@@ -2413,7 +2413,7 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
   },
   validations: function validations() {
     return {
-      user: {
+      userEditable: {
         email: {
           required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
           unionSortersEmail: unionSortersEmail
@@ -2448,39 +2448,39 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
     errorsEmail: function errorsEmail() {
       var errors = [];
 
-      if (!this.$v.user.email.$dirty) {
+      if (!this.$v.userEditable.email.$dirty) {
         return errors;
       } // clean
 
 
-      !this.$v.user.email.unionSortersEmail && errors.push('Must be a unionsorters.com email address');
+      !this.$v.userEditable.email.unionSortersEmail && errors.push('Must be a unionsorters.com email address');
       return errors;
     },
     errorsFirstName: function errorsFirstName() {
       var errors = [];
 
-      if (!this.$v.user.first_name.$dirty) {
+      if (!this.$v.userEditable.first_name.$dirty) {
         return errors;
       } // clean
 
 
-      !this.$v.user.first_name.required && errors.push('First name is required');
+      !this.$v.userEditable.first_name.required && errors.push('First name is required');
       return errors;
     },
     errorsLastName: function errorsLastName() {
       var errors = [];
 
-      if (!this.$v.user.last_name.$dirty) {
+      if (!this.$v.userEditable.last_name.$dirty) {
         return errors;
       } // clean
 
 
-      !this.$v.user.last_name.required && errors.push('Last name is required');
+      !this.$v.userEditable.last_name.required && errors.push('Last name is required');
       return errors;
     },
     errorsVacationDays: function errorsVacationDays() {
       var errors = [];
-      !this.$v.user.vacation_days.numeric && errors.push('Must be a valid number of days');
+      !this.$v.userEditable.vacation_days.numeric && errors.push('Must be a valid number of days');
       return errors;
     }
   },
@@ -2490,6 +2490,7 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
       this.dialog = false;
       this.submitResult.complete = false;
       this.sendResetPasswordLink = false;
+      this.$v.userEditable.$reset();
       this.setUser();
     },
     setUser: function setUser() {
@@ -56904,7 +56905,7 @@ var render = function() {
                                 },
                                 on: {
                                   input: function($event) {
-                                    return _vm.$v.user.first_name.$touch()
+                                    return _vm.$v.userEditable.first_name.$touch()
                                   }
                                 },
                                 model: {
@@ -56935,7 +56936,7 @@ var render = function() {
                                 },
                                 on: {
                                   input: function($event) {
-                                    return _vm.$v.user.last_name.$touch()
+                                    return _vm.$v.userEditable.last_name.$touch()
                                   }
                                 },
                                 model: {
@@ -56962,7 +56963,7 @@ var render = function() {
                                 },
                                 on: {
                                   input: function($event) {
-                                    return _vm.$v.user.email.$touch()
+                                    return _vm.$v.userEditable.email.$touch()
                                   }
                                 },
                                 model: {
@@ -56989,7 +56990,7 @@ var render = function() {
                                 },
                                 on: {
                                   input: function($event) {
-                                    return _vm.$v.user.vacation_days.$touch()
+                                    return _vm.$v.userEditable.vacation_days.$touch()
                                   }
                                 },
                                 model: {
@@ -57176,7 +57177,8 @@ var render = function() {
                     {
                       attrs: {
                         color: "success darken-1",
-                        disabled: _vm.$v.user.$invalid || _vm.submitting,
+                        disabled:
+                          _vm.$v.userEditable.$invalid || _vm.submitting,
                         loading: _vm.submitting
                       },
                       on: { click: _vm.updateUser }

@@ -19,7 +19,7 @@
                                     label="First Name*"
                                     filled
                                     :error-messages="errorsFirstName"
-                                    @input="$v.user.first_name.$touch()"
+                                    @input="$v.userEditable.first_name.$touch()"
                                 >
                                 </v-text-field>
                             </v-col>
@@ -29,7 +29,7 @@
                                     label="Last Name*"
                                     filled
                                     :error-messages="errorsLastName"
-                                    @input="$v.user.last_name.$touch()"
+                                    @input="$v.userEditable.last_name.$touch()"
                                 >
                                 </v-text-field>
                             </v-col>
@@ -39,7 +39,7 @@
                                     label="Email*"
                                     filled
                                     :error-messages="errorsEmail"
-                                    @input="$v.user.email.$touch()"
+                                    @input="$v.userEditable.email.$touch()"
                                 >
                                 </v-text-field>
                             </v-col>
@@ -49,7 +49,7 @@
                                     label="Vacation Days"
                                     filled
                                     :error-messages="errorsVacationDays"
-                                    @input="$v.user.vacation_days.$touch()"
+                                    @input="$v.userEditable.vacation_days.$touch()"
                                 >
                                 </v-text-field>
                             </v-col>
@@ -94,7 +94,7 @@
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
-                    <v-btn color="success darken-1" :disabled="$v.user.$invalid || submitting" :loading="submitting" @click="updateUser">Update User</v-btn>
+                    <v-btn color="success darken-1" :disabled="$v.userEditable.$invalid || submitting" :loading="submitting" @click="updateUser">Update User</v-btn>
                     <v-btn color="secondary" :disabled="submitting" outlined @click="setUser">Reset</v-btn>
                     <v-spacer></v-spacer>
                     <v-btn color="error" :disabled="submitting">Delete User</v-btn>
@@ -130,7 +130,7 @@
         },
         validations () {
             return {
-                user: {
+                userEditable: {
                     email: {
                         required,
                         unionSortersEmail
@@ -162,25 +162,25 @@
         computed: {
             errorsEmail () {
                 const errors = []
-                if (!this.$v.user.email.$dirty) { return errors } // clean
-                !this.$v.user.email.unionSortersEmail && errors.push('Must be a unionsorters.com email address')
+                if (!this.$v.userEditable.email.$dirty) { return errors } // clean
+                !this.$v.userEditable.email.unionSortersEmail && errors.push('Must be a unionsorters.com email address')
                 return errors
             },
             errorsFirstName () {
                 const errors = []
-                if (!this.$v.user.first_name.$dirty) { return errors } // clean
-                !this.$v.user.first_name.required && errors.push('First name is required')
+                if (!this.$v.userEditable.first_name.$dirty) { return errors } // clean
+                !this.$v.userEditable.first_name.required && errors.push('First name is required')
                 return errors
             },
             errorsLastName () {
                 const errors = []
-                if (!this.$v.user.last_name.$dirty) { return errors } // clean
-                !this.$v.user.last_name.required && errors.push('Last name is required')
+                if (!this.$v.userEditable.last_name.$dirty) { return errors } // clean
+                !this.$v.userEditable.last_name.required && errors.push('Last name is required')
                 return errors
             },
             errorsVacationDays () {
                 const errors = []
-                !this.$v.user.vacation_days.numeric && errors.push('Must be a valid number of days')
+                !this.$v.userEditable.vacation_days.numeric && errors.push('Must be a valid number of days')
                 return errors
             }
         },
@@ -190,6 +190,7 @@
                 this.dialog = false
                 this.submitResult.complete = false
                 this.sendResetPasswordLink = false
+                this.$v.userEditable.$reset()
                 this.setUser()
             },
             setUser() {
