@@ -97,7 +97,7 @@
                     <v-btn color="success darken-1" :disabled="$v.userEditable.$invalid || submitting" :loading="submitting" @click="updateUser">Update User</v-btn>
                     <v-btn color="secondary" :disabled="submitting" outlined @click="setUser">Reset</v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn color="error" :disabled="submitting">Delete User</v-btn>
+                    <v-btn color="error" :disabled="submitting" @click="deleteUser">Delete User</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -192,6 +192,37 @@
                 this.sendResetPasswordLink = false
                 this.$v.userEditable.$reset()
                 this.setUser()
+            },
+            deleteUser() {
+				if(confirm('Are you sure you want to delete this user? The user\'s information will still be stored in the database after deletion.')) {
+                    this.submitting = true
+                    Vue.prototype.$http.delete(`/api/users/${this.user.id}`,
+                        {
+                            headers: {
+                                'Accept': 'application/json',
+                                'Authorization': 'Bearer ' + this.apiToken
+                            }
+                        }
+                    )
+                    .then(response => {
+                        this.submitResult.color = 'success'
+                        this.submitResult.msg = 'User was deleted'
+
+                        // Close the dialog and update the parent view by $emit-ing after 2 seconds
+                        setTimeout(() => {
+                            this.closeDialog()
+                            this.$emit('user-deleted')
+                        }, 2000)
+                    })
+                    .catch(e => {
+                        this.submitResult.color = 'error'
+                        this.submitResult.msg = 'There was a problem deleting the user'
+                    })
+                    .finally(response => {
+                        this.submitResult.complete = true
+                        this.submitting = false
+                    })
+                }
             },
             setUser() {
             	this.userEditable = Object.assign({}, this.user)

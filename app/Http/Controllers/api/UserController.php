@@ -174,7 +174,11 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
-        //
+        $user = User::find($id)->delete();
+        if(!$user){
+            return response()->json('No matching user found', 404);
+        }
+        return response()->json('User deleted', 200);
     }
 }
 

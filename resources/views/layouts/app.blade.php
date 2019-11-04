@@ -64,11 +64,10 @@
                     <v-menu offset-y>
                         <template v-slot:activator="{ on }">
                             <v-btn
-                                color="blue-grey"
-                                dark
+                                text
                                 v-on="on"
                             >
-                                <v-icon>mdi-account</v-icon> {{ Auth::user()->name }}
+                                <v-icon>mdi-account</v-icon> {{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}
                             </v-btn>
                         </template>
                         <v-list>

@@ -2493,11 +2493,39 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
       this.$v.userEditable.$reset();
       this.setUser();
     },
+    deleteUser: function deleteUser() {
+      var _this = this;
+
+      if (confirm('Are you sure you want to delete this user? The user\'s information will still be stored in the database after deletion.')) {
+        this.submitting = true;
+        vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http["delete"]("/api/users/".concat(this.user.id), {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + this.apiToken
+          }
+        }).then(function (response) {
+          _this.submitResult.color = 'success';
+          _this.submitResult.msg = 'User was deleted'; // Close the dialog and update the parent view by $emit-ing after 2 seconds
+
+          setTimeout(function () {
+            _this.closeDialog();
+
+            _this.$emit('user-deleted');
+          }, 2000);
+        })["catch"](function (e) {
+          _this.submitResult.color = 'error';
+          _this.submitResult.msg = 'There was a problem deleting the user';
+        })["finally"](function (response) {
+          _this.submitResult.complete = true;
+          _this.submitting = false;
+        });
+      }
+    },
     setUser: function setUser() {
       this.userEditable = Object.assign({}, this.user);
     },
     updateUser: function updateUser() {
-      var _this = this;
+      var _this2 = this;
 
       this.submitting = true;
       vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.put("/api/users/".concat(this.user.id), {
@@ -2509,20 +2537,20 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
           'Authorization': 'Bearer ' + this.apiToken
         }
       }).then(function (response) {
-        _this.submitResult.color = 'success';
-        _this.submitResult.msg = 'User was updated'; // Close the dialog and update the parent view by $emit-ing after 2 seconds
+        _this2.submitResult.color = 'success';
+        _this2.submitResult.msg = 'User was updated'; // Close the dialog and update the parent view by $emit-ing after 2 seconds
 
         setTimeout(function () {
-          _this.closeDialog();
+          _this2.closeDialog();
 
-          _this.$emit('user-updated');
+          _this2.$emit('user-updated');
         }, 2000);
       })["catch"](function (e) {
-        _this.submitResult.color = 'error';
-        _this.submitResult.msg = 'There was a problem updating the user';
+        _this2.submitResult.color = 'error';
+        _this2.submitResult.msg = 'There was a problem updating the user';
       })["finally"](function (response) {
-        _this.submitResult.complete = true;
-        _this.submitting = false;
+        _this2.submitResult.complete = true;
+        _this2.submitting = false;
       });
     }
   },
@@ -2595,6 +2623,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _EditUserModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditUserModal */ "./resources/js/components/EditUserModal.vue");
 /* harmony import */ var _AddUserModal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AddUserModal */ "./resources/js/components/AddUserModal.vue");
+//
 //
 //
 //
@@ -57203,7 +57232,10 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "v-btn",
-                    { attrs: { color: "error", disabled: _vm.submitting } },
+                    {
+                      attrs: { color: "error", disabled: _vm.submitting },
+                      on: { click: _vm.deleteUser }
+                    },
                     [_vm._v("Delete User")]
                   )
                 ],
@@ -57331,7 +57363,10 @@ var render = function() {
                             "can-edit-admin-setting":
                               item.email != _vm.user.email
                           },
-                          on: { "user-updated": _vm.getUsers }
+                          on: {
+                            "user-updated": _vm.getUsers,
+                            "user-deleted": _vm.getUsers
+                          }
                         })
                       ]
                     }

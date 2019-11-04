@@ -27,6 +27,7 @@
                             :user="item"
                             :can-edit-admin-setting="item.email != user.email"
                             @user-updated="getUsers"
+                            @user-deleted="getUsers"
                         ></EditUserModal>
                     </template>
                 </v-data-table>
