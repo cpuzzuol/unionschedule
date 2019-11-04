@@ -133,7 +133,7 @@
                 userEditable: {
                     email: {
                         required,
-                        unionSortersEmail
+                        //unionSortersEmail
                     },
                     first_name: {
                         required

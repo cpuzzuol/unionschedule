@@ -2089,8 +2089,8 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
     return {
       user: {
         email: {
-          required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
-          unionSortersEmail: unionSortersEmail
+          required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"] //unionSortersEmail
+
         },
         first_name: {
           required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"]
@@ -2415,8 +2415,8 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
     return {
       userEditable: {
         email: {
-          required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
-          unionSortersEmail: unionSortersEmail
+          required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"] //unionSortersEmail
+
         },
         first_name: {
           required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"]

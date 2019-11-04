@@ -140,7 +140,7 @@
                 user: {
                     email: {
                     	required,
-                        unionSortersEmail
+                        //unionSortersEmail
                     },
                     first_name: {
                         required
