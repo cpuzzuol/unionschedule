@@ -2,6 +2,12 @@
     <div class="system-users-container">
         <v-row>
             <v-col cols="12">
+                <AddUserModal
+                    :api-token="user.api_token"
+                    @user-created="getUsers"
+                ></AddUserModal>
+            </v-col>
+            <v-col cols="12">
                 <v-data-table
                     :headers="headers"
                     :items="users"
@@ -9,15 +15,11 @@
                     :loading="dataLoading"
                     class="elevation-1"
                 >
-                    <template v-slot:item.name="{ item }">
-                        <v-chip
-                            class="ma-2"
-                            :color="item.is_admin ? 'orange' : 'info'"
-                            text-color="white"
-                        >
-                            {{ item.name }}
-                            <v-icon right>{{ item.is_admin ? 'mdi-star' : 'mdi-account-circle' }}</v-icon>
-                        </v-chip>
+                    <template v-slot:item.last_name="{ item }">
+
+                            {{ item.last_name + ', ' + item.first_name }}
+                            <v-icon v-if="item.is_admin" color="warning"right>mdi-account-star</v-icon>
+
                     </template>
                     <template v-slot:item.id="{ item }">
                         <EditUserModal
@@ -34,7 +36,8 @@
 </template>
 <script>
     import Vue from 'vue'
-    import EditUserModal from "./EditUserModal";
+    import EditUserModal from "./EditUserModal"
+    import AddUserModal from "./AddUserModal"
 	export default {
 		props: {
 			user: {
@@ -42,7 +45,7 @@
                 required: true
             }
 		},
-        components: { EditUserModal },
+        components: { EditUserModal, AddUserModal },
         created() {
 			this.getUsers()
         },
@@ -53,7 +56,7 @@
         computed: {
 			headers() {
                 return [
-                	{ text: 'Name', value: 'name' },
+                	{ text: 'Name', value: 'last_name' },
                     { text: 'Email', value: 'email' },
                     { text: 'Vacation Days', value: 'vacation_days' },
                     { text: 'Actions', value: 'id', sortable: false }

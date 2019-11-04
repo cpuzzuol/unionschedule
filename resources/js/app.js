@@ -11,7 +11,9 @@ const axios = require('axios')
 
 window.Vue = require('vue');
 window.Vuetify = require('vuetify');
+window.Vuelidate = require('vuelidate');
 Vue.use(Vuetify)
+Vue.use(Vuelidate)
 Vue.prototype.$moment = moment
 Vue.prototype.$http = axios
 

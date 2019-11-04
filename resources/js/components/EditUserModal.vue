@@ -6,26 +6,40 @@
             </template>
             <v-card>
                 <v-toolbar dark>
-                    <v-toolbar-title>Edit User: {{ user.name }}</v-toolbar-title>
+                    <v-toolbar-title>Edit User: {{ user.first_name + ' ' + user.last_name }}</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn icon dark @click="closeDialog"><v-icon>mdi-close</v-icon></v-btn>
                 </v-toolbar>
                 <v-card-text style="height: 500px;">
-                    <v-form v-model="valid">
+                    <v-form>
                         <v-row>
-                            <v-col cols="12">
+                            <v-col cols="12" xs="12" sm="6">
                                 <v-text-field
-                                    v-model="userEditable.name"
-                                    label="Name"
-                                    :rules="nameRules"
+                                    v-model="userEditable.first_name"
+                                    label="First Name*"
                                     filled
+                                    :error-messages="errorsFirstName"
+                                    @input="$v.user.first_name.$touch()"
                                 >
                                 </v-text-field>
+                            </v-col>
+                            <v-col cols="12" xs="12" sm="6">
+                                <v-text-field
+                                    v-model="userEditable.last_name"
+                                    label="Last Name*"
+                                    filled
+                                    :error-messages="errorsLastName"
+                                    @input="$v.user.last_name.$touch()"
+                                >
+                                </v-text-field>
+                            </v-col>
+                            <v-col cols="12">
                                 <v-text-field
                                     v-model="userEditable.email"
-                                    label="Email"
-                                    :rules="emailRules"
+                                    label="Email*"
                                     filled
+                                    :error-messages="errorsEmail"
+                                    @input="$v.user.email.$touch()"
                                 >
                                 </v-text-field>
                             </v-col>
@@ -33,9 +47,9 @@
                                 <v-text-field
                                     v-model="userEditable.vacation_days"
                                     label="Vacation Days"
-                                    type="number"
-                                    :rules="vacationRules"
                                     filled
+                                    :error-messages="errorsVacationDays"
+                                    @input="$v.user.vacation_days.$touch()"
                                 >
                                 </v-text-field>
                             </v-col>
@@ -76,10 +90,11 @@
                     >
                         {{ submitResult.msg }}
                     </v-alert>
+                    <p class="error--text">All fields marked with * are required.</p>
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
-                    <v-btn color="success darken-1" :disabled="!valid || submitting" :loading="submitting" @click="updateUser">Update User</v-btn>
+                    <v-btn color="success darken-1" :disabled="$v.user.$invalid || submitting" :loading="submitting" @click="updateUser">Update User</v-btn>
                     <v-btn color="secondary" :disabled="submitting" outlined @click="setUser">Reset</v-btn>
                     <v-spacer></v-spacer>
                     <v-btn color="error" :disabled="submitting">Delete User</v-btn>
@@ -89,7 +104,12 @@
     </div>
 </template>
 <script>
-    import Vue from 'vue'
+	import Vue from 'vue'
+	import Vuelidate from 'vuelidate'
+	import { required, helpers, sameAs, numeric } from 'vuelidate/lib/validators'
+	Vue.use(Vuelidate)
+
+	const unionSortersEmail = helpers.regex('alpha', /.+@unionsorters\.com$/);
 	export default {
 		props: {
             apiToken: {
@@ -108,15 +128,28 @@
         created() {
             this.setUser()
         },
+        validations () {
+            return {
+                user: {
+                    email: {
+                        required,
+                        unionSortersEmail
+                    },
+                    first_name: {
+                        required
+                    },
+                    last_name: {
+                    	required
+                    },
+                    vacation_days: {
+                        required,
+                        numeric
+                    }
+                }
+            }
+        },
 		data: () => ({
             dialog: false,
-            emailRules: [
-                v => !!v || 'Email address is required',
-                v => /.+@unionsorters\.com$/.test(v) || 'Email must end in @unionsorters.com'
-            ],
-            nameRules: [
-                v => !!v || 'Name is required',
-            ],
             submitResult: {
             	color: 'info',
                 complete: false,
@@ -124,14 +157,32 @@
             },
             sendResetPasswordLink: false,
             submitting: false,
-            userEditable: [],
-            vacationRules: [
-                v => /^[0-9]+$/.test(v) || 'Must be a number'
-            ],
-            valid: false
+            userEditable: []
 		}),
         computed: {
-
+            errorsEmail () {
+                const errors = []
+                if (!this.$v.user.email.$dirty) { return errors } // clean
+                !this.$v.user.email.unionSortersEmail && errors.push('Must be a unionsorters.com email address')
+                return errors
+            },
+            errorsFirstName () {
+                const errors = []
+                if (!this.$v.user.first_name.$dirty) { return errors } // clean
+                !this.$v.user.first_name.required && errors.push('First name is required')
+                return errors
+            },
+            errorsLastName () {
+                const errors = []
+                if (!this.$v.user.last_name.$dirty) { return errors } // clean
+                !this.$v.user.last_name.required && errors.push('Last name is required')
+                return errors
+            },
+            errorsVacationDays () {
+                const errors = []
+                !this.$v.user.vacation_days.numeric && errors.push('Must be a valid number of days')
+                return errors
+            }
         },
         methods: {
 			// Do a little cleanup when dialog closes
