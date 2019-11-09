@@ -13,6 +13,9 @@
                     :items="users"
                     :items-per-page="25"
                     :loading="dataLoading"
+                    :footer-props="{
+                       'items-per-page-options': [5, 10, 25, 50, 75, 100]
+                    }"
                     class="elevation-1"
                 >
                     <template v-slot:item.last_name="{ item }">

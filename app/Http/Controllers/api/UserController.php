@@ -34,11 +34,15 @@ class UserController extends Controller {
      */
     public function index(){
         //$users = User::orderBy('last_name')->get();
-        $users = DB::table('users')
-            ->leftJoin('vacation_requests', 'users.id', '=', 'vacation_requests.requested_by')
-            ->select('users.*', DB::raw('(SELECT COUNT(vacation_requests.date_requested) FROM vacation_requests WHERE decision = "pending") AS outstanding_requests'))
-            ->groupBy('id')
-            ->get();
+//        $users = DB::table('users')
+//            ->leftJoin('vacation_requests', 'users.id', '=', 'vacation_requests.requested_by')
+//            ->select('users.*', DB::raw('(SELECT COUNT(vacation_requests.date_requested) FROM vacation_requests WHERE decision = "pending") AS outstanding_requests'))
+//            ->groupBy('id')
+//            ->get();
+
+        $users = User::withCount(['vacationRequests as outstanding_requests' => function ($count) {
+            $count->where('decision', 'pending');
+        }])->orderBy('last_name')->get();
         return response()->json($users);
     }
 

@@ -53,6 +53,6 @@ class User extends Authenticatable
     ];
 
     public function vacationRequests() {
-        return $this->hasMany('App\VacationRequest');
+        return $this->hasMany('App\VacationRequest', 'requested_by');
     }
 }

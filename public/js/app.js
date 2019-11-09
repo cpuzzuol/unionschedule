@@ -2660,6 +2660,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -57330,7 +57333,10 @@ var render = function() {
                   headers: _vm.headers,
                   items: _vm.users,
                   "items-per-page": 25,
-                  loading: _vm.dataLoading
+                  loading: _vm.dataLoading,
+                  "footer-props": {
+                    "items-per-page-options": [5, 10, 25, 50, 75, 100]
+                  }
                 },
                 scopedSlots: _vm._u([
                   {
