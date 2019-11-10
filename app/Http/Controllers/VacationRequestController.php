@@ -15,9 +15,7 @@ class VacationRequestController extends Controller
      */
     public function __construct()
     {
-        // The create() method is used within the Laravel app. The others are consumed by the API.
-        $this->middleware('auth:api', ['except' => ['create']]);
-        $this->middleware('auth', ['only' => ['index', 'create']]);
+        $this->middleware('auth');
     }
 
     /**
@@ -60,24 +58,7 @@ class VacationRequestController extends Controller
      */
     public function store(Request $request)
     {
-        $userID = $request->post('userID');
-        $requestedDates = $request->post('requestedDates');
-        $response = [];
-        foreach($requestedDates as $requestedDate) {
-            // https://laravel.com/docs/6.x/eloquent#other-creation-methods
-            $newRequest = VacationRequest::firstOrCreate(
-                ['requested_by' => $userID, 'date_requested' => '2019-11-07'],
-                ['decision' => 'pending']
-            );
-            if($newRequest->wasRecentlyCreated){
-                // New request
-                $response[] = $requestedDate . ' has been requested.';
-                // TODO: Make a log of this event
-            } else {
-                $response[] = $requestedDate . ' was already requested.';
-            }
-        }
-        return response()->json($response);
+        //
     }
 
     /**

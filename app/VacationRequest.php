@@ -15,6 +15,10 @@ class VacationRequest extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function requester() {
-        return $this->belongsTo('App\User' ,'requested_by');
+        return $this->belongsTo('App\User', 'requested_by');
+    }
+
+    public function requesterBasicInfo() {
+        return $this->belongsTo('App\User', 'requested_by')->select(['first_name', 'last_name', 'email']);
     }
 }

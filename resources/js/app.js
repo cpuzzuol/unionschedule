@@ -36,6 +36,11 @@ Vue.filter('slashdateabbrev', function (value) {
     let dt = Vue.prototype.$moment(value) // moment JS
     return dt.format("M/D/YY")
 })
+Vue.filter('slashdatedow', function (value) {
+    if (!value) return ''
+    let dt = Vue.prototype.$moment(value) // moment JS
+    return dt.format("ddd, MM/DD/YYYY")
+})
 
 /**
  * The following block of code may be used to automatically register your
@@ -51,6 +56,8 @@ Vue.filter('slashdateabbrev', function (value) {
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('vacation-selection', require('./components/VacationSelection.vue').default);
 Vue.component('system-users', require('./components/SystemUsers.vue').default);
+Vue.component('admin-overview-calendar', require('./components/AdminOverviewCalendar.vue').default);
+Vue.component('admin-pending-requests-modal', require('./components/AdminPendingRequestsModal.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

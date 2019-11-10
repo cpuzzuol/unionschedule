@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\ActionLog;
+use App\Helpers\VacationLogger;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -33,13 +34,6 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(){
-        //$users = User::orderBy('last_name')->get();
-//        $users = DB::table('users')
-//            ->leftJoin('vacation_requests', 'users.id', '=', 'vacation_requests.requested_by')
-//            ->select('users.*', DB::raw('(SELECT COUNT(vacation_requests.date_requested) FROM vacation_requests WHERE decision = "pending") AS outstanding_requests'))
-//            ->groupBy('id')
-//            ->get();
-
         $users = User::withCount(['vacationRequests as outstanding_requests' => function ($count) {
             $count->where('decision', 'pending');
         }])->orderBy('last_name')->get();
@@ -125,7 +119,10 @@ class UserController extends Controller {
             $logVacationChange->affected_user = $user->id;
             $logVacationChange->description = "Changed vacation days from $origVacationDays to {$user->vacation_days}";
             $logVacationChange->action_by = $currentUser->id;
-            if($logVacationChange->save()){
+
+            $log = new VacationLogger();
+            $isVacationChangeLogged = $log->logVacationDayAllotmentChange($user->id, $origVacationDays, $user->vacation_days);
+            if($isVacationChangeLogged){
                 $response['vacationChangeLogged'] = true;
                 Mail::raw("Your vacation amount for the current year was updated by {$currentUser->name}. Your allotment changed from days $origVacationDays to {$user->vacation_days} days.", function ($message) use ($user){
                     $message->to($user->email);

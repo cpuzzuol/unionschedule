@@ -1,6 +1,5 @@
 <template>
     <div class="vacation-container">
-        {{ restrictedDates }}
         <v-row>
             <v-col cols="12" sm="6" lg="4">
                 <v-date-picker
@@ -39,9 +38,14 @@
                         >
                             {{ dt | slashdate }}
                         </v-chip>
+                        <template v-if="serverStatus">
+                            <v-alert
+                                dense :type="submissionFormatting.color"
+                            >{{ submissionFormatting.msg }}</v-alert>
+                        </template>
                     </v-card-text>
                     <v-divider></v-divider>
-                    <v-card-actions>
+                    <v-card-actions v-if="serverStatus != 200">
                         <v-btn color="success" :disabled="dates.length == 0" :loading="submitting" @click="submit">Submit for review</v-btn>
                         <v-btn color="secondary" outlined :disabled="dates.length == 0 || submitting" @click="clearDates">Reset</v-btn>
                     </v-card-actions>
@@ -76,6 +80,7 @@
             menu: false,
             minDate: Vue.prototype.$moment().format('YYYY-MM-DD'),
             maxDate: Vue.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
+            serverStatus: null,
             submitting: false
 		}),
         computed: {
@@ -88,6 +93,18 @@
                 	datesWithMarkers.push(pr.date_requested)
                 })
 				return datesWithMarkers
+            },
+            submissionFormatting() {
+                switch(this.serverStatus) {
+                    case 200:
+                        return {msg: 'You request has been submitted.', color: 'success'}
+                    case 422:
+                        return {msg: 'This date has already been requested', color: 'error'}
+                    case 500:
+                        return {msg: 'An unexpected error occurred.', color: 'error'}
+                    default:
+                        return {msg: null, color: 'dark'}
+                }
             }
         },
         methods: {
@@ -114,6 +131,7 @@
             },
 			clearDates() {
 				this.dates = []
+                this.serverStatus = null
             },
             // Based on the user's previous requests, return a different event color for the date picker
             previousRequestMarkerColor(val) {
@@ -147,10 +165,16 @@
                 )
                 .then(response => {
                 	console.log(response.data)
-                    this.submitting = false
+                    //this.submitting = false
+                    this.serverStatus = 200
+                    setTimeout(() => {
+                    	location.reload()
+                    }, 2500)
                 })
                 .catch(e => {
                 	console.log(e)
+                    this.submitting = false
+                    this.serverStatus = e.response.status
                 })
             }
         },

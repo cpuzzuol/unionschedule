@@ -2268,6 +2268,451 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    action: {
+      type: String,
+      required: true
+    },
+    user: {
+      type: Object,
+      required: true
+    },
+    vacationRequest: {
+      type: Object,
+      required: true
+    }
+  },
+  created: function created() {},
+  data: function data() {
+    return {
+      dialog: false,
+      note: '',
+      submitResult: {
+        color: 'info',
+        complete: false,
+        msg: ''
+      },
+      submitting: false
+    };
+  },
+  computed: {
+    iconProps: function iconProps() {
+      switch (this.action) {
+        case 'approve':
+          return {
+            icon: 'mdi-thumb-up',
+            color: 'success darken-1',
+            title: 'Approve Vacation Request'
+          };
+
+        case 'deny':
+          return {
+            icon: 'mdi-thumb-down',
+            color: 'error darken-1',
+            title: 'Deny Vacation Request'
+          };
+
+        case 'pending':
+          return {
+            icon: 'mdi-account-clock',
+            color: 'warning darken-1',
+            title: 'Set Vacation Request to Pending'
+          };
+
+        default:
+          return {
+            icon: 'mdi-help',
+            color: 'warning darken-1',
+            title: 'Vacation Request Manager'
+          };
+      }
+    }
+  },
+  methods: {
+    // Do a little cleanup when dialog closes
+    closeDialog: function closeDialog() {
+      this.dialog = false;
+      this.note = '';
+      this.submitResult.complete = false;
+    },
+    updateRequest: function updateRequest() {
+      var _this = this;
+
+      this.submitting = true;
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.put("/api/users/".concat(this.user.id), {
+        user: this.userEditable,
+        sendResetPasswordLink: this.sendResetPasswordLink
+      }, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.apiToken
+        }
+      }).then(function (response) {
+        _this.submitResult.color = 'success';
+        _this.submitResult.msg = 'User was updated'; // Close the dialog and update the parent view by $emit-ing after 2 seconds
+
+        setTimeout(function () {
+          _this.closeDialog();
+
+          _this.$emit('user-updated');
+        }, 2000);
+      })["catch"](function (e) {
+        _this.submitResult.color = 'error';
+        _this.submitResult.msg = 'There was a problem updating the user';
+      })["finally"](function (response) {
+        _this.submitResult.complete = true;
+        _this.submitting = false;
+      });
+    }
+  },
+  watch: {
+    dialog: function dialog() {}
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminOverviewCalendar.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AdminOverviewCalendar.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AdminManageVacationRequestModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminManageVacationRequestModal */ "./resources/js/components/AdminManageVacationRequestModal.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    AdminManageVacationRequestModal: _AdminManageVacationRequestModal__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  props: {
+    restrictedDates: {
+      type: Array,
+      required: true
+    },
+    user: {
+      type: Object,
+      required: true
+    }
+  },
+  created: function created() {
+    this.getRequestsByDate();
+  },
+  data: function data() {
+    return {
+      date: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'),
+      dateRequests: [],
+      loading: true,
+      loadingError: false,
+      menu: false,
+      //minDate: Vue.prototype.$moment().format('YYYY-MM-DD'),
+      maxDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
+      serverStatus: null,
+      submitting: false
+    };
+  },
+  computed: {
+    vacationRequestsApproved: function vacationRequestsApproved() {
+      return this.dateRequests.filter(function (dr) {
+        return dr.decision == 'approved';
+      });
+    },
+    vacationRequestsDenied: function vacationRequestsDenied() {
+      return this.dateRequests.filter(function (dr) {
+        return dr.decision == 'denied';
+      });
+    },
+    vacationRequestsPending: function vacationRequestsPending() {
+      return this.dateRequests.filter(function (dr) {
+        return dr.decision == 'pending';
+      });
+    }
+  },
+  methods: {
+    allowedDates: function allowedDates(val) {
+      var dt = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment(val, 'YYYY-MM-DD'); // Weekends not allowed
+
+      if (dt.weekday() == 0 || dt.weekday() == 6) {
+        return false;
+      } // Loop through restricted dates
+
+
+      var requestable = true;
+      this.restrictedDates.forEach(function (rd) {
+        if (rd.date == val) {
+          requestable = false;
+        }
+      });
+      return requestable;
+    },
+    getRequestsByDate: function getRequestsByDate() {
+      var _this = this;
+
+      this.loading = true;
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.get("/api/vacationrequestsbydate/".concat(this.date), {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.user.api_token
+        }
+      }).then(function (response) {
+        _this.dateRequests = response.data;
+        _this.loadingError = false;
+      })["catch"](function (e) {
+        console.log(e);
+        _this.loadingError = true;
+      })["finally"](function () {
+        _this.loading = false;
+      });
+    },
+    submit: function submit() {
+      var _this2 = this;
+
+      this.submitting = true;
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.post('/api/vacationrequests', {
+        requestedDates: this.dates,
+        userID: this.user.id
+      }, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.user.api_token
+        }
+      }).then(function (response) {
+        console.log(response.data); //this.submitting = false
+
+        _this2.serverStatus = 200;
+        setTimeout(function () {
+          location.reload();
+        }, 2500);
+      })["catch"](function (e) {
+        console.log(e);
+        _this2.submitting = false;
+        _this2.serverStatus = e.response.status;
+      });
+    }
+  },
+  watch: {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminPendingRequestsModal.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AdminPendingRequestsModal.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AdminManageVacationRequestModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminManageVacationRequestModal */ "./resources/js/components/AdminManageVacationRequestModal.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    AdminManageVacationRequestModal: _AdminManageVacationRequestModal__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  props: {
+    user: {
+      type: Object,
+      required: true
+    },
+    pendingRequests: {
+      type: Array,
+      required: true
+    }
+  },
+  created: function created() {},
+  data: function data() {
+    return {
+      dialog: false
+    };
+  },
+  computed: {},
+  methods: {
+    // Do a little cleanup when dialog closes
+    closeDialog: function closeDialog() {
+      this.dialog = false;
+    }
+  },
+  watch: {}
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/EditUserModal.vue?vue&type=script&lang=js& ***!
@@ -2818,6 +3263,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2841,6 +3290,7 @@ __webpack_require__.r(__webpack_exports__);
       menu: false,
       minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'),
       maxDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
+      serverStatus: null,
       submitting: false
     };
   },
@@ -2854,6 +3304,33 @@ __webpack_require__.r(__webpack_exports__);
         datesWithMarkers.push(pr.date_requested);
       });
       return datesWithMarkers;
+    },
+    submissionFormatting: function submissionFormatting() {
+      switch (this.serverStatus) {
+        case 200:
+          return {
+            msg: 'You request has been submitted.',
+            color: 'success'
+          };
+
+        case 422:
+          return {
+            msg: 'This date has already been requested',
+            color: 'error'
+          };
+
+        case 500:
+          return {
+            msg: 'An unexpected error occurred.',
+            color: 'error'
+          };
+
+        default:
+          return {
+            msg: null,
+            color: 'dark'
+          };
+      }
     }
   },
   methods: {
@@ -2881,6 +3358,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     clearDates: function clearDates() {
       this.dates = [];
+      this.serverStatus = null;
     },
     // Based on the user's previous requests, return a different event color for the date picker
     previousRequestMarkerColor: function previousRequestMarkerColor(val) {
@@ -2913,10 +3391,16 @@ __webpack_require__.r(__webpack_exports__);
           'Authorization': 'Bearer ' + this.user.api_token
         }
       }).then(function (response) {
-        console.log(response.data);
-        _this.submitting = false;
+        console.log(response.data); //this.submitting = false
+
+        _this.serverStatus = 200;
+        setTimeout(function () {
+          location.reload();
+        }, 2500);
       })["catch"](function (e) {
         console.log(e);
+        _this.submitting = false;
+        _this.serverStatus = e.response.status;
       });
     }
   },
@@ -56836,6 +57320,749 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=template&id=b100d118&":
+/*!**********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=template&id=b100d118& ***!
+  \**********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "admin-manage-vacation-request-modal-container" },
+    [
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", scrollable: "", "max-width": "590px" },
+          scopedSlots: _vm._u([
+            {
+              key: "activator",
+              fn: function(ref) {
+                var on = ref.on
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._g(
+                      {
+                        staticClass: "mr-2",
+                        attrs: {
+                          color: _vm.iconProps.color,
+                          small: "",
+                          dark: "",
+                          icon: "",
+                          title: _vm.iconProps.title
+                        }
+                      },
+                      on
+                    ),
+                    [_c("v-icon", [_vm._v(_vm._s(_vm.iconProps.icon))])],
+                    1
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.dialog,
+            callback: function($$v) {
+              _vm.dialog = $$v
+            },
+            expression: "dialog"
+          }
+        },
+        [
+          _vm._v(" "),
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-toolbar",
+                { attrs: { dark: "" } },
+                [
+                  _c("v-toolbar-title", [_vm._v(_vm._s(_vm.iconProps.title))]),
+                  _vm._v(" "),
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { icon: "", dark: "" },
+                      on: { click: _vm.closeDialog }
+                    },
+                    [_c("v-icon", [_vm._v("mdi-close")])],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                { staticClass: "mt-4", staticStyle: { height: "500px" } },
+                [
+                  _c("p", [
+                    _vm._v(
+                      "Please confirm you wish to set this vacation request to "
+                    ),
+                    _c("strong", [_vm._v(_vm._s(_vm.action))]),
+                    _vm._v(" for "),
+                    _c("strong", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.vacationRequest.requester.first_name +
+                            " " +
+                            _vm.vacationRequest.requester.last_name
+                        )
+                      )
+                    ]),
+                    _vm._v(" on "),
+                    _c("strong", [
+                      _vm._v(
+                        _vm._s(
+                          _vm._f("slashdate")(
+                            _vm.vacationRequest.date_requested
+                          )
+                        )
+                      )
+                    ]),
+                    _vm._v(".")
+                  ]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v(
+                      "When you click CONFIRM, the requester will be notified by email. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email."
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("v-textarea", {
+                    attrs: { label: "Optional Note to Requester" },
+                    model: {
+                      value: _vm.note,
+                      callback: function($$v) {
+                        _vm.note = $$v
+                      },
+                      expression: "note"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "v-alert",
+                    {
+                      attrs: {
+                        color: _vm.submitResult.color,
+                        value: _vm.submitResult.complete,
+                        dark: ""
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(_vm.submitResult.msg) +
+                          "\n                    "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("v-divider"),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        color: "success darken-1",
+                        disabled: _vm.submitting,
+                        loading: _vm.submitting
+                      },
+                      on: { click: _vm.updateRequest }
+                    },
+                    [_vm._v("Confirm")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        color: "secondary",
+                        disabled: _vm.submitting,
+                        outlined: ""
+                      },
+                      on: { click: _vm.closeDialog }
+                    },
+                    [_vm._v("Cancel")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminOverviewCalendar.vue?vue&type=template&id=4f478e2a&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AdminOverviewCalendar.vue?vue&type=template&id=4f478e2a& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "admin-overview-calendar-container" },
+    [
+      _c(
+        "v-row",
+        [
+          _c(
+            "v-col",
+            { attrs: { cols: "12", sm: "6", lg: "4" } },
+            [
+              _c("v-date-picker", {
+                attrs: {
+                  "full-width": "",
+                  max: _vm.maxDate,
+                  "allowed-dates": _vm.allowedDates
+                },
+                on: { change: _vm.getRequestsByDate },
+                model: {
+                  value: _vm.date,
+                  callback: function($$v) {
+                    _vm.date = $$v
+                  },
+                  expression: "date"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-col",
+            { attrs: { cols: "12", sm: "6", lg: "8" } },
+            [
+              _c(
+                "v-row",
+                [
+                  _vm.loading
+                    ? _c(
+                        "v-col",
+                        { staticClass: "text-center", attrs: { cols: "12" } },
+                        [
+                          _c("v-progress-circular", {
+                            attrs: { indeterminate: "", color: "green" }
+                          })
+                        ],
+                        1
+                      )
+                    : _vm.loadingError
+                    ? _c(
+                        "v-col",
+                        { staticClass: "text-center", attrs: { cols: "12" } },
+                        [
+                          _c("v-alert", { attrs: { type: "error" } }, [
+                            _vm._v("There was a error retrieving the requests.")
+                          ])
+                        ],
+                        1
+                      )
+                    : _c(
+                        "v-col",
+                        { attrs: { cols: "12" } },
+                        [
+                          _vm.dateRequests.length == 0
+                            ? _c("v-alert", { attrs: { type: "info" } }, [
+                                _vm._v("No vacation requests on this date.")
+                              ])
+                            : [
+                                _c(
+                                  "v-card",
+                                  [
+                                    _c(
+                                      "v-card-title",
+                                      { staticClass: "title success--text" },
+                                      [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.vacationRequestsApproved.length
+                                          ) + " Approved"
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _vm.vacationRequestsApproved.length > 0
+                                      ? _c(
+                                          "v-card-text",
+                                          [
+                                            _c(
+                                              "v-list",
+                                              { attrs: { dense: "" } },
+                                              _vm._l(
+                                                _vm.vacationRequestsApproved,
+                                                function(req, index) {
+                                                  return _c(
+                                                    "v-list-item",
+                                                    {
+                                                      key:
+                                                        "req-approved-" + index
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "v-list-item-content",
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                            " +
+                                                              _vm._s(
+                                                                req.requester
+                                                                  .first_name +
+                                                                  " " +
+                                                                  req.requester
+                                                                    .last_name
+                                                              ) +
+                                                              "\n                                        "
+                                                          )
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "v-list-item-icon",
+                                                        [
+                                                          _c(
+                                                            "admin-manage-vacation-request-modal",
+                                                            {
+                                                              attrs: {
+                                                                action:
+                                                                  "pending",
+                                                                user: _vm.user,
+                                                                "vacation-request": req
+                                                              }
+                                                            }
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "admin-manage-vacation-request-modal",
+                                                            {
+                                                              attrs: {
+                                                                action: "deny",
+                                                                user: _vm.user,
+                                                                "vacation-request": req
+                                                              }
+                                                            }
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                }
+                                              ),
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "mt-2",
+                                    attrs: { outlined: "" }
+                                  },
+                                  [
+                                    _c(
+                                      "v-card-title",
+                                      { staticClass: "title warning--text" },
+                                      [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.vacationRequestsPending.length
+                                          ) + " Pending"
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _vm.vacationRequestsPending.length > 0
+                                      ? _c(
+                                          "v-card-text",
+                                          [
+                                            _c(
+                                              "v-list",
+                                              { attrs: { dense: "" } },
+                                              _vm._l(
+                                                _vm.vacationRequestsPending,
+                                                function(req, index) {
+                                                  return _c(
+                                                    "v-list-item",
+                                                    {
+                                                      key:
+                                                        "req-pending-" + index
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "v-list-item-content",
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                            " +
+                                                              _vm._s(
+                                                                req.requester
+                                                                  .first_name +
+                                                                  " " +
+                                                                  req.requester
+                                                                    .last_name
+                                                              ) +
+                                                              "\n                                        "
+                                                          )
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "v-list-item-icon",
+                                                        [
+                                                          _c(
+                                                            "admin-manage-vacation-request-modal",
+                                                            {
+                                                              attrs: {
+                                                                action:
+                                                                  "approve",
+                                                                user: _vm.user,
+                                                                "vacation-request": req
+                                                              }
+                                                            }
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "admin-manage-vacation-request-modal",
+                                                            {
+                                                              attrs: {
+                                                                action: "deny",
+                                                                user: _vm.user,
+                                                                "vacation-request": req
+                                                              }
+                                                            }
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                }
+                                              ),
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-card",
+                                  { staticClass: "mt-2" },
+                                  [
+                                    _c(
+                                      "v-card-title",
+                                      { staticClass: "title error--text" },
+                                      [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.vacationRequestsDenied.length
+                                          ) + " Denied"
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _vm.vacationRequestsDenied.length > 0
+                                      ? _c(
+                                          "v-card-text",
+                                          [
+                                            _c(
+                                              "v-list",
+                                              { attrs: { dense: "" } },
+                                              _vm._l(
+                                                _vm.vacationRequestsDenied,
+                                                function(req, index) {
+                                                  return _c(
+                                                    "v-list-item",
+                                                    {
+                                                      key: "req-denied-" + index
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "v-list-item-content",
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                            " +
+                                                              _vm._s(
+                                                                req.requester
+                                                                  .first_name +
+                                                                  " " +
+                                                                  req.requester
+                                                                    .last_name
+                                                              ) +
+                                                              "\n                                        "
+                                                          )
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "v-list-item-icon",
+                                                        [
+                                                          _c(
+                                                            "admin-manage-vacation-request-modal",
+                                                            {
+                                                              attrs: {
+                                                                action:
+                                                                  "pending",
+                                                                user: _vm.user,
+                                                                "vacation-request": req
+                                                              }
+                                                            }
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "admin-manage-vacation-request-modal",
+                                                            {
+                                                              attrs: {
+                                                                action:
+                                                                  "approve",
+                                                                user: _vm.user,
+                                                                "vacation-request": req
+                                                              }
+                                                            }
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                }
+                                              ),
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                )
+                              ]
+                        ],
+                        2
+                      )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminPendingRequestsModal.vue?vue&type=template&id=3521aaf4&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AdminPendingRequestsModal.vue?vue&type=template&id=3521aaf4& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "admin-manage-vacation-request-modal-container" },
+    [
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", scrollable: "", "max-width": "590px" },
+          scopedSlots: _vm._u([
+            {
+              key: "activator",
+              fn: function(ref) {
+                var on = ref.on
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._g({ attrs: { color: "info", text: "" } }, on),
+                    [_vm._v("View")]
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.dialog,
+            callback: function($$v) {
+              _vm.dialog = $$v
+            },
+            expression: "dialog"
+          }
+        },
+        [
+          _vm._v(" "),
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-toolbar",
+                { attrs: { dark: "" } },
+                [
+                  _c("v-toolbar-title", [
+                    _vm._v(
+                      _vm._s(_vm.pendingRequests.length) + " Pending Requests"
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { icon: "", dark: "" },
+                      on: { click: _vm.closeDialog }
+                    },
+                    [_c("v-icon", [_vm._v("mdi-close")])],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                { staticClass: "mt-4" },
+                [
+                  _c(
+                    "v-list",
+                    { attrs: { dense: "", "two-lines": "" } },
+                    _vm._l(_vm.pendingRequests, function(req, index) {
+                      return _c(
+                        "v-list-item",
+                        { key: "req-pending-attention-" + index },
+                        [
+                          _c("v-list-item-title", [
+                            _vm._v(
+                              _vm._s(_vm._f("slashdatedow")(req.date_requested))
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("v-list-item-subtitle", [
+                            _vm._v(
+                              _vm._s(
+                                req.requester.first_name +
+                                  " " +
+                                  req.requester.last_name
+                              )
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "v-list-item-icon",
+                            [
+                              _c("admin-manage-vacation-request-modal", {
+                                attrs: {
+                                  action: "pending",
+                                  user: _vm.user,
+                                  "vacation-request": req
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("admin-manage-vacation-request-modal", {
+                                attrs: {
+                                  action: "deny",
+                                  user: _vm.user,
+                                  "vacation-request": req
+                                }
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    }),
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&":
 /*!****************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d& ***!
@@ -57417,7 +58644,6 @@ var render = function() {
     "div",
     { staticClass: "vacation-container" },
     [
-      _vm._v("\n    " + _vm._s(_vm.restrictedDates) + "\n    "),
       _c(
         "v-row",
         [
@@ -57521,44 +58747,62 @@ var render = function() {
                             )
                           ]
                         )
-                      })
+                      }),
+                      _vm._v(" "),
+                      _vm.serverStatus
+                        ? [
+                            _c(
+                              "v-alert",
+                              {
+                                attrs: {
+                                  dense: "",
+                                  type: _vm.submissionFormatting.color
+                                }
+                              },
+                              [_vm._v(_vm._s(_vm.submissionFormatting.msg))]
+                            )
+                          ]
+                        : _vm._e()
                     ],
                     2
                   ),
                   _vm._v(" "),
                   _c("v-divider"),
                   _vm._v(" "),
-                  _c(
-                    "v-card-actions",
-                    [
-                      _c(
-                        "v-btn",
-                        {
-                          attrs: {
-                            color: "success",
-                            disabled: _vm.dates.length == 0,
-                            loading: _vm.submitting
-                          },
-                          on: { click: _vm.submit }
-                        },
-                        [_vm._v("Submit for review")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-btn",
-                        {
-                          attrs: {
-                            color: "secondary",
-                            outlined: "",
-                            disabled: _vm.dates.length == 0 || _vm.submitting
-                          },
-                          on: { click: _vm.clearDates }
-                        },
-                        [_vm._v("Reset")]
+                  _vm.serverStatus != 200
+                    ? _c(
+                        "v-card-actions",
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                color: "success",
+                                disabled: _vm.dates.length == 0,
+                                loading: _vm.submitting
+                              },
+                              on: { click: _vm.submit }
+                            },
+                            [_vm._v("Submit for review")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                color: "secondary",
+                                outlined: "",
+                                disabled:
+                                  _vm.dates.length == 0 || _vm.submitting
+                              },
+                              on: { click: _vm.clearDates }
+                            },
+                            [_vm._v("Reset")]
+                          )
+                        ],
+                        1
                       )
-                    ],
-                    1
-                  )
+                    : _vm._e()
                 ],
                 1
               ),
@@ -108953,6 +110197,12 @@ Vue.filter('slashdateabbrev', function (value) {
 
   return dt.format("M/D/YY");
 });
+Vue.filter('slashdatedow', function (value) {
+  if (!value) return '';
+  var dt = Vue.prototype.$moment(value); // moment JS
+
+  return dt.format("ddd, MM/DD/YYYY");
+});
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -108966,6 +110216,8 @@ Vue.filter('slashdateabbrev', function (value) {
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
 Vue.component('vacation-selection', __webpack_require__(/*! ./components/VacationSelection.vue */ "./resources/js/components/VacationSelection.vue")["default"]);
 Vue.component('system-users', __webpack_require__(/*! ./components/SystemUsers.vue */ "./resources/js/components/SystemUsers.vue")["default"]);
+Vue.component('admin-overview-calendar', __webpack_require__(/*! ./components/AdminOverviewCalendar.vue */ "./resources/js/components/AdminOverviewCalendar.vue")["default"]);
+Vue.component('admin-pending-requests-modal', __webpack_require__(/*! ./components/AdminPendingRequestsModal.vue */ "./resources/js/components/AdminPendingRequestsModal.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -109117,6 +110369,213 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddUserModal_vue_vue_type_template_id_5d6d1d6c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddUserModal_vue_vue_type_template_id_5d6d1d6c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminManageVacationRequestModal.vue":
+/*!*********************************************************************!*\
+  !*** ./resources/js/components/AdminManageVacationRequestModal.vue ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AdminManageVacationRequestModal_vue_vue_type_template_id_b100d118___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AdminManageVacationRequestModal.vue?vue&type=template&id=b100d118& */ "./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=template&id=b100d118&");
+/* harmony import */ var _AdminManageVacationRequestModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminManageVacationRequestModal.vue?vue&type=script&lang=js& */ "./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AdminManageVacationRequestModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AdminManageVacationRequestModal_vue_vue_type_template_id_b100d118___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AdminManageVacationRequestModal_vue_vue_type_template_id_b100d118___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/AdminManageVacationRequestModal.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminManageVacationRequestModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./AdminManageVacationRequestModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminManageVacationRequestModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=template&id=b100d118&":
+/*!****************************************************************************************************!*\
+  !*** ./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=template&id=b100d118& ***!
+  \****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminManageVacationRequestModal_vue_vue_type_template_id_b100d118___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./AdminManageVacationRequestModal.vue?vue&type=template&id=b100d118& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminManageVacationRequestModal.vue?vue&type=template&id=b100d118&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminManageVacationRequestModal_vue_vue_type_template_id_b100d118___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminManageVacationRequestModal_vue_vue_type_template_id_b100d118___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminOverviewCalendar.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/AdminOverviewCalendar.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AdminOverviewCalendar_vue_vue_type_template_id_4f478e2a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AdminOverviewCalendar.vue?vue&type=template&id=4f478e2a& */ "./resources/js/components/AdminOverviewCalendar.vue?vue&type=template&id=4f478e2a&");
+/* harmony import */ var _AdminOverviewCalendar_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminOverviewCalendar.vue?vue&type=script&lang=js& */ "./resources/js/components/AdminOverviewCalendar.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AdminOverviewCalendar_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AdminOverviewCalendar_vue_vue_type_template_id_4f478e2a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AdminOverviewCalendar_vue_vue_type_template_id_4f478e2a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/AdminOverviewCalendar.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminOverviewCalendar.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/AdminOverviewCalendar.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminOverviewCalendar_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./AdminOverviewCalendar.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminOverviewCalendar.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminOverviewCalendar_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminOverviewCalendar.vue?vue&type=template&id=4f478e2a&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/AdminOverviewCalendar.vue?vue&type=template&id=4f478e2a& ***!
+  \******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminOverviewCalendar_vue_vue_type_template_id_4f478e2a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./AdminOverviewCalendar.vue?vue&type=template&id=4f478e2a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminOverviewCalendar.vue?vue&type=template&id=4f478e2a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminOverviewCalendar_vue_vue_type_template_id_4f478e2a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminOverviewCalendar_vue_vue_type_template_id_4f478e2a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminPendingRequestsModal.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/components/AdminPendingRequestsModal.vue ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AdminPendingRequestsModal_vue_vue_type_template_id_3521aaf4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AdminPendingRequestsModal.vue?vue&type=template&id=3521aaf4& */ "./resources/js/components/AdminPendingRequestsModal.vue?vue&type=template&id=3521aaf4&");
+/* harmony import */ var _AdminPendingRequestsModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminPendingRequestsModal.vue?vue&type=script&lang=js& */ "./resources/js/components/AdminPendingRequestsModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AdminPendingRequestsModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AdminPendingRequestsModal_vue_vue_type_template_id_3521aaf4___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AdminPendingRequestsModal_vue_vue_type_template_id_3521aaf4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/AdminPendingRequestsModal.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminPendingRequestsModal.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/AdminPendingRequestsModal.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminPendingRequestsModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./AdminPendingRequestsModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminPendingRequestsModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminPendingRequestsModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminPendingRequestsModal.vue?vue&type=template&id=3521aaf4&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/AdminPendingRequestsModal.vue?vue&type=template&id=3521aaf4& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminPendingRequestsModal_vue_vue_type_template_id_3521aaf4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./AdminPendingRequestsModal.vue?vue&type=template&id=3521aaf4& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminPendingRequestsModal.vue?vue&type=template&id=3521aaf4&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminPendingRequestsModal_vue_vue_type_template_id_3521aaf4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminPendingRequestsModal_vue_vue_type_template_id_3521aaf4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
