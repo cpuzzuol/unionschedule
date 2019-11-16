@@ -12,10 +12,10 @@ class VacationLogger{
 
     }
 
-    public function logAction($requestID) {
+    public function logAction($requestID, $description = '') {
         $log = new RequestLog();
         $log->request_id = $requestID;
-        $log->description = 'Vacation date requested whooop!.';
+        $log->description = $description;
         $log->action_by = auth()->user()->id;
         $log->save();
     }

@@ -56,8 +56,7 @@ Vue.filter('slashdatedow', function (value) {
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('vacation-selection', require('./components/VacationSelection.vue').default);
 Vue.component('system-users', require('./components/SystemUsers.vue').default);
-Vue.component('admin-overview-calendar', require('./components/AdminOverviewCalendar.vue').default);
-Vue.component('admin-pending-requests-modal', require('./components/AdminPendingRequestsModal.vue').default);
+Vue.component('admin-home', require('./components/AdminHome.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

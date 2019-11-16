@@ -12,7 +12,7 @@
                 </v-toolbar>
                 <v-card-text style="height: 500px;" class="mt-4">
                     <p>Please confirm you wish to set this vacation request to <strong>{{ action }}</strong> for <strong>{{ vacationRequest.requester.first_name + ' ' + vacationRequest.requester.last_name }}</strong> on <strong>{{ vacationRequest.date_requested | slashdate }}</strong>.</p>
-                    <p>When you click CONFIRM, the requester will be notified by email. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email.</p>
+                    <p>Upon confirmation, the requester will be notified by email. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email.</p>
                     <v-textarea v-model="note" label="Optional Note to Requester"></v-textarea>
 <!--                    <v-form>-->
 <!--                        <v-row>-->
@@ -38,7 +38,7 @@
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
-                    <v-btn color="success darken-1" :disabled="submitting" :loading="submitting" @click="updateRequest">Confirm</v-btn>
+                    <v-btn :color="buttonProps.color" :disabled="submitting" :loading="submitting" @click="updateRequest">{{ buttonProps.text }}</v-btn>
                     <v-btn color="secondary" :disabled="submitting" outlined @click="closeDialog">Cancel</v-btn>
                 </v-card-actions>
             </v-card>
@@ -76,7 +76,19 @@
             submitting: false
 		}),
         computed: {
-            iconProps() {
+            buttonProps() {
+                switch(this.action) {
+                    case 'approve':
+                        return {text: 'Approve', color: 'success darken-1'}
+                    case 'deny':
+                        return {text: 'Deny', color: 'error darken-1'}
+                    case 'pending':
+                        return {text: 'Set Pending', color: 'warning darken-1'}
+                    default:
+                        return
+                }
+            },
+			iconProps() {
             	switch(this.action) {
                   case 'approve':
                   	return {icon: 'mdi-thumb-up', color: 'success darken-1', title: 'Approve Vacation Request'}
@@ -85,7 +97,7 @@
                   case 'pending':
                   	return {icon: 'mdi-account-clock', color: 'warning darken-1', title: 'Set Vacation Request to Pending'}
                   default:
-                    return {icon: 'mdi-help', color: 'warning darken-1', title: 'Vacation Request Manager'}
+                    return
                 }
             }
         },
@@ -98,31 +110,31 @@
             },
             updateRequest() {
                 this.submitting = true
-                Vue.prototype.$http.put(`/api/users/${this.user.id}`,
+                Vue.prototype.$http.put(`/api/vacationrequests/${this.vacationRequest.id}`,
                   {
-                  	user: this.userEditable,
-                    sendResetPasswordLink: this.sendResetPasswordLink
+                  	status: this.action,
+                    note: this.note
                   },
                   {
                   	headers: {
                   		'Accept': 'application/json',
-                        'Authorization': 'Bearer ' + this.apiToken
+                        'Authorization': 'Bearer ' + this.user.api_token
                     }
                   }
                 )
                 .then(response => {
                 	this.submitResult.color = 'success'
-                    this.submitResult.msg = 'User was updated'
+                    this.submitResult.msg = 'Update successful.'
 
                     // Close the dialog and update the parent view by $emit-ing after 2 seconds
                     setTimeout(() => {
                         this.closeDialog()
-                        this.$emit('user-updated')
+                        this.$emit('request-updated')
                     }, 2000)
                 })
                 .catch(e => {
                 	this.submitResult.color = 'error'
-                    this.submitResult.msg = 'There was a problem updating the user'
+                    this.submitResult.msg = 'There was a problem submitting the request.'
                 })
                 .finally(response => {
                 	this.submitResult.complete = true

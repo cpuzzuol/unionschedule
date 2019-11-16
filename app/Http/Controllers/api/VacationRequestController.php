@@ -124,7 +124,13 @@ class VacationRequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $status = $request->input('status'); // 'approve', 'deny', 'pending'
+        $note = $request->input('note');
+
+        // TODO: make logger message: 'Vacation date {status} (optional: with note: {note})'
+        $logger = new VacationLogger();
+        $logger->logAction($id);
+        return response()->json($status);
     }
 
     /**

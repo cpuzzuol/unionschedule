@@ -37,7 +37,7 @@
                                     </v-list>
                                 </v-card-text>
                             </v-card>
-                            <v-card class="mt-2" outlined>
+                            <v-card class="mt-2">
                                 <v-card-title class="title warning--text">{{ vacationRequestsPending.length }} Pending</v-card-title>
                                 <v-card-text v-if="vacationRequestsPending.length > 0">
                                     <v-list dense>

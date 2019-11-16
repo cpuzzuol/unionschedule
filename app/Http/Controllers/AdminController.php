@@ -26,16 +26,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $restrictedDates = DB::table('restricted_dates')
-            ->select('date')
-            ->whereYear('date', '=', date('Y'))
-            ->get();
-        // Get outstanding requests in the FUTURE only and get user info along with it
-        $outstandingRequests = VacationRequest::with('requester')->where([
-            ['decision', '=', 'pending'],
-            ['date_requested', '>=', date('Y-m-d')]
-        ])->orderBy('date_requested', 'ASC')->get();
-        return view('admin/index', ['outstandingRequests' => $outstandingRequests, 'restrictedDates' => $restrictedDates]);
+        return view('admin/index', []);
     }
 
     public function users() {

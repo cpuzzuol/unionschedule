@@ -17,8 +17,8 @@
                             <v-list-item-title>{{ req.date_requested | slashdatedow }}</v-list-item-title>
                             <v-list-item-subtitle>{{ req.requester.first_name + ' ' + req.requester.last_name }}</v-list-item-subtitle>
                             <v-list-item-icon>
-                                <admin-manage-vacation-request-modal action="pending" :user="user" :vacation-request="req"></admin-manage-vacation-request-modal>
-                                <admin-manage-vacation-request-modal action="deny" :user="user" :vacation-request="req"></admin-manage-vacation-request-modal>
+                                <admin-manage-vacation-request-modal action="approve" :user="user" :vacation-request="req" @request-updated="$emit('request-updated')"></admin-manage-vacation-request-modal>
+                                <admin-manage-vacation-request-modal action="deny" :user="user" :vacation-request="req" @request-updated="$emit('request-updated')"></admin-manage-vacation-request-modal>
                             </v-list-item-icon>
                         </v-list-item>
                     </v-list>
