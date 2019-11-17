@@ -164,8 +164,6 @@
                   }
                 )
                 .then(response => {
-                	console.log(response.data)
-                    //this.submitting = false
                     this.serverStatus = 200
                     setTimeout(() => {
                     	location.reload()

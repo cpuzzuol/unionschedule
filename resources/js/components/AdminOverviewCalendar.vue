@@ -30,8 +30,8 @@
                                                 {{ req.requester.first_name + ' ' + req.requester.last_name }}
                                             </v-list-item-content>
                                             <v-list-item-icon>
-                                                <admin-manage-vacation-request-modal action="pending" :user="user" :vacation-request="req"></admin-manage-vacation-request-modal>
-                                                <admin-manage-vacation-request-modal action="deny" :user="user" :vacation-request="req"></admin-manage-vacation-request-modal>
+                                                <admin-manage-vacation-request-modal action="pending" :user="user" :vacation-request="req" @request-updated="$emit('request-updated')"></admin-manage-vacation-request-modal>
+                                                <admin-manage-vacation-request-modal action="deny" :user="user" :vacation-request="req" @request-updated="$emit('request-updated')"></admin-manage-vacation-request-modal>
                                             </v-list-item-icon>
                                         </v-list-item>
                                     </v-list>
@@ -46,8 +46,8 @@
                                                 {{ req.requester.first_name + ' ' + req.requester.last_name }}
                                             </v-list-item-content>
                                             <v-list-item-icon>
-                                                <admin-manage-vacation-request-modal action="approve" :user="user" :vacation-request="req"></admin-manage-vacation-request-modal>
-                                                <admin-manage-vacation-request-modal action="deny" :user="user" :vacation-request="req"></admin-manage-vacation-request-modal>
+                                                <admin-manage-vacation-request-modal action="approve" :user="user" :vacation-request="req" @request-updated="$emit('request-updated')"></admin-manage-vacation-request-modal>
+                                                <admin-manage-vacation-request-modal action="deny" :user="user" :vacation-request="req" @request-updated="$emit('request-updated')"></admin-manage-vacation-request-modal>
                                             </v-list-item-icon>
                                         </v-list-item>
                                     </v-list>
@@ -62,8 +62,8 @@
                                                 {{ req.requester.first_name + ' ' + req.requester.last_name }}
                                             </v-list-item-content>
                                             <v-list-item-icon>
-                                                <admin-manage-vacation-request-modal action="pending" :user="user" :vacation-request="req"></admin-manage-vacation-request-modal>
-                                                <admin-manage-vacation-request-modal action="approve" :user="user" :vacation-request="req"></admin-manage-vacation-request-modal>
+                                                <admin-manage-vacation-request-modal action="pending" :user="user" :vacation-request="req" @request-updated="$emit('request-updated')"></admin-manage-vacation-request-modal>
+                                                <admin-manage-vacation-request-modal action="approve" :user="user" :vacation-request="req" @request-updated="$emit('request-updated')"></admin-manage-vacation-request-modal>
                                             </v-list-item-icon>
                                         </v-list-item>
                                     </v-list>
@@ -190,6 +190,9 @@
             }
         },
         watch: {
+            restrictedDates() {
+            	this.getRequestsByDate()
+            }
         }
 	}
 </script>

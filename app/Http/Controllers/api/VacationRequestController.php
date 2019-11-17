@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Helpers\VacationLoggers;
+use App\Helpers\VacationLogger;
 use App\Http\Controllers\Controller;
 use App\RequestLog;
 use App\VacationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class VacationRequestController extends Controller
 {
@@ -126,11 +127,106 @@ class VacationRequestController extends Controller
     {
         $status = $request->input('status'); // 'approve', 'deny', 'pending'
         $note = $request->input('note');
+        $sendEmail = $request->input('sendEmail');
 
-        // TODO: make logger message: 'Vacation date {status} (optional: with note: {note})'
+        if($status == '') {
+            return response()->json(['error'=>'Invalid params'], 400);
+        }
+
+        $vacationRequest = VacationRequest::find($id);
+        $requester = $vacationRequest->requester;
+        $description = 'Changed from ';
+        $origStatus = $vacationRequest->getOriginal('decision');
+
+        if($status == 'approve') {
+            // Either save all of the transactions, or save none of them (e.g. if one is unsuccessful)
+            try{
+                DB::beginTransaction();
+                $vacationRequest->decision = 'approved';
+                $vacationRequest->decision_date = date('Y-m-d H:i:s');
+                $vacationRequest->decision_by = auth()->user()->id;
+                $vacationRequest->save();
+
+                if($origStatus == 'denied') {
+                    $requester->vacation_days = $requester->vacation_days - 1;
+                    $requester->save();
+                }
+                DB::commit();
+                $description .= "$origStatus to approved";
+                $emailStatus = 'approved';
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['error'=>'Error performing this action.'], 400);
+            }
+        } else if($status == 'deny') {
+            // Either save all of the transactions, or save none of them (e.g. if one is unsuccessful)
+            try{
+                DB::beginTransaction();
+                $vacationRequest->decision = 'denied';
+                $vacationRequest->decision_date = date('Y-m-d H:i:s');
+                $vacationRequest->decision_by = auth()->user()->id;
+                $vacationRequest->save();
+
+                // If the original status was 'approved', add a day to the requester's bank.
+                if($origStatus == 'approved') {
+                    $requester->vacation_days = $requester->vacation_days + 1;
+                    $requester->save();
+                }
+                DB::commit();
+                $description .= "$origStatus to denied";
+                $emailStatus = 'denied';
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['error'=>'Error performing this action.'], 400);
+            }
+        } else if ($status == 'pending') {
+            // Either save all of the transactions, or save none of them (e.g. if one is unsuccessful)
+            try{
+                DB::beginTransaction();
+                $vacationRequest->decision = 'pending';
+                $vacationRequest->decision_date = null; // clear decision date
+                $vacationRequest->decision_by = null; // clear decision by
+                $vacationRequest->save();
+
+                if($origStatus == 'denied') {
+                    $requester->vacation_days = $requester->vacation_days - 1;
+                    $requester->save();
+                }
+                DB::commit();
+                $description .= "$origStatus to pending";
+                $emailStatus = 'pending';
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['error'=>'Error performing this action.'], 400);
+            }
+        } else {
+            return response()->json(['error'=>'Invalid action'], 400);
+        }
+
+        // Log the action (with optional note).
+        if($note != '') {
+            $description .= " with note: \"$note\"";
+        }
         $logger = new VacationLogger();
-        $logger->logAction($id);
-        return response()->json($status);
+        $response = $logger->logAction($id, $description);
+
+        // Email the user notification of update (optional)
+        if($sendEmail) {
+            $dateFormat = date('D, M j, Y', strtotime($vacationRequest->date_requested));
+            $userFirstName = auth()->user()->first_name;
+
+            $noteAttachment = '';
+            if($note != ''){
+                $noteAttachment = "$userFirstName has attached the following note: \"$note\"";
+            }
+
+            Mail::raw("Your vacation request for $dateFormat is $emailStatus. You have $requester->vacation_days available vacation days this year. $noteAttachment", function ($message) use ($requester){
+                $message->to($requester->email);
+                $message->subject('An update to your vacation request.');
+            });
+        }
+
+        return response()->json($response, 201);
     }
 
     /**

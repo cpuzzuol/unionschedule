@@ -12,22 +12,9 @@
                 </v-toolbar>
                 <v-card-text style="height: 500px;" class="mt-4">
                     <p>Please confirm you wish to set this vacation request to <strong>{{ action }}</strong> for <strong>{{ vacationRequest.requester.first_name + ' ' + vacationRequest.requester.last_name }}</strong> on <strong>{{ vacationRequest.date_requested | slashdate }}</strong>.</p>
-                    <p>Upon confirmation, the requester will be notified by email. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email.</p>
+                    <p>By default, the requester is notified when you make the decision. To disable email notification, flip the switch below. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email.</p>
                     <v-textarea v-model="note" label="Optional Note to Requester"></v-textarea>
-<!--                    <v-form>-->
-<!--                        <v-row>-->
-<!--                            <v-col cols="12" xs="12" sm="6">-->
-<!--                                <v-text-field-->
-<!--                                    v-model="userEditable.first_name"-->
-<!--                                    label="First Name*"-->
-<!--                                    filled-->
-<!--                                    :error-messages="errorsFirstName"-->
-<!--                                    @input="$v.userEditable.first_name.$touch()"-->
-<!--                                >-->
-<!--                                </v-text-field>-->
-<!--                            </v-col>-->
-<!--                        </v-row>-->
-<!--                    </v-form>-->
+                    <v-switch v-model="sendEmail" label="Email Decision to Requester"></v-switch>
                     <v-alert
                         :color="submitResult.color"
                         :value="submitResult.complete"
@@ -68,6 +55,7 @@
 		data: () => ({
             dialog: false,
             note: '',
+            sendEmail: true,
             submitResult: {
             	color: 'info',
                 complete: false,
@@ -113,7 +101,8 @@
                 Vue.prototype.$http.put(`/api/vacationrequests/${this.vacationRequest.id}`,
                   {
                   	status: this.action,
-                    note: this.note
+                    note: this.note,
+                    sendEmail: this.sendEmail
                   },
                   {
                   	headers: {

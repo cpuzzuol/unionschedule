@@ -2281,7 +2281,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _AdminPendingRequestsModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminPendingRequestsModal */ "./resources/js/components/AdminPendingRequestsModal.vue");
 /* harmony import */ var _AdminOverviewCalendar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AdminOverviewCalendar */ "./resources/js/components/AdminOverviewCalendar.vue");
-/* harmony import */ var _DataLoading__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./DataLoading */ "./resources/js/components/DataLoading.vue");
+/* harmony import */ var _AdminRestrictedDatesModal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AdminRestrictedDatesModal */ "./resources/js/components/AdminRestrictedDatesModal.vue");
+/* harmony import */ var _DataLoading__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DataLoading */ "./resources/js/components/DataLoading.vue");
 //
 //
 //
@@ -2330,15 +2331,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    DataLoading: _DataLoading__WEBPACK_IMPORTED_MODULE_3__["default"],
+    DataLoading: _DataLoading__WEBPACK_IMPORTED_MODULE_4__["default"],
     AdminOverviewCalendar: _AdminOverviewCalendar__WEBPACK_IMPORTED_MODULE_2__["default"],
-    AdminPendingRequestsModal: _AdminPendingRequestsModal__WEBPACK_IMPORTED_MODULE_1__["default"]
+    AdminPendingRequestsModal: _AdminPendingRequestsModal__WEBPACK_IMPORTED_MODULE_1__["default"],
+    AdminRestrictedDatesModal: _AdminRestrictedDatesModal__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   props: {
     user: {
@@ -2353,6 +2357,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      allVacationRequests: [],
       loading: false,
       loadError: false,
       outstandingRequests: [],
@@ -2372,6 +2377,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this.outstandingRequests = response.data.outstandingRequests;
         _this.restrictedDates = response.data.restrictedDates;
+        _this.allVacationRequests = response.data.allVacationRequests;
       })["catch"](function (e) {
         _this.loadError = true;
         console.log(e);
@@ -2430,19 +2436,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2464,6 +2457,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       dialog: false,
       note: '',
+      sendEmail: true,
       submitResult: {
         color: 'info',
         complete: false,
@@ -2538,7 +2532,8 @@ __webpack_require__.r(__webpack_exports__);
       this.submitting = true;
       vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.put("/api/vacationrequests/".concat(this.vacationRequest.id), {
         status: this.action,
-        note: this.note
+        note: this.note,
+        sendEmail: this.sendEmail
       }, {
         headers: {
           'Accept': 'application/json',
@@ -2770,7 +2765,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
-  watch: {}
+  watch: {
+    restrictedDates: function restrictedDates() {
+      this.getRequestsByDate();
+    }
+  }
 });
 
 /***/ }),
@@ -2843,6 +2842,258 @@ __webpack_require__.r(__webpack_exports__);
     // Do a little cleanup when dialog closes
     closeDialog: function closeDialog() {
       this.dialog = false;
+    }
+  },
+  watch: {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AdminManageVacationRequestModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminManageVacationRequestModal */ "./resources/js/components/AdminManageVacationRequestModal.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {},
+  props: {
+    allVacationRequests: {
+      type: Array,
+      required: true
+    },
+    restrictedDates: {
+      type: Array,
+      required: true
+    },
+    user: {
+      type: Object,
+      required: true
+    }
+  },
+  created: function created() {},
+  data: function data() {
+    return {
+      bulkActions: 'nothing',
+      dialog: false,
+      minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'),
+      maxDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
+      newRestrictedDates: [],
+      showExistingRequestOptions: false,
+      serverStatus: null,
+      submitting: false
+    };
+  },
+  computed: {
+    // Of the unrestricted dates, return any that have vacation requests associated with them
+    datesWithExistingRequests: function datesWithExistingRequests() {
+      var datesWithMarkers = [];
+      this.allVacationRequests.forEach(function (vr) {
+        datesWithMarkers.push(vr.date_requested);
+      });
+      return datesWithMarkers;
+    },
+    submissionFormatting: function submissionFormatting() {
+      switch (this.serverStatus) {
+        case 200:
+          return {
+            msg: 'Restricted dates have been set.',
+            color: 'success'
+          };
+
+        case 422:
+          return {
+            msg: 'This date has already been restricted',
+            color: 'error'
+          };
+
+        case 500:
+          return {
+            msg: 'An unexpected error occurred.',
+            color: 'error'
+          };
+
+        default:
+          return {
+            msg: null,
+            color: 'dark'
+          };
+      }
+    }
+  },
+  methods: {
+    allowedDates: function allowedDates(val) {
+      var dt = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment(val, 'YYYY-MM-DD'); // Weekends not allowed
+
+      if (dt.weekday() == 0 || dt.weekday() == 6) {
+        return false;
+      } // Loop through restricted dates
+
+
+      var requestable = true;
+      this.restrictedDates.forEach(function (rd) {
+        if (rd.date == val) {
+          requestable = false;
+        }
+      });
+      return requestable;
+    },
+    clearDates: function clearDates() {
+      this.newRestrictedDates = [], this.showExistingRequestOptions = false;
+    },
+    // Do a little cleanup when dialog closes
+    closeDialog: function closeDialog() {
+      this.dialog = false;
+    },
+    // Check to see if there are existing vacation requests for any dates selected as new restrictions.
+    doRequestsExistForDates: function doRequestsExistForDates() {
+      var _this = this;
+
+      var existingRequests = false;
+      this.newRestrictedDates.forEach(function (rd) {
+        var match = _this.allVacationRequests.find(function (ar) {
+          return ar.date_requested == rd;
+        });
+
+        if (match) {
+          existingRequests = true;
+        }
+      });
+      return existingRequests;
+    },
+    toggleNewRestriction: function toggleNewRestriction() {
+      this.showExistingRequestOptions = this.doRequestsExistForDates();
+    },
+    removeNewRestriction: function removeNewRestriction(date) {
+      this.newRestrictedDates.splice(this.newRestrictedDates.indexOf(date), 1); // this needs to be first
+
+      this.showExistingRequestOptions = this.doRequestsExistForDates();
+    },
+    removeRestriction: function removeRestriction(dateObj) {
+      if (confirm("Are you sure you want to remove ".concat(this.$options.filters.slashdatedow(dateObj.date), " from the list of rectricted dates?"))) {}
+    },
+    submitRestrictions: function submitRestrictions() {
+      var _this2 = this;
+
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.post('/api/admin/addrestricteddates', {
+        newRestrictedDates: this.newRestrictedDates,
+        bulkActions: this.bulkActions
+      }, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.user.api_token
+        }
+      }).then(function (response) {
+        console.log(response.data);
+        _this2.serverStatus = 200;
+
+        _this2.$emit('restriction-updated');
+      })["catch"](function (e) {
+        console.log(e);
+        _this2.submitting = false;
+        _this2.serverStatus = e.response.status;
+      });
     }
   },
   watch: {}
@@ -3684,8 +3935,6 @@ __webpack_require__.r(__webpack_exports__);
           'Authorization': 'Bearer ' + this.user.api_token
         }
       }).then(function (response) {
-        console.log(response.data); //this.submitting = false
-
         _this.serverStatus = 200;
         setTimeout(function () {
           location.reload();
@@ -57744,9 +57993,15 @@ var render = function() {
                           ]),
                           _vm._v(" Dates are restricted from being requested"),
                           _c("br"),
-                          _c("v-btn", { attrs: { text: "", color: "info" } }, [
-                            _vm._v("Manage")
-                          ])
+                          _vm._v(" "),
+                          _c("admin-restricted-dates-modal", {
+                            attrs: {
+                              "all-vacation-requests": _vm.allVacationRequests,
+                              "restricted-dates": _vm.restrictedDates,
+                              user: _vm.user
+                            },
+                            on: { "restriction-updated": _vm.getData }
+                          })
                         ],
                         1
                       )
@@ -57779,7 +58034,8 @@ var render = function() {
                             attrs: {
                               "restricted-dates": _vm.restrictedDates,
                               user: _vm.user
-                            }
+                            },
+                            on: { "request-updated": _vm.getData }
                           })
                         ],
                         1
@@ -57926,7 +58182,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("p", [
                     _vm._v(
-                      "Upon confirmation, the requester will be notified by email. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email."
+                      "By default, the requester is notified when you make the decision. To disable email notification, flip the switch below. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email."
                     )
                   ]),
                   _vm._v(" "),
@@ -57941,6 +58197,17 @@ var render = function() {
                     }
                   }),
                   _vm._v(" "),
+                  _c("v-switch", {
+                    attrs: { label: "Email Decision to Requester" },
+                    model: {
+                      value: _vm.sendEmail,
+                      callback: function($$v) {
+                        _vm.sendEmail = $$v
+                      },
+                      expression: "sendEmail"
+                    }
+                  }),
+                  _vm._v(" "),
                   _c(
                     "v-alert",
                     {
@@ -57952,9 +58219,9 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\n                        " +
+                        "\n                    " +
                           _vm._s(_vm.submitResult.msg) +
-                          "\n                    "
+                          "\n                "
                       )
                     ]
                   )
@@ -58155,6 +58422,15 @@ var render = function() {
                                                                   "pending",
                                                                 user: _vm.user,
                                                                 "vacation-request": req
+                                                              },
+                                                              on: {
+                                                                "request-updated": function(
+                                                                  $event
+                                                                ) {
+                                                                  return _vm.$emit(
+                                                                    "request-updated"
+                                                                  )
+                                                                }
                                                               }
                                                             }
                                                           ),
@@ -58166,6 +58442,15 @@ var render = function() {
                                                                 action: "deny",
                                                                 user: _vm.user,
                                                                 "vacation-request": req
+                                                              },
+                                                              on: {
+                                                                "request-updated": function(
+                                                                  $event
+                                                                ) {
+                                                                  return _vm.$emit(
+                                                                    "request-updated"
+                                                                  )
+                                                                }
                                                               }
                                                             }
                                                           )
@@ -58248,6 +58533,15 @@ var render = function() {
                                                                   "approve",
                                                                 user: _vm.user,
                                                                 "vacation-request": req
+                                                              },
+                                                              on: {
+                                                                "request-updated": function(
+                                                                  $event
+                                                                ) {
+                                                                  return _vm.$emit(
+                                                                    "request-updated"
+                                                                  )
+                                                                }
                                                               }
                                                             }
                                                           ),
@@ -58259,6 +58553,15 @@ var render = function() {
                                                                 action: "deny",
                                                                 user: _vm.user,
                                                                 "vacation-request": req
+                                                              },
+                                                              on: {
+                                                                "request-updated": function(
+                                                                  $event
+                                                                ) {
+                                                                  return _vm.$emit(
+                                                                    "request-updated"
+                                                                  )
+                                                                }
                                                               }
                                                             }
                                                           )
@@ -58340,6 +58643,15 @@ var render = function() {
                                                                   "pending",
                                                                 user: _vm.user,
                                                                 "vacation-request": req
+                                                              },
+                                                              on: {
+                                                                "request-updated": function(
+                                                                  $event
+                                                                ) {
+                                                                  return _vm.$emit(
+                                                                    "request-updated"
+                                                                  )
+                                                                }
                                                               }
                                                             }
                                                           ),
@@ -58352,6 +58664,15 @@ var render = function() {
                                                                   "approve",
                                                                 user: _vm.user,
                                                                 "vacation-request": req
+                                                              },
+                                                              on: {
+                                                                "request-updated": function(
+                                                                  $event
+                                                                ) {
+                                                                  return _vm.$emit(
+                                                                    "request-updated"
+                                                                  )
+                                                                }
                                                               }
                                                             }
                                                           )
@@ -58535,6 +58856,394 @@ var render = function() {
                         1
                       )
                     }),
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=template&id=562c2212&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=template&id=562c2212& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "admin-restricted-dates-modal-container" },
+    [
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", scrollable: "", "max-width": "590px" },
+          scopedSlots: _vm._u([
+            {
+              key: "activator",
+              fn: function(ref) {
+                var on = ref.on
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._g({ attrs: { color: "info", text: "" } }, on),
+                    [_vm._v("Manage")]
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.dialog,
+            callback: function($$v) {
+              _vm.dialog = $$v
+            },
+            expression: "dialog"
+          }
+        },
+        [
+          _vm._v(" "),
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-toolbar",
+                { attrs: { dark: "" } },
+                [
+                  _c("v-toolbar-title", [
+                    _vm._v(
+                      _vm._s(_vm.restrictedDates.length) + " Restricted Dates"
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { icon: "", dark: "" },
+                      on: { click: _vm.closeDialog }
+                    },
+                    [_c("v-icon", [_vm._v("mdi-close")])],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                { staticClass: "mt-4" },
+                [
+                  _c(
+                    "v-list",
+                    { attrs: { dense: "" } },
+                    [
+                      _c("v-subheader", [_vm._v("Restricted Dates")]),
+                      _vm._v(" "),
+                      _vm._l(_vm.restrictedDates, function(dt, index) {
+                        return _c(
+                          "v-list-item",
+                          { key: "req-pending-attention-" + index },
+                          [
+                            _c("v-list-item-content", [
+                              _vm._v(_vm._s(_vm._f("slashdatedow")(dt.date)))
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "v-list-item-icon",
+                              [
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { color: "error", icon: "" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.removeRestriction(dt)
+                                      }
+                                    }
+                                  },
+                                  [_c("v-icon", [_vm._v("mdi-delete")])],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      })
+                    ],
+                    2
+                  ),
+                  _vm._v(" "),
+                  _c("v-divider"),
+                  _vm._v(" "),
+                  _c(
+                    "v-row",
+                    [
+                      _c(
+                        "v-col",
+                        { attrs: { cols: "12" } },
+                        [
+                          _c("v-date-picker", {
+                            attrs: {
+                              multiple: "",
+                              "full-width": "",
+                              min: _vm.minDate,
+                              max: _vm.maxDate,
+                              "allowed-dates": _vm.allowedDates,
+                              events: _vm.datesWithExistingRequests,
+                              "event-color": "warning"
+                            },
+                            on: { input: _vm.toggleNewRestriction },
+                            model: {
+                              value: _vm.newRestrictedDates,
+                              callback: function($$v) {
+                                _vm.newRestrictedDates = $$v
+                              },
+                              expression: "newRestrictedDates"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("p", [
+                            _c("span", { staticClass: "warning--text" }, [
+                              _vm._v("●")
+                            ]),
+                            _vm._v(
+                              " = vacation requests submitted for this date.\n                        "
+                            )
+                          ])
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-col",
+                        { attrs: { cols: "12" } },
+                        [
+                          _c(
+                            "v-card",
+                            { staticClass: "mx-auto", attrs: { shaped: "" } },
+                            [
+                              _c("v-card-title", [
+                                _vm._v("New restricted dates")
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "v-card-text",
+                                [
+                                  _vm.newRestrictedDates.length == 0
+                                    ? _c("p", [
+                                        _vm._v(
+                                          "Select one or multiple dates from the picker..."
+                                        )
+                                      ])
+                                    : _c("p", [
+                                        _c("strong", [
+                                          _vm._v("Selected dates:")
+                                        ])
+                                      ]),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.newRestrictedDates, function(
+                                    dt,
+                                    index
+                                  ) {
+                                    return _c(
+                                      "v-chip",
+                                      {
+                                        key: "selected-date-" + index,
+                                        staticClass: "mr-1 mb-2",
+                                        attrs: {
+                                          close: "",
+                                          color: "info",
+                                          "text-color": "white"
+                                        },
+                                        on: {
+                                          "click:close": function($event) {
+                                            return _vm.removeNewRestriction(dt)
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                                    " +
+                                            _vm._s(_vm._f("slashdate")(dt)) +
+                                            "\n                                "
+                                        )
+                                      ]
+                                    )
+                                  }),
+                                  _vm._v(" "),
+                                  _vm.showExistingRequestOptions
+                                    ? [
+                                        _c(
+                                          "v-row",
+                                          [
+                                            _c(
+                                              "v-col",
+                                              { attrs: { cols: "12" } },
+                                              [
+                                                _c("p", [
+                                                  _vm._v(
+                                                    "One or more dates you are trying to restrict have approved or pending vacation requests. Choose what you would like to do with those requests:"
+                                                  )
+                                                ]),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-radio-group",
+                                                  {
+                                                    model: {
+                                                      value: _vm.bulkActions,
+                                                      callback: function($$v) {
+                                                        _vm.bulkActions = $$v
+                                                      },
+                                                      expression: "bulkActions"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("v-radio", {
+                                                      attrs: {
+                                                        label: "Do Nothing",
+                                                        value: "nothing"
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c("v-radio", {
+                                                      attrs: {
+                                                        label:
+                                                          "Deny Pending Only",
+                                                        value: "denyPending"
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c("v-radio", {
+                                                      attrs: {
+                                                        label:
+                                                          "Approve Pending Only",
+                                                        value: "approvePending"
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c("v-radio", {
+                                                      attrs: {
+                                                        label: "Deny All",
+                                                        value: "denyAll"
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c("v-radio", {
+                                                      attrs: {
+                                                        label: "Approve All",
+                                                        value: "approveAll"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      ]
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.serverStatus
+                                    ? [
+                                        _c(
+                                          "v-alert",
+                                          {
+                                            attrs: {
+                                              dense: "",
+                                              type:
+                                                _vm.submissionFormatting.color
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.submissionFormatting.msg
+                                              )
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    : _vm._e()
+                                ],
+                                2
+                              ),
+                              _vm._v(" "),
+                              _c("v-divider"),
+                              _vm._v(" "),
+                              _vm.serverStatus != 200
+                                ? _c(
+                                    "v-card-actions",
+                                    [
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            color: "success",
+                                            disabled:
+                                              _vm.newRestrictedDates.length ==
+                                              0,
+                                            loading: _vm.submitting
+                                          },
+                                          on: { click: _vm.submitRestrictions }
+                                        },
+                                        [_vm._v("Submit restrictions")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            color: "secondary",
+                                            outlined: "",
+                                            disabled:
+                                              _vm.newRestrictedDates.length ==
+                                                0 || _vm.submitting
+                                          },
+                                          on: { click: _vm.clearDates }
+                                        },
+                                        [_vm._v("Reset")]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                : _vm._e()
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
                     1
                   )
                 ],
@@ -111199,6 +111908,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminPendingRequestsModal_vue_vue_type_template_id_3521aaf4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminPendingRequestsModal_vue_vue_type_template_id_3521aaf4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminRestrictedDatesModal.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/components/AdminRestrictedDatesModal.vue ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AdminRestrictedDatesModal_vue_vue_type_template_id_562c2212___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AdminRestrictedDatesModal.vue?vue&type=template&id=562c2212& */ "./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=template&id=562c2212&");
+/* harmony import */ var _AdminRestrictedDatesModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminRestrictedDatesModal.vue?vue&type=script&lang=js& */ "./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AdminRestrictedDatesModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AdminRestrictedDatesModal_vue_vue_type_template_id_562c2212___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AdminRestrictedDatesModal_vue_vue_type_template_id_562c2212___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/AdminRestrictedDatesModal.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminRestrictedDatesModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./AdminRestrictedDatesModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminRestrictedDatesModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=template&id=562c2212&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=template&id=562c2212& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminRestrictedDatesModal_vue_vue_type_template_id_562c2212___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./AdminRestrictedDatesModal.vue?vue&type=template&id=562c2212& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminRestrictedDatesModal.vue?vue&type=template&id=562c2212&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminRestrictedDatesModal_vue_vue_type_template_id_562c2212___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminRestrictedDatesModal_vue_vue_type_template_id_562c2212___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

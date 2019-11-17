@@ -30,4 +30,5 @@ Route::post('users/register', 'api\UserController@register');
 Route::get('vacationrequestsbydate/{date}', 'api\VacationRequestController@requestsByDate');
 
 Route::put('vacationrequeststatus', 'api\VacationRequestController@updateRequestStatus');
-Route::get('admin/homedata', 'api\AdminController@homedata');
+Route::get('admin/homedata', 'api\AdminController@getHomeData');
+Route::post('admin/addrestricteddates', 'api\AdminController@addRestrictedDates');

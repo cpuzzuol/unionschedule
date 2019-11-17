@@ -25,7 +25,8 @@
                     <v-card>
                         <v-card-title>Restricted Dates</v-card-title>
                         <v-card-text>
-                            <span class="error--text"><strong>{{ restrictedDates.length }}</strong></span> Dates are restricted from being requested<br><v-btn text color="info">Manage</v-btn>
+                            <span class="error--text"><strong>{{ restrictedDates.length }}</strong></span> Dates are restricted from being requested<br>
+                            <admin-restricted-dates-modal :all-vacation-requests="allVacationRequests" :restricted-dates="restrictedDates" :user="user" @restriction-updated="getData"></admin-restricted-dates-modal>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -38,7 +39,7 @@
                         <v-card-title>Vacation Overview</v-card-title>
                         <v-card-text>
                             <p>Click on a date to view the vacation requests for that date.</p>
-                            <admin-overview-calendar :restricted-dates="restrictedDates" :user="user"></admin-overview-calendar>
+                            <admin-overview-calendar :restricted-dates="restrictedDates" :user="user" @request-updated="getData"></admin-overview-calendar>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -50,10 +51,11 @@
     import Vue from 'vue'
     import AdminPendingRequestsModal from "./AdminPendingRequestsModal"
     import AdminOverviewCalendar from "./AdminOverviewCalendar"
-    import DataLoading from "./DataLoading";
+    import AdminRestrictedDatesModal from "./AdminRestrictedDatesModal"
+    import DataLoading from "./DataLoading"
 
 	export default {
-        components: { DataLoading, AdminOverviewCalendar, AdminPendingRequestsModal },
+        components: { DataLoading, AdminOverviewCalendar, AdminPendingRequestsModal, AdminRestrictedDatesModal },
         props: {
             user: {
         		type: Object,
@@ -66,6 +68,7 @@
             this.getData()
         },
 		data: () => ({
+          allVacationRequests: [],
           loading: false,
           loadError: false,
           outstandingRequests: [],
@@ -86,6 +89,7 @@
                 .then(response => {
                 	this.outstandingRequests = response.data.outstandingRequests
                     this.restrictedDates = response.data.restrictedDates
+                    this.allVacationRequests = response.data.allVacationRequests
                 })
                 .catch(e => {
                 	this.loadError = true

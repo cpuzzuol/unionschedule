@@ -17,7 +17,10 @@ class VacationLogger{
         $log->request_id = $requestID;
         $log->description = $description;
         $log->action_by = auth()->user()->id;
-        $log->save();
+        if($log->save()) {
+            return $log->description;
+        }
+        return 'Error saving log.';
     }
 
     public function logVacationDayAllotmentChange($affectedUser, $origDays, $newDays) {
