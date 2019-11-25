@@ -6,16 +6,16 @@
             </template>
             <v-card>
                 <v-toolbar dark>
-                    <v-toolbar-title>{{ restrictedDates.length }} Restricted Dates</v-toolbar-title>
+                    <v-toolbar-title>Restricted Dates Management</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn icon dark @click="closeDialog"><v-icon>mdi-close</v-icon></v-btn>
                 </v-toolbar>
                 <v-card-text class="mt-4">
                     <v-list dense>
-                        <v-subheader>Restricted Dates</v-subheader>
+                        <v-subheader>{{ restrictedDates.length }} Restricted Dates This Year</v-subheader>
                         <v-list-item v-for="(dt, index) in restrictedDates" :key="'req-pending-attention-' + index">
                             <v-list-item-content>{{ dt.date | slashdatedow }}</v-list-item-content>
-                            <v-list-item-icon>
+                            <v-list-item-icon v-if="isFutureDate(dt.date)">
                                 <v-btn @click="removeRestriction(dt)" color="error" icon><v-icon>mdi-delete</v-icon></v-btn>
                             </v-list-item-icon>
                         </v-list-item>
@@ -67,8 +67,8 @@
                                                     <v-radio label="Deny Pending Only" value="denyPending"></v-radio>
                                                     <v-radio label="Approve Pending Only" value="approvePending"></v-radio>
                                                     <v-radio label="Deny All" value="denyAll"></v-radio>
-                                                    <v-radio label="Approve All" value="approveAll"></v-radio>
                                                 </v-radio-group>
+                                                <v-switch v-model="notifyOfBulk" label="Email affected people"></v-switch>
                                             </v-col>
                                         </v-row>
                                     </template>
@@ -79,7 +79,7 @@
                                     </template>
                                 </v-card-text>
                                 <v-divider></v-divider>
-                                <v-card-actions v-if="serverStatus != 200">
+                                <v-card-actions>
                                     <v-btn color="success" :disabled="newRestrictedDates.length == 0" :loading="submitting" @click="submitRestrictions">Submit restrictions</v-btn>
                                     <v-btn color="secondary" outlined :disabled="newRestrictedDates.length == 0 || submitting" @click="clearDates">Reset</v-btn>
                                 </v-card-actions>
@@ -118,6 +118,7 @@
             minDate: Vue.prototype.$moment().format('YYYY-MM-DD'),
             maxDate: Vue.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
             newRestrictedDates: [],
+            notifyOfBulk: true,
             showExistingRequestOptions: false,
             serverStatus: null,
             submitting: false
@@ -181,6 +182,12 @@
                 })
 			    return existingRequests
             },
+            isFutureDate(date) {
+                const today = Vue.prototype.$moment()
+                const dateInQuestion = Vue.prototype.$moment(date, 'YYYY-MM-DD')
+
+                return dateInQuestion.isAfter(today)
+            },
             toggleNewRestriction() {
                 this.showExistingRequestOptions = this.doRequestsExistForDates()
             },
@@ -190,14 +197,29 @@
             },
             removeRestriction(dateObj) {
 				if(confirm(`Are you sure you want to remove ${this.$options.filters.slashdatedow(dateObj.date)} from the list of rectricted dates?`)){
-
+                    Vue.prototype.$http.delete(`/api/restricteddates/${dateObj.date}`,
+                        {
+                            headers: {
+                                'Accept': 'application/json',
+                                'Authorization': 'Bearer ' + this.user.api_token
+                            }
+                        }
+                    )
+                    .then(response => {
+                        this.$emit('restriction-updated')
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
                 }
             },
             submitRestrictions() {
-                Vue.prototype.$http.post('/api/admin/addrestricteddates',
+            	this.submitting = true
+                Vue.prototype.$http.post('/api/restricteddates',
                     {
                         newRestrictedDates: this.newRestrictedDates,
-                        bulkActions: this.bulkActions
+                        bulkActions: this.bulkActions,
+                        notifyOfBulk: this.notifyOfBulk
                     },
                     {
                         headers: {
@@ -209,12 +231,18 @@
                 .then(response => {
                     console.log(response.data)
                     this.serverStatus = 200
+                    setTimeout(() => {
+                    	this.serverStatus = ''
+                        this.clearDates()
+                    }, 2500)
                     this.$emit('restriction-updated')
                 })
                 .catch(e => {
                     console.log(e)
-                    this.submitting = false
                     this.serverStatus = e.response.status
+                })
+                .finally(() => {
+                    this.submitting = false
                 })
             }
         },

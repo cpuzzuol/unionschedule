@@ -30,7 +30,7 @@ class AdminController extends Controller
     public function getHomeData()
     {
         // 'with' vacationRequests is set as a 'hasMany' relationship inside the RestrictedDate model.
-        $response['restrictedDates'] = RestrictedDate::select('date')->whereYear('date', '=', date('Y'))->get();
+        $response['restrictedDates'] = RestrictedDate::select('date')->whereYear('date', '=', date('Y'))->orderBy('date', 'ASC')->get();
 
         // Requests for the year
         $response['allVacationRequests'] = DB::table('vacation_requests')
@@ -47,9 +47,5 @@ class AdminController extends Controller
         ])->orderBy('date_requested', 'ASC')->get();
 
         return response()->json($response);
-    }
-
-    public function addRestrictedDates(Request $request) {
-        return response()->json('HIYA!', 201);
     }
 }

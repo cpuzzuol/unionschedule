@@ -19,6 +19,7 @@
                         <v-alert type="error">There was a error retrieving the requests.</v-alert>
                     </v-col>
                     <v-col v-else cols="12">
+                        <v-alert v-if="isRestrictedDate" type="warning">Managers are restricted from booking on this date.</v-alert>
                         <v-alert v-if="dateRequests.length == 0" type="info">No vacation requests on this date.</v-alert>
                         <template v-else>
                             <v-card>
@@ -106,6 +107,11 @@
             submitting: false
 		}),
         computed: {
+        	isRestrictedDate() {
+        		return this.restrictedDates.find(rd => {
+        			return rd.date == this.date
+                })
+            },
 			vacationRequestsApproved() {
                 return this.dateRequests.filter(dr => {
                 	return dr.decision == 'approved'
@@ -131,11 +137,11 @@
                 }
                 // Loop through restricted dates
                 let requestable = true
-                this.restrictedDates.forEach(rd => {
-                	if(rd.date == val) {
-                        requestable = false
-                    }
-                })
+                // this.restrictedDates.forEach(rd => {
+                // 	if(rd.date == val) {
+                //         requestable = false
+                //     }
+                // })
                 return requestable
             },
             getRequestsByDate() {

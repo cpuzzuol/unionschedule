@@ -2654,6 +2654,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2687,6 +2688,13 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
+    isRestrictedDate: function isRestrictedDate() {
+      var _this = this;
+
+      return this.restrictedDates.find(function (rd) {
+        return rd.date == _this.date;
+      });
+    },
     vacationRequestsApproved: function vacationRequestsApproved() {
       return this.dateRequests.filter(function (dr) {
         return dr.decision == 'approved';
@@ -2712,16 +2720,16 @@ __webpack_require__.r(__webpack_exports__);
       } // Loop through restricted dates
 
 
-      var requestable = true;
-      this.restrictedDates.forEach(function (rd) {
-        if (rd.date == val) {
-          requestable = false;
-        }
-      });
+      var requestable = true; // this.restrictedDates.forEach(rd => {
+      // 	if(rd.date == val) {
+      //         requestable = false
+      //     }
+      // })
+
       return requestable;
     },
     getRequestsByDate: function getRequestsByDate() {
-      var _this = this;
+      var _this2 = this;
 
       this.loading = true;
       vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.get("/api/vacationrequestsbydate/".concat(this.date), {
@@ -2730,17 +2738,17 @@ __webpack_require__.r(__webpack_exports__);
           'Authorization': 'Bearer ' + this.user.api_token
         }
       }).then(function (response) {
-        _this.dateRequests = response.data;
-        _this.loadingError = false;
+        _this2.dateRequests = response.data;
+        _this2.loadingError = false;
       })["catch"](function (e) {
         console.log(e);
-        _this.loadingError = true;
+        _this2.loadingError = true;
       })["finally"](function () {
-        _this.loading = false;
+        _this2.loading = false;
       });
     },
     submit: function submit() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.submitting = true;
       vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.post('/api/vacationrequests', {
@@ -2754,14 +2762,14 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response.data); //this.submitting = false
 
-        _this2.serverStatus = 200;
+        _this3.serverStatus = 200;
         setTimeout(function () {
           location.reload();
         }, 2500);
       })["catch"](function (e) {
         console.log(e);
-        _this2.submitting = false;
-        _this2.serverStatus = e.response.status;
+        _this3.submitting = false;
+        _this3.serverStatus = e.response.status;
       });
     }
   },
@@ -2980,6 +2988,7 @@ __webpack_require__.r(__webpack_exports__);
       minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'),
       maxDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
       newRestrictedDates: [],
+      notifyOfBulk: true,
       showExistingRequestOptions: false,
       serverStatus: null,
       submitting: false
@@ -3062,6 +3071,11 @@ __webpack_require__.r(__webpack_exports__);
       });
       return existingRequests;
     },
+    isFutureDate: function isFutureDate(date) {
+      var today = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment();
+      var dateInQuestion = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment(date, 'YYYY-MM-DD');
+      return dateInQuestion.isAfter(today);
+    },
     toggleNewRestriction: function toggleNewRestriction() {
       this.showExistingRequestOptions = this.doRequestsExistForDates();
     },
@@ -3071,14 +3085,29 @@ __webpack_require__.r(__webpack_exports__);
       this.showExistingRequestOptions = this.doRequestsExistForDates();
     },
     removeRestriction: function removeRestriction(dateObj) {
-      if (confirm("Are you sure you want to remove ".concat(this.$options.filters.slashdatedow(dateObj.date), " from the list of rectricted dates?"))) {}
-    },
-    submitRestrictions: function submitRestrictions() {
       var _this2 = this;
 
-      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.post('/api/admin/addrestricteddates', {
+      if (confirm("Are you sure you want to remove ".concat(this.$options.filters.slashdatedow(dateObj.date), " from the list of rectricted dates?"))) {
+        vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http["delete"]("/api/restricteddates/".concat(dateObj.date), {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + this.user.api_token
+          }
+        }).then(function (response) {
+          _this2.$emit('restriction-updated');
+        })["catch"](function (e) {
+          console.log(e);
+        });
+      }
+    },
+    submitRestrictions: function submitRestrictions() {
+      var _this3 = this;
+
+      this.submitting = true;
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.post('/api/restricteddates', {
         newRestrictedDates: this.newRestrictedDates,
-        bulkActions: this.bulkActions
+        bulkActions: this.bulkActions,
+        notifyOfBulk: this.notifyOfBulk
       }, {
         headers: {
           'Accept': 'application/json',
@@ -3086,13 +3115,19 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         console.log(response.data);
-        _this2.serverStatus = 200;
+        _this3.serverStatus = 200;
+        setTimeout(function () {
+          _this3.serverStatus = '';
 
-        _this2.$emit('restriction-updated');
+          _this3.clearDates();
+        }, 2500);
+
+        _this3.$emit('restriction-updated');
       })["catch"](function (e) {
         console.log(e);
-        _this2.submitting = false;
-        _this2.serverStatus = e.response.status;
+        _this3.serverStatus = e.response.status;
+      })["finally"](function () {
+        _this3.submitting = false;
       });
     }
   },
@@ -58357,6 +58392,14 @@ var render = function() {
                         "v-col",
                         { attrs: { cols: "12" } },
                         [
+                          _vm.isRestrictedDate
+                            ? _c("v-alert", { attrs: { type: "warning" } }, [
+                                _vm._v(
+                                  "Managers are restricted from booking on this date."
+                                )
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
                           _vm.dateRequests.length == 0
                             ? _c("v-alert", { attrs: { type: "info" } }, [
                                 _vm._v("No vacation requests on this date.")
@@ -58934,9 +58977,7 @@ var render = function() {
                 { attrs: { dark: "" } },
                 [
                   _c("v-toolbar-title", [
-                    _vm._v(
-                      _vm._s(_vm.restrictedDates.length) + " Restricted Dates"
-                    )
+                    _vm._v("Restricted Dates Management")
                   ]),
                   _vm._v(" "),
                   _c("v-spacer"),
@@ -58962,7 +59003,12 @@ var render = function() {
                     "v-list",
                     { attrs: { dense: "" } },
                     [
-                      _c("v-subheader", [_vm._v("Restricted Dates")]),
+                      _c("v-subheader", [
+                        _vm._v(
+                          _vm._s(_vm.restrictedDates.length) +
+                            " Restricted Dates This Year"
+                        )
+                      ]),
                       _vm._v(" "),
                       _vm._l(_vm.restrictedDates, function(dt, index) {
                         return _c(
@@ -58973,25 +59019,27 @@ var render = function() {
                               _vm._v(_vm._s(_vm._f("slashdatedow")(dt.date)))
                             ]),
                             _vm._v(" "),
-                            _c(
-                              "v-list-item-icon",
-                              [
-                                _c(
-                                  "v-btn",
-                                  {
-                                    attrs: { color: "error", icon: "" },
-                                    on: {
-                                      click: function($event) {
-                                        return _vm.removeRestriction(dt)
-                                      }
-                                    }
-                                  },
-                                  [_c("v-icon", [_vm._v("mdi-delete")])],
+                            _vm.isFutureDate(dt.date)
+                              ? _c(
+                                  "v-list-item-icon",
+                                  [
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: { color: "error", icon: "" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.removeRestriction(dt)
+                                          }
+                                        }
+                                      },
+                                      [_c("v-icon", [_vm._v("mdi-delete")])],
+                                      1
+                                    )
+                                  ],
                                   1
                                 )
-                              ],
-                              1
-                            )
+                              : _vm._e()
                           ],
                           1
                         )
@@ -59153,17 +59201,24 @@ var render = function() {
                                                         label: "Deny All",
                                                         value: "denyAll"
                                                       }
-                                                    }),
-                                                    _vm._v(" "),
-                                                    _c("v-radio", {
-                                                      attrs: {
-                                                        label: "Approve All",
-                                                        value: "approveAll"
-                                                      }
                                                     })
                                                   ],
                                                   1
-                                                )
+                                                ),
+                                                _vm._v(" "),
+                                                _c("v-switch", {
+                                                  attrs: {
+                                                    label:
+                                                      "Email affected people"
+                                                  },
+                                                  model: {
+                                                    value: _vm.notifyOfBulk,
+                                                    callback: function($$v) {
+                                                      _vm.notifyOfBulk = $$v
+                                                    },
+                                                    expression: "notifyOfBulk"
+                                                  }
+                                                })
                                               ],
                                               1
                                             )
@@ -59200,43 +59255,40 @@ var render = function() {
                               _vm._v(" "),
                               _c("v-divider"),
                               _vm._v(" "),
-                              _vm.serverStatus != 200
-                                ? _c(
-                                    "v-card-actions",
-                                    [
-                                      _c(
-                                        "v-btn",
-                                        {
-                                          attrs: {
-                                            color: "success",
-                                            disabled:
-                                              _vm.newRestrictedDates.length ==
-                                              0,
-                                            loading: _vm.submitting
-                                          },
-                                          on: { click: _vm.submitRestrictions }
-                                        },
-                                        [_vm._v("Submit restrictions")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-btn",
-                                        {
-                                          attrs: {
-                                            color: "secondary",
-                                            outlined: "",
-                                            disabled:
-                                              _vm.newRestrictedDates.length ==
-                                                0 || _vm.submitting
-                                          },
-                                          on: { click: _vm.clearDates }
-                                        },
-                                        [_vm._v("Reset")]
-                                      )
-                                    ],
-                                    1
+                              _c(
+                                "v-card-actions",
+                                [
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      attrs: {
+                                        color: "success",
+                                        disabled:
+                                          _vm.newRestrictedDates.length == 0,
+                                        loading: _vm.submitting
+                                      },
+                                      on: { click: _vm.submitRestrictions }
+                                    },
+                                    [_vm._v("Submit restrictions")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      attrs: {
+                                        color: "secondary",
+                                        outlined: "",
+                                        disabled:
+                                          _vm.newRestrictedDates.length == 0 ||
+                                          _vm.submitting
+                                      },
+                                      on: { click: _vm.clearDates }
+                                    },
+                                    [_vm._v("Reset")]
                                   )
-                                : _vm._e()
+                                ],
+                                1
+                              )
                             ],
                             1
                           )
@@ -111640,15 +111692,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!***********************************************!*\
   !*** ./resources/js/components/AdminHome.vue ***!
   \***********************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AdminHome_vue_vue_type_template_id_7ae8801a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AdminHome.vue?vue&type=template&id=7ae8801a& */ "./resources/js/components/AdminHome.vue?vue&type=template&id=7ae8801a&");
 /* harmony import */ var _AdminHome_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminHome.vue?vue&type=script&lang=js& */ "./resources/js/components/AdminHome.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _AdminHome_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _AdminHome_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -111678,7 +111729,7 @@ component.options.__file = "resources/js/components/AdminHome.vue"
 /*!************************************************************************!*\
   !*** ./resources/js/components/AdminHome.vue?vue&type=script&lang=js& ***!
   \************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
