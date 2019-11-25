@@ -43,6 +43,16 @@ class VacationRequestController extends Controller
     }
 
     /**
+     * Get ALL vacation requests for a specific user
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function requestsByUser(Request $request, $user) {
+        $requests = VacationRequest::with('requester')->where('requested_by', $user)->orderBy('date_requested', 'ASC')->get();
+        return response()->json($requests);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -167,8 +177,8 @@ class VacationRequestController extends Controller
                 $vacationRequest->decision_by = auth()->user()->id;
                 $vacationRequest->save();
 
-                // If the original status was 'approved', add a day to the requester's bank.
-                if($origStatus == 'approved') {
+                // If the original status was 'approved' or 'pending', add a day to the requester's bank.
+                if($origStatus == 'approved' || $origStatus == 'pending') {
                     $requester->vacation_days = $requester->vacation_days + 1;
                     $requester->save();
                 }

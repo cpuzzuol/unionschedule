@@ -29,6 +29,7 @@ Route::apiResource('users', 'api\UserController');
 Route::apiResource('restricteddates', 'api\RestrictedDateController');
 Route::post('users/register', 'api\UserController@register');
 Route::get('vacationrequestsbydate/{date}', 'api\VacationRequestController@requestsByDate');
+Route::get('requestsbyuser/{user}', 'api\VacationRequestController@requestsByUser');
 
 Route::put('vacationrequeststatus', 'api\VacationRequestController@updateRequestStatus');
 Route::get('admin/homedata', 'api\AdminController@getHomeData');

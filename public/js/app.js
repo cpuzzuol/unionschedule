@@ -2332,6 +2332,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3307,6 +3321,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuelidate__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _SystemUserOutstandingRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SystemUserOutstandingRequests */ "./resources/js/components/SystemUserOutstandingRequests.vue");
 //
 //
 //
@@ -3412,12 +3427,107 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuelidate__WEBPACK_IMPORTED_MODULE_1___default.a);
 var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["helpers"].regex('alpha', /.+@unionsorters\.com$/);
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    SystemUserOutstandingRequests: _SystemUserOutstandingRequests__WEBPACK_IMPORTED_MODULE_3__["default"]
+  },
   props: {
     apiToken: {
       type: String,
@@ -3458,13 +3568,18 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
   data: function data() {
     return {
       dialog: false,
+      pastRequestsTab: null,
+      pendingRequests: [],
+      pendingRequestsError: false,
+      sendResetPasswordLink: false,
       submitResult: {
         color: 'info',
         complete: false,
         msg: ''
       },
-      sendResetPasswordLink: false,
       submitting: false,
+      tab: null,
+      tabTitles: ['Basic Information', 'Vacation Request History', 'Logs'],
       userEditable: []
     };
   },
@@ -3506,6 +3621,25 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
       var errors = [];
       !this.$v.userEditable.vacation_days.numeric && errors.push('Must be a valid number of days');
       return errors;
+    },
+    futurePendingRequests: function futurePendingRequests() {
+      var today = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD');
+      return this.pendingRequests.filter(function (pr) {
+        return pr.date_requested >= today && pr.decision == 'pending';
+      });
+    },
+    // Used for years tabs for request history
+    yearsSince2019: function yearsSince2019() {
+      var years = [];
+      var dt = new Date(); //const year = dt.getYear()
+
+      var year = 2022;
+
+      for (var i = year; i >= 2019; i--) {
+        years.push(i);
+      }
+
+      return years;
     }
   },
   methods: {
@@ -3545,11 +3679,42 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
         });
       }
     },
+    getRequestHistory: function getRequestHistory() {
+      var _this2 = this;
+
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.get("/api/requestsbyuser/".concat(this.user.id), {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.apiToken
+        }
+      }).then(function (response) {
+        _this2.pendingRequests = response.data;
+        _this2.pendingRequestsError = false;
+      })["catch"](function (e) {
+        console.log(e);
+        _this2.pendingRequestsError = true;
+      });
+    },
+    requestsForYear: function requestsForYear(year) {
+      var dt = new Date();
+      var thisYear = dt.getYear();
+      var today = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'); // If current year, get only requests up to this date
+
+      if (year == thisYear) {
+        return this.pendingRequests.filter(function (pr) {
+          return pr.date_requested >= year + '-01-01' && pr.date_requested <= today;
+        });
+      }
+
+      return this.pendingRequests.filter(function (pr) {
+        return pr.date_requested >= year + '-01-01' && pr.date_requested <= year + '-12-31';
+      });
+    },
     setUser: function setUser() {
       this.userEditable = Object.assign({}, this.user);
     },
     updateUser: function updateUser() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.submitting = true;
       vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.put("/api/users/".concat(this.user.id), {
@@ -3561,20 +3726,23 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
           'Authorization': 'Bearer ' + this.apiToken
         }
       }).then(function (response) {
-        _this2.submitResult.color = 'success';
-        _this2.submitResult.msg = 'User was updated'; // Close the dialog and update the parent view by $emit-ing after 2 seconds
+        _this3.submitResult.color = 'success';
+        _this3.submitResult.msg = 'User was updated'; // Update the parent view by $emit-ing after 2 seconds
 
         setTimeout(function () {
-          _this2.closeDialog();
+          _this3.submitResult.complete = false;
+          _this3.sendResetPasswordLink = false;
 
-          _this2.$emit('user-updated');
+          _this3.$v.userEditable.$reset();
+
+          _this3.$emit('user-updated');
         }, 2000);
       })["catch"](function (e) {
-        _this2.submitResult.color = 'error';
-        _this2.submitResult.msg = 'There was a problem updating the user';
+        _this3.submitResult.color = 'error';
+        _this3.submitResult.msg = 'There was a problem updating the user';
       })["finally"](function (response) {
-        _this2.submitResult.complete = true;
-        _this2.submitting = false;
+        _this3.submitResult.complete = true;
+        _this3.submitting = false;
       });
     }
   },
@@ -3582,6 +3750,7 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
     dialog: function dialog() {
       if (this.dialog == true) {
         this.setUser();
+        this.getRequestHistory();
       }
     }
   }
@@ -3634,6 +3803,70 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AdminManageVacationRequestModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AdminManageVacationRequestModal */ "./resources/js/components/AdminManageVacationRequestModal.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    pendingRequests: {
+      type: Array,
+      required: true
+    },
+    user: {
+      type: Object,
+      required: true
+    }
+  },
+  components: {
+    AdminManageVacationRequestModal: _AdminManageVacationRequestModal__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  created: function created() {},
+  data: function data() {
+    return {};
+  },
+  computed: {},
+  methods: {
+    handleRequestUpdated: function handleRequestUpdated() {
+      this.$emit('request-updated');
+    }
+  },
+  watch: {}
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SystemUsers.vue?vue&type=script&lang=js&":
 /*!**********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SystemUsers.vue?vue&type=script&lang=js& ***!
@@ -3647,6 +3880,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _EditUserModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditUserModal */ "./resources/js/components/EditUserModal.vue");
 /* harmony import */ var _AddUserModal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AddUserModal */ "./resources/js/components/AddUserModal.vue");
+/* harmony import */ var _SystemUserOutstandingRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SystemUserOutstandingRequests */ "./resources/js/components/SystemUserOutstandingRequests.vue");
 //
 //
 //
@@ -3687,6 +3921,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -3698,6 +3943,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   components: {
+    SystemUserOutstandingRequests: _SystemUserOutstandingRequests__WEBPACK_IMPORTED_MODULE_3__["default"],
     EditUserModal: _EditUserModal__WEBPACK_IMPORTED_MODULE_1__["default"],
     AddUserModal: _AddUserModal__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
@@ -3719,15 +3965,11 @@ __webpack_require__.r(__webpack_exports__);
         text: 'Email',
         value: 'email'
       }, {
-        text: 'Outstanding Requests',
+        text: 'Pending Requests',
         value: 'outstanding_requests'
       }, {
-        text: 'Vacation Days',
+        text: 'Vacation Bank (Days)',
         value: 'vacation_days'
-      }, {
-        text: 'Actions',
-        value: 'id',
-        sortable: false
       }];
     }
   },
@@ -8451,6 +8693,25 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, ".tall-loader[data-v-26bfefd2] {\n  height: 500px;\n  padding: 200px 0;\n}\n.med-loader[data-v-26bfefd2] {\n  height: 300px;\n  padding: 100px 0;\n}\n.reg-loader[data-v-26bfefd2] {\n  padding: 50px 0;\n}", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".clickable[data-v-3a2ba25d] {\n  cursor: pointer;\n  text-decoration: underline;\n}", ""]);
 
 // exports
 
@@ -56963,6 +57224,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--7-2!../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../node_modules/vue-loader/lib??vue-loader-options!./EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true& */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -58037,6 +58328,44 @@ var render = function() {
                             },
                             on: { "restriction-updated": _vm.getData }
                           })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { attrs: { cols: "12", xs: "12", sm: "6", md: "4" } },
+                [
+                  _c(
+                    "v-card",
+                    [
+                      _c("v-card-title", [_vm._v("User Management")]),
+                      _vm._v(" "),
+                      _c(
+                        "v-card-text",
+                        [
+                          _vm._v(
+                            "\n                        Add users, view requests and logs by user, etc."
+                          ),
+                          _c("br"),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                color: "info",
+                                text: "",
+                                href: "admin/users"
+                              }
+                            },
+                            [_vm._v("Go To Page")]
+                          )
                         ],
                         1
                       )
@@ -59378,10 +59707,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&":
-/*!****************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d& ***!
-  \****************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&scoped=true&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&scoped=true& ***!
+  \****************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -59400,26 +59729,37 @@ var render = function() {
       _c(
         "v-dialog",
         {
-          attrs: { persistent: "", scrollable: "", "max-width": "590px" },
-          scopedSlots: _vm._u([
-            {
-              key: "activator",
-              fn: function(ref) {
-                var on = ref.on
-                return [
-                  _c(
-                    "v-btn",
-                    _vm._g(
-                      { attrs: { color: "primary", dark: "", icon: "" } },
-                      on
-                    ),
-                    [_c("v-icon", [_vm._v("mdi-pencil")])],
-                    1
-                  )
-                ]
+          attrs: {
+            fullscreen: "",
+            "hide-overlay": "",
+            transition: "dialog-bottom-transition"
+          },
+          scopedSlots: _vm._u(
+            [
+              {
+                key: "activator",
+                fn: function(ref) {
+                  var on = ref.on
+                  return [
+                    _c(
+                      "span",
+                      _vm._g(
+                        {
+                          staticClass: "primary--text clickable",
+                          attrs: { text: "" }
+                        },
+                        on
+                      ),
+                      [_vm._t("default")],
+                      2
+                    )
+                  ]
+                }
               }
-            }
-          ]),
+            ],
+            null,
+            true
+          ),
           model: {
             value: _vm.dialog,
             callback: function($$v) {
@@ -59439,7 +59779,7 @@ var render = function() {
                 [
                   _c("v-toolbar-title", [
                     _vm._v(
-                      "Edit User: " +
+                      "User Overview: " +
                         _vm._s(_vm.user.first_name + " " + _vm.user.last_name)
                     )
                   ]),
@@ -59461,329 +59801,782 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "v-card-text",
-                { staticStyle: { height: "500px" } },
                 [
                   _c(
-                    "v-form",
+                    "v-tabs",
+                    {
+                      staticClass: "mt-3",
+                      attrs: {
+                        "fixed-tabs": "",
+                        "background-color": "primary",
+                        dark: ""
+                      },
+                      model: {
+                        value: _vm.tab,
+                        callback: function($$v) {
+                          _vm.tab = $$v
+                        },
+                        expression: "tab"
+                      }
+                    },
                     [
-                      _c(
-                        "v-row",
-                        [
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", xs: "12", sm: "6" } },
-                            [
-                              _c("v-text-field", {
-                                attrs: {
-                                  label: "First Name*",
-                                  filled: "",
-                                  "error-messages": _vm.errorsFirstName
-                                },
-                                on: {
-                                  input: function($event) {
-                                    return _vm.$v.userEditable.first_name.$touch()
-                                  }
-                                },
-                                model: {
-                                  value: _vm.userEditable.first_name,
-                                  callback: function($$v) {
-                                    _vm.$set(
-                                      _vm.userEditable,
-                                      "first_name",
-                                      $$v
-                                    )
-                                  },
-                                  expression: "userEditable.first_name"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", xs: "12", sm: "6" } },
-                            [
-                              _c("v-text-field", {
-                                attrs: {
-                                  label: "Last Name*",
-                                  filled: "",
-                                  "error-messages": _vm.errorsLastName
-                                },
-                                on: {
-                                  input: function($event) {
-                                    return _vm.$v.userEditable.last_name.$touch()
-                                  }
-                                },
-                                model: {
-                                  value: _vm.userEditable.last_name,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.userEditable, "last_name", $$v)
-                                  },
-                                  expression: "userEditable.last_name"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12" } },
-                            [
-                              _c("v-text-field", {
-                                attrs: {
-                                  label: "Email*",
-                                  filled: "",
-                                  "error-messages": _vm.errorsEmail
-                                },
-                                on: {
-                                  input: function($event) {
-                                    return _vm.$v.userEditable.email.$touch()
-                                  }
-                                },
-                                model: {
-                                  value: _vm.userEditable.email,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.userEditable, "email", $$v)
-                                  },
-                                  expression: "userEditable.email"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", xs: "12", sm: "6" } },
-                            [
-                              _c("v-text-field", {
-                                attrs: {
-                                  label: "Vacation Days",
-                                  filled: "",
-                                  "error-messages": _vm.errorsVacationDays
-                                },
-                                on: {
-                                  input: function($event) {
-                                    return _vm.$v.userEditable.vacation_days.$touch()
-                                  }
-                                },
-                                model: {
-                                  value: _vm.userEditable.vacation_days,
-                                  callback: function($$v) {
-                                    _vm.$set(
-                                      _vm.userEditable,
-                                      "vacation_days",
-                                      $$v
-                                    )
-                                  },
-                                  expression: "userEditable.vacation_days"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", xs: "12", md: "6" } },
-                            [
-                              _c("v-switch", {
-                                attrs: {
-                                  label: "Administrator",
-                                  disabled: !_vm.canEditAdminSetting
-                                },
-                                scopedSlots: _vm._u([
-                                  {
-                                    key: "label",
-                                    fn: function() {
-                                      return [
-                                        _vm._v(
-                                          "\n                                    Administrator "
-                                        ),
-                                        !_vm.canEditAdminSetting
-                                          ? _c(
-                                              "span",
-                                              [
-                                                _c("v-icon", [
-                                                  _vm._v("mdi-lock")
-                                                ])
-                                              ],
-                                              1
-                                            )
-                                          : _vm._e()
-                                      ]
-                                    },
-                                    proxy: true
-                                  }
-                                ]),
-                                model: {
-                                  value: _vm.userEditable.is_admin,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.userEditable, "is_admin", $$v)
-                                  },
-                                  expression: "userEditable.is_admin"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", xs: "12", md: "6" } },
-                            [
-                              _c("v-switch", {
-                                scopedSlots: _vm._u([
-                                  {
-                                    key: "label",
-                                    fn: function() {
-                                      return [
-                                        _vm._v(
-                                          "\n                                    Send Reset Password Email\n                                    "
-                                        ),
-                                        _c(
-                                          "v-tooltip",
-                                          {
-                                            attrs: { top: "" },
-                                            scopedSlots: _vm._u([
-                                              {
-                                                key: "activator",
-                                                fn: function(ref) {
-                                                  var on = ref.on
-                                                  return [
-                                                    _c(
-                                                      "v-btn",
-                                                      _vm._g(
-                                                        { attrs: { icon: "" } },
-                                                        on
-                                                      ),
-                                                      [
-                                                        _c(
-                                                          "v-icon",
-                                                          {
-                                                            attrs: {
-                                                              color:
-                                                                "grey lighten-1"
-                                                            }
-                                                          },
-                                                          [
-                                                            _vm._v(
-                                                              "mdi-information"
-                                                            )
-                                                          ]
-                                                        )
-                                                      ],
-                                                      1
-                                                    )
-                                                  ]
-                                                }
-                                              }
-                                            ])
-                                          },
-                                          [
-                                            _vm._v(" "),
-                                            _c("span", [
-                                              _vm._v(
-                                                "When you click 'Update User', this person will be sent an email"
-                                              ),
-                                              _c("br"),
-                                              _vm._v(
-                                                "with a link where they can change their password."
-                                              )
-                                            ])
-                                          ]
-                                        )
-                                      ]
-                                    },
-                                    proxy: true
-                                  }
-                                ]),
-                                model: {
-                                  value: _vm.sendResetPasswordLink,
-                                  callback: function($$v) {
-                                    _vm.sendResetPasswordLink = $$v
-                                  },
-                                  expression: "sendResetPasswordLink"
-                                }
-                              })
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      )
+                      _c("v-tabs-slider", { attrs: { color: "yellow" } }),
+                      _vm._v(" "),
+                      _c("v-tab", [
+                        _vm._v(
+                          "\n                        Basic Information\n                    "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("v-tab", [
+                        _vm._v(
+                          "\n                        Vacation Request History\n                    "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("v-tab", [
+                        _vm._v(
+                          "\n                        Action Logs\n                    "
+                        )
+                      ])
                     ],
                     1
                   ),
                   _vm._v(" "),
                   _c(
-                    "v-alert",
+                    "v-tabs-items",
                     {
-                      attrs: {
-                        color: _vm.submitResult.color,
-                        value: _vm.submitResult.complete,
-                        dark: ""
+                      model: {
+                        value: _vm.tab,
+                        callback: function($$v) {
+                          _vm.tab = $$v
+                        },
+                        expression: "tab"
                       }
                     },
-                    [
-                      _vm._v(
-                        "\n                    " +
-                          _vm._s(_vm.submitResult.msg) +
-                          "\n                "
+                    _vm._l(_vm.tabTitles, function(section) {
+                      return _c(
+                        "v-tab-item",
+                        { key: section },
+                        [
+                          section == "Basic Information"
+                            ? [
+                                _c(
+                                  "v-card",
+                                  [
+                                    _c(
+                                      "v-card-text",
+                                      [
+                                        _c(
+                                          "v-form",
+                                          [
+                                            _c(
+                                              "v-row",
+                                              [
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    attrs: {
+                                                      cols: "12",
+                                                      xs: "12",
+                                                      sm: "6"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("v-text-field", {
+                                                      attrs: {
+                                                        label: "First Name*",
+                                                        filled: "",
+                                                        "error-messages":
+                                                          _vm.errorsFirstName
+                                                      },
+                                                      on: {
+                                                        input: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.$v.userEditable.first_name.$touch()
+                                                        }
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.userEditable
+                                                            .first_name,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.userEditable,
+                                                            "first_name",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "userEditable.first_name"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    attrs: {
+                                                      cols: "12",
+                                                      xs: "12",
+                                                      sm: "6"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("v-text-field", {
+                                                      attrs: {
+                                                        label: "Last Name*",
+                                                        filled: "",
+                                                        "error-messages":
+                                                          _vm.errorsLastName
+                                                      },
+                                                      on: {
+                                                        input: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.$v.userEditable.last_name.$touch()
+                                                        }
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.userEditable
+                                                            .last_name,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.userEditable,
+                                                            "last_name",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "userEditable.last_name"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  { attrs: { cols: "12" } },
+                                                  [
+                                                    _c("v-text-field", {
+                                                      attrs: {
+                                                        label: "Email*",
+                                                        filled: "",
+                                                        "error-messages":
+                                                          _vm.errorsEmail
+                                                      },
+                                                      on: {
+                                                        input: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.$v.userEditable.email.$touch()
+                                                        }
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.userEditable
+                                                            .email,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.userEditable,
+                                                            "email",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "userEditable.email"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    attrs: {
+                                                      cols: "12",
+                                                      xs: "12",
+                                                      sm: "6"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("v-text-field", {
+                                                      attrs: {
+                                                        label: "Vacation Days",
+                                                        filled: "",
+                                                        "error-messages":
+                                                          _vm.errorsVacationDays
+                                                      },
+                                                      on: {
+                                                        input: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.$v.userEditable.vacation_days.$touch()
+                                                        }
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.userEditable
+                                                            .vacation_days,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.userEditable,
+                                                            "vacation_days",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "userEditable.vacation_days"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    attrs: {
+                                                      cols: "12",
+                                                      xs: "12",
+                                                      md: "6"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("v-switch", {
+                                                      attrs: {
+                                                        label: "Administrator",
+                                                        disabled: !_vm.canEditAdminSetting
+                                                      },
+                                                      scopedSlots: _vm._u(
+                                                        [
+                                                          {
+                                                            key: "label",
+                                                            fn: function() {
+                                                              return [
+                                                                _vm._v(
+                                                                  "\n                                                        Administrator "
+                                                                ),
+                                                                !_vm.canEditAdminSetting
+                                                                  ? _c(
+                                                                      "span",
+                                                                      [
+                                                                        _c(
+                                                                          "v-icon",
+                                                                          [
+                                                                            _vm._v(
+                                                                              "mdi-lock"
+                                                                            )
+                                                                          ]
+                                                                        )
+                                                                      ],
+                                                                      1
+                                                                    )
+                                                                  : _vm._e()
+                                                              ]
+                                                            },
+                                                            proxy: true
+                                                          }
+                                                        ],
+                                                        null,
+                                                        true
+                                                      ),
+                                                      model: {
+                                                        value:
+                                                          _vm.userEditable
+                                                            .is_admin,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.userEditable,
+                                                            "is_admin",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "userEditable.is_admin"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    attrs: {
+                                                      cols: "12",
+                                                      xs: "12",
+                                                      md: "6"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("v-switch", {
+                                                      scopedSlots: _vm._u(
+                                                        [
+                                                          {
+                                                            key: "label",
+                                                            fn: function() {
+                                                              return [
+                                                                _vm._v(
+                                                                  "\n                                                        Send Reset Password Email\n                                                        "
+                                                                ),
+                                                                _c(
+                                                                  "v-tooltip",
+                                                                  {
+                                                                    attrs: {
+                                                                      top: ""
+                                                                    },
+                                                                    scopedSlots: _vm._u(
+                                                                      [
+                                                                        {
+                                                                          key:
+                                                                            "activator",
+                                                                          fn: function(
+                                                                            ref
+                                                                          ) {
+                                                                            var on =
+                                                                              ref.on
+                                                                            return [
+                                                                              _c(
+                                                                                "v-btn",
+                                                                                _vm._g(
+                                                                                  {
+                                                                                    attrs: {
+                                                                                      icon:
+                                                                                        ""
+                                                                                    }
+                                                                                  },
+                                                                                  on
+                                                                                ),
+                                                                                [
+                                                                                  _c(
+                                                                                    "v-icon",
+                                                                                    {
+                                                                                      attrs: {
+                                                                                        color:
+                                                                                          "grey lighten-1"
+                                                                                      }
+                                                                                    },
+                                                                                    [
+                                                                                      _vm._v(
+                                                                                        "mdi-information"
+                                                                                      )
+                                                                                    ]
+                                                                                  )
+                                                                                ],
+                                                                                1
+                                                                              )
+                                                                            ]
+                                                                          }
+                                                                        }
+                                                                      ],
+                                                                      null,
+                                                                      true
+                                                                    )
+                                                                  },
+                                                                  [
+                                                                    _vm._v(" "),
+                                                                    _c("span", [
+                                                                      _vm._v(
+                                                                        "When you click 'Update User', this person will be sent an email"
+                                                                      ),
+                                                                      _c("br"),
+                                                                      _vm._v(
+                                                                        "with a link where they can change their password."
+                                                                      )
+                                                                    ])
+                                                                  ]
+                                                                )
+                                                              ]
+                                                            },
+                                                            proxy: true
+                                                          }
+                                                        ],
+                                                        null,
+                                                        true
+                                                      ),
+                                                      model: {
+                                                        value:
+                                                          _vm.sendResetPasswordLink,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.sendResetPasswordLink = $$v
+                                                        },
+                                                        expression:
+                                                          "sendResetPasswordLink"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-alert",
+                                          {
+                                            attrs: {
+                                              color: _vm.submitResult.color,
+                                              value: _vm.submitResult.complete,
+                                              dark: ""
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                        " +
+                                                _vm._s(_vm.submitResult.msg) +
+                                                "\n                                    "
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "p",
+                                          { staticClass: "error--text" },
+                                          [
+                                            _vm._v(
+                                              "All fields marked with * are required."
+                                            )
+                                          ]
+                                        )
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c("v-divider"),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-card-actions",
+                                      [
+                                        _c(
+                                          "v-btn",
+                                          {
+                                            attrs: {
+                                              color: "success darken-1",
+                                              disabled:
+                                                _vm.$v.userEditable.$invalid ||
+                                                _vm.submitting,
+                                              loading: _vm.submitting
+                                            },
+                                            on: { click: _vm.updateUser }
+                                          },
+                                          [_vm._v("Update User")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-btn",
+                                          {
+                                            attrs: {
+                                              color: "secondary",
+                                              disabled: _vm.submitting,
+                                              outlined: ""
+                                            },
+                                            on: { click: _vm.setUser }
+                                          },
+                                          [_vm._v("Reset")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c("v-spacer"),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-btn",
+                                          {
+                                            attrs: {
+                                              color: "error",
+                                              disabled: _vm.submitting
+                                            },
+                                            on: { click: _vm.deleteUser }
+                                          },
+                                          [_vm._v("Delete User")]
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ]
+                            : _vm._e(),
+                          _vm._v(" "),
+                          section == "Vacation Request History"
+                            ? [
+                                _c(
+                                  "v-card",
+                                  [
+                                    _c(
+                                      "v-card-text",
+                                      [
+                                        _vm.pendingRequestsError
+                                          ? [
+                                              _c(
+                                                "v-alert",
+                                                {
+                                                  attrs: {
+                                                    value: true,
+                                                    type: "error"
+                                                  }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    "\n                                            There was a problem loading vacation requests for this user.\n                                        "
+                                                  )
+                                                ]
+                                              )
+                                            ]
+                                          : [
+                                              _c(
+                                                "v-row",
+                                                [
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      attrs: {
+                                                        xs: "12",
+                                                        sm: "12",
+                                                        md: "6",
+                                                        lg: "4"
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "v-card",
+                                                        {
+                                                          attrs: {
+                                                            outlined: ""
+                                                          }
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "v-card-title",
+                                                            {
+                                                              staticClass:
+                                                                "title"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "Future Pending Requests"
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "v-card-text",
+                                                            [
+                                                              _c(
+                                                                "system-user-outstanding-requests",
+                                                                {
+                                                                  attrs: {
+                                                                    user:
+                                                                      _vm.user,
+                                                                    "pending-requests":
+                                                                      _vm.futurePendingRequests
+                                                                  },
+                                                                  on: {
+                                                                    "request-updated":
+                                                                      _vm.getRequestHistory
+                                                                  }
+                                                                }
+                                                              )
+                                                            ],
+                                                            1
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("v-spacer"),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      attrs: {
+                                                        xs: "12",
+                                                        sm: "12",
+                                                        md: "6",
+                                                        lg: "4"
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "v-card",
+                                                        {
+                                                          attrs: {
+                                                            outlined: ""
+                                                          }
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "v-card-title",
+                                                            {
+                                                              staticClass:
+                                                                "title"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "Past Requests"
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "v-card-text",
+                                                            [
+                                                              _c(
+                                                                "v-tabs",
+                                                                {
+                                                                  staticClass:
+                                                                    "mt-3",
+                                                                  attrs: {
+                                                                    "fixed-tabs":
+                                                                      "",
+                                                                    "background-color":
+                                                                      "primary",
+                                                                    dark: "",
+                                                                    "show-arrows":
+                                                                      ""
+                                                                  },
+                                                                  model: {
+                                                                    value:
+                                                                      _vm.pastRequestsTab,
+                                                                    callback: function(
+                                                                      $$v
+                                                                    ) {
+                                                                      _vm.pastRequestsTab = $$v
+                                                                    },
+                                                                    expression:
+                                                                      "pastRequestsTab"
+                                                                  }
+                                                                },
+                                                                [
+                                                                  _c(
+                                                                    "v-tabs-slider",
+                                                                    {
+                                                                      attrs: {
+                                                                        color:
+                                                                          "yellow"
+                                                                      }
+                                                                    }
+                                                                  ),
+                                                                  _vm._v(" "),
+                                                                  _vm._l(
+                                                                    _vm.yearsSince2019,
+                                                                    function(
+                                                                      year
+                                                                    ) {
+                                                                      return _c(
+                                                                        "v-tab",
+                                                                        {
+                                                                          key:
+                                                                            "past-req-tab-" +
+                                                                            _vm.i
+                                                                        },
+                                                                        [
+                                                                          _vm._v(
+                                                                            _vm._s(
+                                                                              year
+                                                                            )
+                                                                          )
+                                                                        ]
+                                                                      )
+                                                                    }
+                                                                  ),
+                                                                  _vm._v(" "),
+                                                                  _c(
+                                                                    "v-tabs-items",
+                                                                    {
+                                                                      model: {
+                                                                        value:
+                                                                          _vm.pastRequestsTab,
+                                                                        callback: function(
+                                                                          $$v
+                                                                        ) {
+                                                                          _vm.pastRequestsTab = $$v
+                                                                        },
+                                                                        expression:
+                                                                          "pastRequestsTab"
+                                                                      }
+                                                                    },
+                                                                    _vm._l(
+                                                                      _vm.yearsSince2019,
+                                                                      function(
+                                                                        year
+                                                                      ) {
+                                                                        return _c(
+                                                                          "v-tab-item",
+                                                                          {
+                                                                            key:
+                                                                              "past-req-tab-content-" +
+                                                                              year
+                                                                          },
+                                                                          [
+                                                                            _vm._v(
+                                                                              "\n                                                                    " +
+                                                                                _vm._s(
+                                                                                  _vm.requestsForYear(
+                                                                                    year
+                                                                                  )
+                                                                                ) +
+                                                                                "\n                                                                "
+                                                                            )
+                                                                          ]
+                                                                        )
+                                                                      }
+                                                                    ),
+                                                                    1
+                                                                  )
+                                                                ],
+                                                                2
+                                                              )
+                                                            ],
+                                                            1
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ]
+                                      ],
+                                      2
+                                    )
+                                  ],
+                                  1
+                                )
+                              ]
+                            : _vm._e()
+                        ],
+                        2
                       )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("p", { staticClass: "error--text" }, [
-                    _vm._v("All fields marked with * are required.")
-                  ])
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c("v-divider"),
-              _vm._v(" "),
-              _c(
-                "v-card-actions",
-                [
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: {
-                        color: "success darken-1",
-                        disabled:
-                          _vm.$v.userEditable.$invalid || _vm.submitting,
-                        loading: _vm.submitting
-                      },
-                      on: { click: _vm.updateUser }
-                    },
-                    [_vm._v("Update User")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: {
-                        color: "secondary",
-                        disabled: _vm.submitting,
-                        outlined: ""
-                      },
-                      on: { click: _vm.setUser }
-                    },
-                    [_vm._v("Reset")]
-                  ),
-                  _vm._v(" "),
-                  _c("v-spacer"),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { color: "error", disabled: _vm.submitting },
-                      on: { click: _vm.deleteUser }
-                    },
-                    [_vm._v("Delete User")]
+                    }),
+                    1
                   )
                 ],
                 1
@@ -59823,6 +60616,100 @@ var render = function() {
   return _c("div", { staticClass: "example-container" }, [
     _vm._v("\n    blah blah blah\n")
   ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=template&id=581a2229&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=template&id=581a2229& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "request-history-container" },
+    [
+      _vm.pendingRequests.length == 0
+        ? [
+            _c(
+              "v-alert",
+              {
+                staticClass: "mt-3",
+                attrs: { color: "info", value: true, dark: "" }
+              },
+              [
+                _vm._v(
+                  "\n            This person has no pending vacation requests.\n        "
+                )
+              ]
+            )
+          ]
+        : _c(
+            "v-list",
+            { attrs: { dense: "", "two-lines": "" } },
+            _vm._l(_vm.pendingRequests, function(req, index) {
+              return _c(
+                "v-list-item",
+                { key: "req-pending-" + index },
+                [
+                  _c("v-list-item-title", [
+                    _vm._v(_vm._s(_vm._f("slashdatedow")(req.date_requested)))
+                  ]),
+                  _vm._v(" "),
+                  _c("v-list-item-subtitle", [
+                    _vm._v(
+                      _vm._s(
+                        req.requester.first_name + " " + req.requester.last_name
+                      )
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "v-list-item-icon",
+                    [
+                      _c("admin-manage-vacation-request-modal", {
+                        attrs: {
+                          action: "approve",
+                          user: _vm.user,
+                          "vacation-request": req
+                        },
+                        on: { "request-updated": _vm.handleRequestUpdated }
+                      }),
+                      _vm._v(" "),
+                      _c("admin-manage-vacation-request-modal", {
+                        attrs: {
+                          action: "deny",
+                          user: _vm.user,
+                          "vacation-request": req
+                        },
+                        on: { "request-updated": _vm.handleRequestUpdated }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            }),
+            1
+          )
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -59886,38 +60773,38 @@ var render = function() {
                     fn: function(ref) {
                       var item = ref.item
                       return [
-                        _vm._v(
-                          "\n\n                        " +
-                            _vm._s(item.last_name + ", " + item.first_name) +
-                            "\n                        "
-                        ),
-                        item.is_admin
-                          ? _c(
-                              "v-icon",
-                              { attrs: { color: "warning", right: "" } },
-                              [_vm._v("mdi-account-star")]
-                            )
-                          : _vm._e()
-                      ]
-                    }
-                  },
-                  {
-                    key: "item.id",
-                    fn: function(ref) {
-                      var item = ref.item
-                      return [
-                        _c("EditUserModal", {
-                          attrs: {
-                            "api-token": _vm.user.api_token,
-                            user: item,
-                            "can-edit-admin-setting":
-                              item.email != _vm.user.email
+                        _c(
+                          "EditUserModal",
+                          {
+                            attrs: {
+                              "api-token": _vm.user.api_token,
+                              user: item,
+                              "can-edit-admin-setting":
+                                item.email != _vm.user.email
+                            },
+                            on: {
+                              "user-updated": _vm.getUsers,
+                              "user-deleted": _vm.getUsers
+                            }
                           },
-                          on: {
-                            "user-updated": _vm.getUsers,
-                            "user-deleted": _vm.getUsers
-                          }
-                        })
+                          [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(
+                                  item.last_name + ", " + item.first_name
+                                ) +
+                                "\n                            "
+                            ),
+                            item.is_admin
+                              ? _c(
+                                  "v-icon",
+                                  { attrs: { color: "warning", right: "" } },
+                                  [_vm._v("mdi-account-star")]
+                                )
+                              : _vm._e()
+                          ],
+                          1
+                        )
                       ]
                     }
                   }
@@ -112129,9 +113016,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _EditUserModal_vue_vue_type_template_id_3a2ba25d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditUserModal.vue?vue&type=template&id=3a2ba25d& */ "./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&");
+/* harmony import */ var _EditUserModal_vue_vue_type_template_id_3a2ba25d_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditUserModal.vue?vue&type=template&id=3a2ba25d&scoped=true& */ "./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&scoped=true&");
 /* harmony import */ var _EditUserModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditUserModal.vue?vue&type=script&lang=js& */ "./resources/js/components/EditUserModal.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _EditUserModal_vue_vue_type_style_index_0_id_3a2ba25d_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true& */ "./resources/js/components/EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -112139,13 +113028,13 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _EditUserModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _EditUserModal_vue_vue_type_template_id_3a2ba25d___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _EditUserModal_vue_vue_type_template_id_3a2ba25d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _EditUserModal_vue_vue_type_template_id_3a2ba25d_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _EditUserModal_vue_vue_type_template_id_3a2ba25d_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
-  null,
+  "3a2ba25d",
   null
   
 )
@@ -112171,19 +113060,35 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&":
-/*!**********************************************************************************!*\
-  !*** ./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d& ***!
-  \**********************************************************************************/
+/***/ "./resources/js/components/EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true&":
+/*!*************************************************************************************************************!*\
+  !*** ./resources/js/components/EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true& ***!
+  \*************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_style_index_0_id_3a2ba25d_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--7-2!../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../node_modules/vue-loader/lib??vue-loader-options!./EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=style&index=0&id=3a2ba25d&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_style_index_0_id_3a2ba25d_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_style_index_0_id_3a2ba25d_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_style_index_0_id_3a2ba25d_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_style_index_0_id_3a2ba25d_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_style_index_0_id_3a2ba25d_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&scoped=true&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&scoped=true& ***!
+  \**********************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_template_id_3a2ba25d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./EditUserModal.vue?vue&type=template&id=3a2ba25d& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_template_id_3a2ba25d___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_template_id_3a2ba25d_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./EditUserModal.vue?vue&type=template&id=3a2ba25d&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/EditUserModal.vue?vue&type=template&id=3a2ba25d&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_template_id_3a2ba25d_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_template_id_3a2ba25d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditUserModal_vue_vue_type_template_id_3a2ba25d_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -112253,6 +113158,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/SystemUserOutstandingRequests.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/SystemUserOutstandingRequests.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _SystemUserOutstandingRequests_vue_vue_type_template_id_581a2229___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SystemUserOutstandingRequests.vue?vue&type=template&id=581a2229& */ "./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=template&id=581a2229&");
+/* harmony import */ var _SystemUserOutstandingRequests_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SystemUserOutstandingRequests.vue?vue&type=script&lang=js& */ "./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _SystemUserOutstandingRequests_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SystemUserOutstandingRequests_vue_vue_type_template_id_581a2229___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _SystemUserOutstandingRequests_vue_vue_type_template_id_581a2229___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/SystemUserOutstandingRequests.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserOutstandingRequests_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./SystemUserOutstandingRequests.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserOutstandingRequests_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=template&id=581a2229&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=template&id=581a2229& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserOutstandingRequests_vue_vue_type_template_id_581a2229___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./SystemUserOutstandingRequests.vue?vue&type=template&id=581a2229& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SystemUserOutstandingRequests.vue?vue&type=template&id=581a2229&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserOutstandingRequests_vue_vue_type_template_id_581a2229___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserOutstandingRequests_vue_vue_type_template_id_581a2229___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

@@ -19,20 +19,30 @@
                     class="elevation-1"
                 >
                     <template v-slot:item.last_name="{ item }">
-
-                            {{ item.last_name + ', ' + item.first_name }}
-                            <v-icon v-if="item.is_admin" color="warning"right>mdi-account-star</v-icon>
-
-                    </template>
-                    <template v-slot:item.id="{ item }">
                         <EditUserModal
                             :api-token="user.api_token"
                             :user="item"
                             :can-edit-admin-setting="item.email != user.email"
                             @user-updated="getUsers"
                             @user-deleted="getUsers"
-                        ></EditUserModal>
+                        >
+                            {{ item.last_name + ', ' + item.first_name }}
+                            <v-icon v-if="item.is_admin" color="warning"right>mdi-account-star</v-icon>
+                        </EditUserModal>
                     </template>
+<!--                    <template v-slot:item.outstanding_requests="{ item }">-->
+<!--                        <template v-if="item.outstanding_requests == 0">-->
+<!--                            {{ item.outstanding_requests }}-->
+<!--                        </template>-->
+<!--                        <SystemUserOutstandingRequests-->
+<!--                            v-else-->
+<!--                            :user="item"-->
+<!--                            :can-edit-admin-setting="item.email != user.email"-->
+<!--                            @request-updated="getUsers"-->
+<!--                        >-->
+<!--                            {{ item.outstanding_requests }}-->
+<!--                        </SystemUserOutstandingRequestsModal>-->
+<!--                    </template>-->
                 </v-data-table>
             </v-col>
         </v-row>
@@ -42,6 +52,7 @@
     import Vue from 'vue'
     import EditUserModal from "./EditUserModal"
     import AddUserModal from "./AddUserModal"
+    import SystemUserOutstandingRequests from "./SystemUserOutstandingRequests";
 	export default {
 		props: {
 			user: {
@@ -49,7 +60,7 @@
                 required: true
             }
 		},
-        components: { EditUserModal, AddUserModal },
+        components: { SystemUserOutstandingRequests, EditUserModal, AddUserModal },
         created() {
 			this.getUsers()
         },
@@ -62,9 +73,8 @@
                 return [
                 	{ text: 'Name', value: 'last_name' },
                     { text: 'Email', value: 'email' },
-                    { text: 'Outstanding Requests', value: 'outstanding_requests'},
-                    { text: 'Vacation Days', value: 'vacation_days' },
-                    { text: 'Actions', value: 'id', sortable: false }
+                    { text: 'Pending Requests', value: 'outstanding_requests'},
+                    { text: 'Vacation Bank (Days)', value: 'vacation_days' }
                 ]
             }
         },

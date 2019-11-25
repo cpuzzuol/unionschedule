@@ -33,6 +33,20 @@
                 <v-col
                     cols="12"
                     xs="12"
+                    sm="6"
+                    md="4"
+                >
+                    <v-card>
+                        <v-card-title>User Management</v-card-title>
+                        <v-card-text>
+                            Add users, view requests and logs by user, etc.<br>
+                            <v-btn color="info" text href="admin/users">Go To Page</v-btn>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col
+                    cols="12"
+                    xs="12"
                     sm="12"
                 >
                     <v-card>
