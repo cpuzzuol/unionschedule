@@ -10,7 +10,7 @@
                 This person has no pending vacation requests.
             </v-alert>
         </template>
-        <v-list v-else dense two-lines>
+        <v-list v-else dense>
             <v-list-item v-for="(req, index) in pendingRequests" :key="'req-pending-' + index">
                 <v-list-item-title>{{ req.date_requested | slashdatedow }}</v-list-item-title>
                 <v-list-item-subtitle>{{ req.requester.first_name + ' ' + req.requester.last_name }}</v-list-item-subtitle>

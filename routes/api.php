@@ -27,9 +27,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResource('vacationrequests', 'api\VacationRequestController');
 Route::apiResource('users', 'api\UserController');
 Route::apiResource('restricteddates', 'api\RestrictedDateController');
+//Route::apiResource('actionlogs', 'api\ActionLogController');
 Route::post('users/register', 'api\UserController@register');
 Route::get('vacationrequestsbydate/{date}', 'api\VacationRequestController@requestsByDate');
 Route::get('requestsbyuser/{user}', 'api\VacationRequestController@requestsByUser');
+Route::get('actionlogsbyuser/{user}', 'api\UserController@actionLogsByUser');
 
 Route::put('vacationrequeststatus', 'api\VacationRequestController@updateRequestStatus');
 Route::get('admin/homedata', 'api\AdminController@getHomeData');

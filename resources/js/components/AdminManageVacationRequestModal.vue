@@ -79,11 +79,11 @@
 			iconProps() {
             	switch(this.action) {
                   case 'approve':
-                  	return {icon: 'mdi-thumb-up', color: 'success darken-1', title: 'Approve Vacation Request'}
+                  	return {icon: 'mdi-thumb-up-outline', color: 'info darken-1', title: 'Approve Vacation Request'}
                   case 'deny':
-                    return {icon: 'mdi-thumb-down', color: 'error darken-1', title: 'Deny Vacation Request'}
+                    return {icon: 'mdi-thumb-down-outline', color: 'info darken-1', title: 'Deny Vacation Request'}
                   case 'pending':
-                  	return {icon: 'mdi-account-clock', color: 'warning darken-1', title: 'Set Vacation Request to Pending'}
+                  	return {icon: 'mdi-account-clock-outline', color: 'info darken-1', title: 'Set Vacation Request to Pending'}
                   default:
                     return
                 }

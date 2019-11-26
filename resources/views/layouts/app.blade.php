@@ -53,13 +53,23 @@
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title><v-btn href="{{ url('/') }}" text>{{ config('app.name', 'Laravel') }}</v-btn></v-toolbar-title>
+            <v-toolbar-items>
+                @if(Auth::check())
+                    @if(Auth::user()->is_admin)
+                        <v-btn href="{{ route('adminIndex') }}" text>{{ __('Admin Home') }}</v-btn>
+                        <v-btn href="{{ route('userMgmtIndex') }}" text>{{ __('User Management') }}</v-btn>
+                    @endif
+                    <v-btn href="{{ route('userIndex') }}" text>{{ __('Manager Dashboard') }}</v-btn>
+                    <v-btn href="{{ route('vacationRequest') }}" text>{{ __('New Vacation Request') }}</v-btn>
+                @endif
+            </v-toolbar-items>
             <v-spacer></v-spacer>
             <v-toolbar-items>
                 @guest
                     <v-btn href="{{ route('login') }}" text>{{ __('Login') }}</v-btn>
-                    @if (Route::has('register'))
-                        <v-btn href="{{ route('register') }}" text>{{ __('Register') }}</v-btn>
-                    @endif
+{{--                    @if (Route::has('register'))--}}
+{{--                        <v-btn href="{{ route('register') }}" text>{{ __('Register') }}</v-btn>--}}
+{{--                    @endif--}}
                 @else
                     <v-menu offset-y>
                         <template v-slot:activator="{ on }">

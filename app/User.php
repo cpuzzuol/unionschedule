@@ -55,4 +55,8 @@ class User extends Authenticatable
     public function vacationRequests() {
         return $this->hasMany('App\VacationRequest', 'requested_by');
     }
+
+    public function actionLogs() {
+        return $this->hasMany('App\ActionLogs', 'affected_user');
+    }
 }

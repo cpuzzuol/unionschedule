@@ -11,13 +11,12 @@
                     <v-btn icon dark @click="closeDialog"><v-icon>mdi-close</v-icon></v-btn>
                 </v-toolbar>
                 <v-card-text class="mt-4">
-                    {{ vacationRequest }}
-                    <v-list dense two-lines>
-                        <v-list-item v-for="(log, index) in vacationRequest.logs" :key="'log-' + index">
-                            <v-list-item-title>[{{ log.created_at | slashdatetime }}] - {{ log.description }}</v-list-item-title>
-                            <v-list-item-subtitle>blub</v-list-item-subtitle>
-                        </v-list-item>
-                    </v-list>
+                    <template v-if="vacationRequest.logs.length > 0">
+                        <p v-for="(log, index) in vacationRequest.logs" :key="'log-' + index">
+                            <strong>[{{ log.created_at | slashdatetime }}] by {{ log.action_by.first_name + ' ' + log.action_by.last_name }} -</strong> {{ log.description }}
+                        </p>
+                    </template>
+                    <p v-else>No logs for this vacation request.</p>
                 </v-card-text>
             </v-card>
         </v-dialog>

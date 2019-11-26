@@ -141,7 +141,6 @@
                                                     xs="12"
                                                     sm="12"
                                                     md="6"
-                                                    lg="4"
                                                 >
                                                     <v-card outlined>
                                                         <v-card-title class="title">Future Pending Requests</v-card-title>
@@ -150,12 +149,10 @@
                                                         </v-card-text>
                                                     </v-card>
                                                 </v-col>
-                                                <v-spacer></v-spacer>
                                                 <v-col
                                                     xs="12"
                                                     sm="12"
                                                     md="6"
-                                                    lg="4"
                                                 >
                                                     <v-card outlined>
                                                         <v-card-title class="title">Past Requests</v-card-title>
@@ -169,13 +166,12 @@
                                                                 show-arrows
                                                             >
                                                                 <v-tabs-slider color="yellow"></v-tabs-slider>
-                                                                <v-tab v-for="year in yearsSince2019" :key="'past-req-tab-' + i">{{ year }}</v-tab>
+                                                                <v-tab v-for="year in yearsSince2019" :key="'past-req-tab-' + year">{{ year }}</v-tab>
                                                                 <v-tabs-items v-model="pastRequestsTab">
                                                                     <v-tab-item
                                                                         v-for="year in yearsSince2019"
                                                                         :key="'past-req-tab-content-' + year"
                                                                     >
-                                                                        {{ requestsForYear(year) }}
                                                                         <v-list dense two-lines>
                                                                             <v-list-item v-for="(req, index) in requestsForYear(year)" :key="'req-year-' + year + '-' + index">
                                                                                 <v-list-item-title>{{ req.date_requested | slashdatedow }}</v-list-item-title>
@@ -192,6 +188,43 @@
                                                     </v-card>
                                                 </v-col>
                                             </v-row>
+                                        </template>
+                                    </v-card-text>
+                                </v-card>
+                            </template>
+                            <template v-if="section == 'Logs'">
+                                <v-card>
+                                    <v-card-text>
+                                        <template v-if="actionLogsError">
+                                            <v-alert :value="true" type="error">
+                                                There was a problem loading action logs requests for this user.
+                                            </v-alert>
+                                        </template>
+                                        <template v-else>
+                                            <template v-if="actionLogs.length > 0">
+                                                <v-tabs
+                                                    v-model="actionLogsTab"
+                                                    fixed-tabs
+                                                    background-color="secondary"
+                                                    dark
+                                                    class="mt-3"
+                                                    show-arrows
+                                                >
+                                                    <v-tabs-slider color="yellow lighten-3"></v-tabs-slider>
+                                                    <v-tab v-for="year in yearsSince2019" :key="'actionlog-req-tab-' + year">{{ year }}</v-tab>
+                                                    <v-tabs-items v-model="actionLogsTab">
+                                                        <v-tab-item
+                                                            v-for="year in yearsSince2019"
+                                                            :key="'actionlog-req-tab-content-' + year"
+                                                        >
+                                                            <p v-for="(aLog, index) in actionLogsForYear(year)" :key="'action-log-' + index">
+                                                                <strong>[{{ aLog.created_at | slashdatetime }}] by {{ aLog.action_by.first_name + ' ' + aLog.action_by.last_name }} -</strong> {{ aLog.description }}
+                                                            </p>
+                                                        </v-tab-item>
+                                                    </v-tabs-items>
+                                                </v-tabs>
+                                            </template>
+                                            <p v-else>No action logs for this user</p>
                                         </template>
                                     </v-card-text>
                                 </v-card>
@@ -252,6 +285,9 @@
             }
         },
 		data: () => ({
+            actionLogs: [],
+            actionLogsError: false,
+            actionLogsTab: null,
             dialog: false,
             pastRequestsTab: null,
             pendingRequests: [],
@@ -310,6 +346,11 @@
             }
         },
         methods: {
+            actionLogsForYear(year) {
+                return this.actionLogs.filter(al => {
+                    return al.created_at >= year + '-01-01 00:00:00' && al.created_at <= year + '-12-31 23:59:59'
+                })
+            },
 			// Do a little cleanup when dialog closes
 			closeDialog() {
                 this.dialog = false
@@ -348,6 +389,25 @@
                         this.submitting = false
                     })
                 }
+            },
+            // Action logs are NOT request logs. Action logs are usually when admins update vacation allotment for the user.
+            getActionLogHistory() {
+                Vue.prototype.$http.get(`/api/actionlogsbyuser/${this.user.id}`,
+                    {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': 'Bearer ' + this.apiToken
+                        }
+                    }
+                )
+                .then(response => {
+                    this.actionLogs = response.data
+                    this.actionLogsError = false
+                })
+                .catch(e => {
+                    console.log(e)
+                    this.actionLogsError = true
+                })
             },
             getRequestHistory() {
                 Vue.prototype.$http.get(`/api/requestsbyuser/${this.user.id}`,
@@ -389,11 +449,12 @@
             },
             requestsForYear(year) {
                 let dt = new Date()
-                const thisYear = dt.getYear()
+                const thisYear = dt.getFullYear()
                 const today = Vue.prototype.$moment().format('YYYY-MM-DD')
 
                 // If current year, get only requests up to this date
                 if(year == thisYear) {
+                	console.log(year + '==' + thisYear)
                     return this.pendingRequests.filter(pr => {
                         return pr.date_requested >= year + '-01-01' && pr.date_requested <= today
                     })
@@ -422,6 +483,7 @@
                 .then(response => {
                 	this.submitResult.color = 'success'
                     this.submitResult.msg = 'User was updated'
+                    this.getActionLogHistory() // refresh the action log because changing vacation allotment triggers a log
 
                     // Update the parent view by $emit-ing after 2 seconds
                     setTimeout(() => {
@@ -446,6 +508,7 @@
 				if(this.dialog == true) {
 					this.setUser()
                     this.getRequestHistory()
+                    this.getActionLogHistory()
                 }
             }
         }

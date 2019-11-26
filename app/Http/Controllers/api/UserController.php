@@ -40,6 +40,11 @@ class UserController extends Controller {
         return response()->json($users);
     }
 
+    public function actionLogsByUser($user) {
+        $actionLogs = ActionLog::with('user', 'actionBy')->where('affected_user', $user)->orderBy('created_at', 'DESC')->get();
+        return response()->json($actionLogs);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

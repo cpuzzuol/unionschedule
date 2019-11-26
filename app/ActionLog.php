@@ -17,4 +17,8 @@ class ActionLog extends Model
     public function user() {
         return $this->belongsTo('App\User' ,'affected_user');
     }
+
+    public function actionBy() {
+        return $this->hasOne('App\User', 'id', 'action_by');
+    }
 }

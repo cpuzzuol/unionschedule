@@ -2509,22 +2509,22 @@ __webpack_require__.r(__webpack_exports__);
       switch (this.action) {
         case 'approve':
           return {
-            icon: 'mdi-thumb-up',
-            color: 'success darken-1',
+            icon: 'mdi-thumb-up-outline',
+            color: 'info darken-1',
             title: 'Approve Vacation Request'
           };
 
         case 'deny':
           return {
-            icon: 'mdi-thumb-down',
-            color: 'error darken-1',
+            icon: 'mdi-thumb-down-outline',
+            color: 'info darken-1',
             title: 'Deny Vacation Request'
           };
 
         case 'pending':
           return {
-            icon: 'mdi-account-clock',
-            color: 'warning darken-1',
+            icon: 'mdi-account-clock-outline',
+            color: 'info darken-1',
             title: 'Set Vacation Request to Pending'
           };
 
@@ -3528,6 +3528,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3579,6 +3612,9 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
   },
   data: function data() {
     return {
+      actionLogs: [],
+      actionLogsError: false,
+      actionLogsTab: null,
       dialog: false,
       pastRequestsTab: null,
       pendingRequests: [],
@@ -3655,6 +3691,11 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
     }
   },
   methods: {
+    actionLogsForYear: function actionLogsForYear(year) {
+      return this.actionLogs.filter(function (al) {
+        return al.created_at >= year + '-01-01 00:00:00' && al.created_at <= year + '-12-31 23:59:59';
+      });
+    },
     // Do a little cleanup when dialog closes
     closeDialog: function closeDialog() {
       this.dialog = false;
@@ -3691,8 +3732,25 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
         });
       }
     },
-    getRequestHistory: function getRequestHistory() {
+    // Action logs are NOT request logs. Action logs are usually when admins update vacation allotment for the user.
+    getActionLogHistory: function getActionLogHistory() {
       var _this2 = this;
+
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.get("/api/actionlogsbyuser/".concat(this.user.id), {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.apiToken
+        }
+      }).then(function (response) {
+        _this2.actionLogs = response.data;
+        _this2.actionLogsError = false;
+      })["catch"](function (e) {
+        console.log(e);
+        _this2.actionLogsError = true;
+      });
+    },
+    getRequestHistory: function getRequestHistory() {
+      var _this3 = this;
 
       vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.get("/api/requestsbyuser/".concat(this.user.id), {
         headers: {
@@ -3700,11 +3758,11 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
           'Authorization': 'Bearer ' + this.apiToken
         }
       }).then(function (response) {
-        _this2.pendingRequests = response.data;
-        _this2.pendingRequestsError = false;
+        _this3.pendingRequests = response.data;
+        _this3.pendingRequestsError = false;
       })["catch"](function (e) {
         console.log(e);
-        _this2.pendingRequestsError = true;
+        _this3.pendingRequestsError = true;
       });
     },
     pastDecisionColor: function pastDecisionColor(decision) {
@@ -3733,10 +3791,11 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
     },
     requestsForYear: function requestsForYear(year) {
       var dt = new Date();
-      var thisYear = dt.getYear();
+      var thisYear = dt.getFullYear();
       var today = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'); // If current year, get only requests up to this date
 
       if (year == thisYear) {
+        console.log(year + '==' + thisYear);
         return this.pendingRequests.filter(function (pr) {
           return pr.date_requested >= year + '-01-01' && pr.date_requested <= today;
         });
@@ -3750,7 +3809,7 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
       this.userEditable = Object.assign({}, this.user);
     },
     updateUser: function updateUser() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.submitting = true;
       vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.put("/api/users/".concat(this.user.id), {
@@ -3762,23 +3821,27 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
           'Authorization': 'Bearer ' + this.apiToken
         }
       }).then(function (response) {
-        _this3.submitResult.color = 'success';
-        _this3.submitResult.msg = 'User was updated'; // Update the parent view by $emit-ing after 2 seconds
+        _this4.submitResult.color = 'success';
+        _this4.submitResult.msg = 'User was updated';
+
+        _this4.getActionLogHistory(); // refresh the action log because changing vacation allotment triggers a log
+        // Update the parent view by $emit-ing after 2 seconds
+
 
         setTimeout(function () {
-          _this3.submitResult.complete = false;
-          _this3.sendResetPasswordLink = false;
+          _this4.submitResult.complete = false;
+          _this4.sendResetPasswordLink = false;
 
-          _this3.$v.userEditable.$reset();
+          _this4.$v.userEditable.$reset();
 
-          _this3.$emit('user-updated');
+          _this4.$emit('user-updated');
         }, 2000);
       })["catch"](function (e) {
-        _this3.submitResult.color = 'error';
-        _this3.submitResult.msg = 'There was a problem updating the user';
+        _this4.submitResult.color = 'error';
+        _this4.submitResult.msg = 'There was a problem updating the user';
       })["finally"](function (response) {
-        _this3.submitResult.complete = true;
-        _this3.submitting = false;
+        _this4.submitResult.complete = true;
+        _this4.submitting = false;
       });
     }
   },
@@ -3787,6 +3850,7 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
       if (this.dialog == true) {
         this.setUser();
         this.getRequestHistory();
+        this.getActionLogHistory();
       }
     }
   }
@@ -3914,7 +3978,6 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
-//
 //
 //
 //
@@ -58821,11 +58884,11 @@ var render = function() {
                         { attrs: { cols: "12" } },
                         [
                           _vm.isRestrictedDate
-                            ? _c("v-alert", { attrs: { type: "warning" } }, [
-                                _vm._v(
-                                  "Managers are restricted from booking on this date."
-                                )
-                              ])
+                            ? _c(
+                                "v-alert",
+                                { attrs: { type: "info", outlined: "" } },
+                                [_vm._v("Booking restricted on this date.")]
+                              )
                             : _vm._e(),
                           _vm._v(" "),
                           _vm.dateRequests.length == 0
@@ -60453,8 +60516,7 @@ var render = function() {
                                                       attrs: {
                                                         xs: "12",
                                                         sm: "12",
-                                                        md: "6",
-                                                        lg: "4"
+                                                        md: "6"
                                                       }
                                                     },
                                                     [
@@ -60507,16 +60569,13 @@ var render = function() {
                                                     1
                                                   ),
                                                   _vm._v(" "),
-                                                  _c("v-spacer"),
-                                                  _vm._v(" "),
                                                   _c(
                                                     "v-col",
                                                     {
                                                       attrs: {
                                                         xs: "12",
                                                         sm: "12",
-                                                        md: "6",
-                                                        lg: "4"
+                                                        md: "6"
                                                       }
                                                     },
                                                     [
@@ -60591,7 +60650,7 @@ var render = function() {
                                                                         {
                                                                           key:
                                                                             "past-req-tab-" +
-                                                                            _vm.i
+                                                                            year
                                                                         },
                                                                         [
                                                                           _vm._v(
@@ -60632,15 +60691,6 @@ var render = function() {
                                                                               year
                                                                           },
                                                                           [
-                                                                            _vm._v(
-                                                                              "\n                                                                    " +
-                                                                                _vm._s(
-                                                                                  _vm.requestsForYear(
-                                                                                    year
-                                                                                  )
-                                                                                ) +
-                                                                                "\n                                                                    "
-                                                                            ),
                                                                             _c(
                                                                               "v-list",
                                                                               {
@@ -60762,6 +60812,187 @@ var render = function() {
                                   1
                                 )
                               ]
+                            : _vm._e(),
+                          _vm._v(" "),
+                          section == "Logs"
+                            ? [
+                                _c(
+                                  "v-card",
+                                  [
+                                    _c(
+                                      "v-card-text",
+                                      [
+                                        _vm.actionLogsError
+                                          ? [
+                                              _c(
+                                                "v-alert",
+                                                {
+                                                  attrs: {
+                                                    value: true,
+                                                    type: "error"
+                                                  }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    "\n                                            There was a problem loading action logs requests for this user.\n                                        "
+                                                  )
+                                                ]
+                                              )
+                                            ]
+                                          : [
+                                              _vm.actionLogs.length > 0
+                                                ? [
+                                                    _c(
+                                                      "v-tabs",
+                                                      {
+                                                        staticClass: "mt-3",
+                                                        attrs: {
+                                                          "fixed-tabs": "",
+                                                          "background-color":
+                                                            "secondary",
+                                                          dark: "",
+                                                          "show-arrows": ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.actionLogsTab,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.actionLogsTab = $$v
+                                                          },
+                                                          expression:
+                                                            "actionLogsTab"
+                                                        }
+                                                      },
+                                                      [
+                                                        _c("v-tabs-slider", {
+                                                          attrs: {
+                                                            color:
+                                                              "yellow lighten-3"
+                                                          }
+                                                        }),
+                                                        _vm._v(" "),
+                                                        _vm._l(
+                                                          _vm.yearsSince2019,
+                                                          function(year) {
+                                                            return _c(
+                                                              "v-tab",
+                                                              {
+                                                                key:
+                                                                  "actionlog-req-tab-" +
+                                                                  year
+                                                              },
+                                                              [
+                                                                _vm._v(
+                                                                  _vm._s(year)
+                                                                )
+                                                              ]
+                                                            )
+                                                          }
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _c(
+                                                          "v-tabs-items",
+                                                          {
+                                                            model: {
+                                                              value:
+                                                                _vm.actionLogsTab,
+                                                              callback: function(
+                                                                $$v
+                                                              ) {
+                                                                _vm.actionLogsTab = $$v
+                                                              },
+                                                              expression:
+                                                                "actionLogsTab"
+                                                            }
+                                                          },
+                                                          _vm._l(
+                                                            _vm.yearsSince2019,
+                                                            function(year) {
+                                                              return _c(
+                                                                "v-tab-item",
+                                                                {
+                                                                  key:
+                                                                    "actionlog-req-tab-content-" +
+                                                                    year
+                                                                },
+                                                                _vm._l(
+                                                                  _vm.actionLogsForYear(
+                                                                    year
+                                                                  ),
+                                                                  function(
+                                                                    aLog,
+                                                                    index
+                                                                  ) {
+                                                                    return _c(
+                                                                      "p",
+                                                                      {
+                                                                        key:
+                                                                          "action-log-" +
+                                                                          index
+                                                                      },
+                                                                      [
+                                                                        _c(
+                                                                          "strong",
+                                                                          [
+                                                                            _vm._v(
+                                                                              "[" +
+                                                                                _vm._s(
+                                                                                  _vm._f(
+                                                                                    "slashdatetime"
+                                                                                  )(
+                                                                                    aLog.created_at
+                                                                                  )
+                                                                                ) +
+                                                                                "] by " +
+                                                                                _vm._s(
+                                                                                  aLog
+                                                                                    .action_by
+                                                                                    .first_name +
+                                                                                    " " +
+                                                                                    aLog
+                                                                                      .action_by
+                                                                                      .last_name
+                                                                                ) +
+                                                                                " -"
+                                                                            )
+                                                                          ]
+                                                                        ),
+                                                                        _vm._v(
+                                                                          " " +
+                                                                            _vm._s(
+                                                                              aLog.description
+                                                                            ) +
+                                                                            "\n                                                        "
+                                                                        )
+                                                                      ]
+                                                                    )
+                                                                  }
+                                                                ),
+                                                                0
+                                                              )
+                                                            }
+                                                          ),
+                                                          1
+                                                        )
+                                                      ],
+                                                      2
+                                                    )
+                                                  ]
+                                                : _c("p", [
+                                                    _vm._v(
+                                                      "No action logs for this user"
+                                                    )
+                                                  ])
+                                            ]
+                                      ],
+                                      2
+                                    )
+                                  ],
+                                  1
+                                )
+                              ]
                             : _vm._e()
                         ],
                         2
@@ -60851,7 +61082,7 @@ var render = function() {
           ]
         : _c(
             "v-list",
-            { attrs: { dense: "", "two-lines": "" } },
+            { attrs: { dense: "" } },
             _vm._l(_vm.pendingRequests, function(req, index) {
               return _c(
                 "v-list-item",
@@ -61009,39 +61240,34 @@ var render = function() {
                 "v-card-text",
                 { staticClass: "mt-4" },
                 [
-                  _vm._v(
-                    "\n                " +
-                      _vm._s(_vm.vacationRequest) +
-                      "\n                "
-                  ),
-                  _c(
-                    "v-list",
-                    { attrs: { dense: "", "two-lines": "" } },
-                    _vm._l(_vm.vacationRequest.logs, function(log, index) {
-                      return _c(
-                        "v-list-item",
-                        { key: "log-" + index },
-                        [
-                          _c("v-list-item-title", [
+                  _vm.vacationRequest.logs.length > 0
+                    ? _vm._l(_vm.vacationRequest.logs, function(log, index) {
+                        return _c("p", { key: "log-" + index }, [
+                          _c("strong", [
                             _vm._v(
                               "[" +
                                 _vm._s(
                                   _vm._f("slashdatetime")(log.created_at)
                                 ) +
-                                "] - " +
-                                _vm._s(log.description)
+                                "] by " +
+                                _vm._s(
+                                  log.action_by.first_name +
+                                    " " +
+                                    log.action_by.last_name
+                                ) +
+                                " -"
                             )
                           ]),
-                          _vm._v(" "),
-                          _c("v-list-item-subtitle", [_vm._v("blub")])
-                        ],
-                        1
-                      )
-                    }),
-                    1
-                  )
+                          _vm._v(
+                            " " +
+                              _vm._s(log.description) +
+                              "\n                    "
+                          )
+                        ])
+                      })
+                    : _c("p", [_vm._v("No logs for this vacation request.")])
                 ],
-                1
+                2
               )
             ],
             1
