@@ -21,4 +21,8 @@ class VacationRequest extends Model
     public function requesterBasicInfo() {
         return $this->belongsTo('App\User', 'requested_by')->select(['first_name', 'last_name', 'email']);
     }
+
+    public function logs() {
+        return $this->hasMany('App\RequestLog', 'request_id')->orderBy('created_at', 'DESC');
+    }
 }

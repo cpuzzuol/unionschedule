@@ -48,7 +48,7 @@ class VacationRequestController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function requestsByUser(Request $request, $user) {
-        $requests = VacationRequest::with('requester')->where('requested_by', $user)->orderBy('date_requested', 'ASC')->get();
+        $requests = VacationRequest::with('requester', 'logs', 'logs.actionBy')->where('requested_by', $user)->orderBy('date_requested', 'ASC')->get();
         return response()->json($requests);
     }
 

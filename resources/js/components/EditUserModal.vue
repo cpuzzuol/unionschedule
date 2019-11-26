@@ -176,6 +176,15 @@
                                                                         :key="'past-req-tab-content-' + year"
                                                                     >
                                                                         {{ requestsForYear(year) }}
+                                                                        <v-list dense two-lines>
+                                                                            <v-list-item v-for="(req, index) in requestsForYear(year)" :key="'req-year-' + year + '-' + index">
+                                                                                <v-list-item-title>{{ req.date_requested | slashdatedow }}</v-list-item-title>
+                                                                                <v-list-item-subtitle><span :class="pastDecisionColor(req.decision)">{{ pastDecisionText(req.decision) }}</span></v-list-item-subtitle>
+                                                                                <v-list-item-icon>
+                                                                                    <system-user-vacation-request-log-modal :vacation-request="req"></system-user-vacation-request-log-modal>
+                                                                                </v-list-item-icon>
+                                                                            </v-list-item>
+                                                                        </v-list>
                                                                     </v-tab-item>
                                                                 </v-tabs-items>
                                                             </v-tabs>
@@ -199,11 +208,12 @@
 	import Vuelidate from 'vuelidate'
 	import { required, helpers, sameAs, numeric } from 'vuelidate/lib/validators'
     import SystemUserOutstandingRequests from "./SystemUserOutstandingRequests";
+		import SystemUserVacationRequestLogModal from "./SystemUserVacationRequestLogModal";
 	Vue.use(Vuelidate)
 
 	const unionSortersEmail = helpers.regex('alpha', /.+@unionsorters\.com$/);
 	export default {
-			components: { SystemUserOutstandingRequests },
+			components: { SystemUserVacationRequestLogModal, SystemUserOutstandingRequests },
 			props: {
             apiToken: {
             	type: String,
@@ -357,11 +367,31 @@
                     this.pendingRequestsError = true
                 })
             },
+            pastDecisionColor(decision) {
+			    switch(decision) {
+                  case 'approved':
+                  	return 'success--text'
+                  case 'denied':
+                  	return 'error--text'
+                  default:
+                  	return ''
+                }
+            },
+            pastDecisionText(decision) {
+                switch(decision) {
+                    case 'approved':
+                        return 'Approved'
+                    case 'denied':
+                        return 'Denied'
+                    default:
+                        return 'No Action'
+                }
+            },
             requestsForYear(year) {
                 let dt = new Date()
                 const thisYear = dt.getYear()
                 const today = Vue.prototype.$moment().format('YYYY-MM-DD')
-              
+
                 // If current year, get only requests up to this date
                 if(year == thisYear) {
                     return this.pendingRequests.filter(pr => {

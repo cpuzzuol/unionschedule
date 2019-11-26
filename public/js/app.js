@@ -3322,6 +3322,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _SystemUserOutstandingRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SystemUserOutstandingRequests */ "./resources/js/components/SystemUserOutstandingRequests.vue");
+/* harmony import */ var _SystemUserVacationRequestLogModal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./SystemUserVacationRequestLogModal */ "./resources/js/components/SystemUserVacationRequestLogModal.vue");
 //
 //
 //
@@ -3518,6 +3519,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -3526,6 +3537,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuelidate__WEBPACK_IMPORTED_MODUL
 var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["helpers"].regex('alpha', /.+@unionsorters\.com$/);
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
+    SystemUserVacationRequestLogModal: _SystemUserVacationRequestLogModal__WEBPACK_IMPORTED_MODULE_4__["default"],
     SystemUserOutstandingRequests: _SystemUserOutstandingRequests__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   props: {
@@ -3695,6 +3707,30 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
         _this2.pendingRequestsError = true;
       });
     },
+    pastDecisionColor: function pastDecisionColor(decision) {
+      switch (decision) {
+        case 'approved':
+          return 'success--text';
+
+        case 'denied':
+          return 'error--text';
+
+        default:
+          return '';
+      }
+    },
+    pastDecisionText: function pastDecisionText(decision) {
+      switch (decision) {
+        case 'approved':
+          return 'Approved';
+
+        case 'denied':
+          return 'Denied';
+
+        default:
+          return 'No Action';
+      }
+    },
     requestsForYear: function requestsForYear(year) {
       var dt = new Date();
       var thisYear = dt.getYear();
@@ -3860,6 +3896,69 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     handleRequestUpdated: function handleRequestUpdated() {
       this.$emit('request-updated');
+    }
+  },
+  watch: {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {},
+  props: {
+    vacationRequest: {
+      type: Object,
+      required: true
+    }
+  },
+  created: function created() {},
+  data: function data() {
+    return {
+      dialog: false
+    };
+  },
+  computed: {},
+  methods: {
+    // Do a little cleanup when dialog closes
+    closeDialog: function closeDialog() {
+      this.dialog = false;
     }
   },
   watch: {}
@@ -60540,9 +60639,101 @@ var render = function() {
                                                                                     year
                                                                                   )
                                                                                 ) +
-                                                                                "\n                                                                "
+                                                                                "\n                                                                    "
+                                                                            ),
+                                                                            _c(
+                                                                              "v-list",
+                                                                              {
+                                                                                attrs: {
+                                                                                  dense:
+                                                                                    "",
+                                                                                  "two-lines":
+                                                                                    ""
+                                                                                }
+                                                                              },
+                                                                              _vm._l(
+                                                                                _vm.requestsForYear(
+                                                                                  year
+                                                                                ),
+                                                                                function(
+                                                                                  req,
+                                                                                  index
+                                                                                ) {
+                                                                                  return _c(
+                                                                                    "v-list-item",
+                                                                                    {
+                                                                                      key:
+                                                                                        "req-year-" +
+                                                                                        year +
+                                                                                        "-" +
+                                                                                        index
+                                                                                    },
+                                                                                    [
+                                                                                      _c(
+                                                                                        "v-list-item-title",
+                                                                                        [
+                                                                                          _vm._v(
+                                                                                            _vm._s(
+                                                                                              _vm._f(
+                                                                                                "slashdatedow"
+                                                                                              )(
+                                                                                                req.date_requested
+                                                                                              )
+                                                                                            )
+                                                                                          )
+                                                                                        ]
+                                                                                      ),
+                                                                                      _vm._v(
+                                                                                        " "
+                                                                                      ),
+                                                                                      _c(
+                                                                                        "v-list-item-subtitle",
+                                                                                        [
+                                                                                          _c(
+                                                                                            "span",
+                                                                                            {
+                                                                                              class: _vm.pastDecisionColor(
+                                                                                                req.decision
+                                                                                              )
+                                                                                            },
+                                                                                            [
+                                                                                              _vm._v(
+                                                                                                _vm._s(
+                                                                                                  _vm.pastDecisionText(
+                                                                                                    req.decision
+                                                                                                  )
+                                                                                                )
+                                                                                              )
+                                                                                            ]
+                                                                                          )
+                                                                                        ]
+                                                                                      ),
+                                                                                      _vm._v(
+                                                                                        " "
+                                                                                      ),
+                                                                                      _c(
+                                                                                        "v-list-item-icon",
+                                                                                        [
+                                                                                          _c(
+                                                                                            "system-user-vacation-request-log-modal",
+                                                                                            {
+                                                                                              attrs: {
+                                                                                                "vacation-request": req
+                                                                                              }
+                                                                                            }
+                                                                                          )
+                                                                                        ],
+                                                                                        1
+                                                                                      )
+                                                                                    ],
+                                                                                    1
+                                                                                  )
+                                                                                }
+                                                                              ),
+                                                                              1
                                                                             )
-                                                                          ]
+                                                                          ],
+                                                                          1
                                                                         )
                                                                       }
                                                                     ),
@@ -60709,6 +60900,157 @@ var render = function() {
           )
     ],
     2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=template&id=4e622b86&":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=template&id=4e622b86& ***!
+  \************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "system-user-vacation-request-log-modal-container" },
+    [
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", scrollable: "", "max-width": "590px" },
+          scopedSlots: _vm._u([
+            {
+              key: "activator",
+              fn: function(ref) {
+                var on = ref.on
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._g(
+                      {
+                        attrs: {
+                          color: "info",
+                          text: "",
+                          title: "View request log"
+                        }
+                      },
+                      on
+                    ),
+                    [_c("v-icon", [_vm._v("mdi-format-list-bulleted")])],
+                    1
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.dialog,
+            callback: function($$v) {
+              _vm.dialog = $$v
+            },
+            expression: "dialog"
+          }
+        },
+        [
+          _vm._v(" "),
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-toolbar",
+                { attrs: { dark: "" } },
+                [
+                  _c("v-toolbar-title", [
+                    _vm._v(
+                      _vm._s(
+                        _vm.vacationRequest.requester.first_name +
+                          " " +
+                          _vm.vacationRequest.requester.last_name
+                      ) +
+                        "'s Request Log: " +
+                        _vm._s(
+                          _vm._f("slashdate")(
+                            _vm.vacationRequest.date_requested
+                          )
+                        )
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { icon: "", dark: "" },
+                      on: { click: _vm.closeDialog }
+                    },
+                    [_c("v-icon", [_vm._v("mdi-close")])],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                { staticClass: "mt-4" },
+                [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(_vm.vacationRequest) +
+                      "\n                "
+                  ),
+                  _c(
+                    "v-list",
+                    { attrs: { dense: "", "two-lines": "" } },
+                    _vm._l(_vm.vacationRequest.logs, function(log, index) {
+                      return _c(
+                        "v-list-item",
+                        { key: "log-" + index },
+                        [
+                          _c("v-list-item-title", [
+                            _vm._v(
+                              "[" +
+                                _vm._s(
+                                  _vm._f("slashdatetime")(log.created_at)
+                                ) +
+                                "] - " +
+                                _vm._s(log.description)
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("v-list-item-subtitle", [_vm._v("blub")])
+                        ],
+                        1
+                      )
+                    }),
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
   )
 }
 var staticRenderFns = []
@@ -113227,6 +113569,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserOutstandingRequests_vue_vue_type_template_id_581a2229___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserOutstandingRequests_vue_vue_type_template_id_581a2229___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/SystemUserVacationRequestLogModal.vue":
+/*!***********************************************************************!*\
+  !*** ./resources/js/components/SystemUserVacationRequestLogModal.vue ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _SystemUserVacationRequestLogModal_vue_vue_type_template_id_4e622b86___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SystemUserVacationRequestLogModal.vue?vue&type=template&id=4e622b86& */ "./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=template&id=4e622b86&");
+/* harmony import */ var _SystemUserVacationRequestLogModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SystemUserVacationRequestLogModal.vue?vue&type=script&lang=js& */ "./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _SystemUserVacationRequestLogModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SystemUserVacationRequestLogModal_vue_vue_type_template_id_4e622b86___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _SystemUserVacationRequestLogModal_vue_vue_type_template_id_4e622b86___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/SystemUserVacationRequestLogModal.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserVacationRequestLogModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./SystemUserVacationRequestLogModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserVacationRequestLogModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=template&id=4e622b86&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=template&id=4e622b86& ***!
+  \******************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserVacationRequestLogModal_vue_vue_type_template_id_4e622b86___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./SystemUserVacationRequestLogModal.vue?vue&type=template&id=4e622b86& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SystemUserVacationRequestLogModal.vue?vue&type=template&id=4e622b86&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserVacationRequestLogModal_vue_vue_type_template_id_4e622b86___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUserVacationRequestLogModal_vue_vue_type_template_id_4e622b86___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

@@ -17,4 +17,8 @@ class RequestLog extends Model
     public function request() {
         return $this->belongsTo('App\VacationRequest' ,'requested_id');
     }
+
+    public function actionBy() {
+        return $this->hasOne('App\User', 'id', 'action_by')->select(['first_name', 'last_name', 'id']);
+    }
 }
