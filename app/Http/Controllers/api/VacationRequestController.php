@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Helpers\VacationLogger;
 use App\Http\Controllers\Controller;
 use App\RequestLog;
+use App\User;
 use App\VacationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -59,19 +60,7 @@ class VacationRequestController extends Controller
      */
     public function create()
     {
-//        $user = auth()->user();
-//        $response['restrictedDates'] = DB::table('restricted_dates')
-//            ->select('date')
-//            ->whereYear('date', '=', date('Y'))
-//            ->get();
-//
-//        // Requests for the year (user will not be able to select these)
-//        $response['previousRequests'] = DB::table('vacation_requests')
-//            ->where('requested_by', $user->id)
-//            ->whereYear('date_requested', '=', date('Y'))
-//            ->get();
-//
-//        return response()->json($response);
+        //
     }
 
     /**
@@ -82,7 +71,7 @@ class VacationRequestController extends Controller
      */
     public function store(Request $request)
     {
-        $userID = $request->post('userID');
+        $userID = auth()->user()->id;
         $requestedDates = $request->input('requestedDates');
         $response = [];
         foreach($requestedDates as $requestedDate) {
@@ -96,7 +85,12 @@ class VacationRequestController extends Controller
                 $response[] = $requestedDate . ' has been requested.';
                 // Make a log of this event
                 $logger = new VacationLogger();
-                $logger->logAction($newRequest->id);
+                $logger->logAction($newRequest->id, 'Vacation request initiated.');
+
+                // Decrement user's vacation allotment
+                $user = User::find($userID);
+                $user->vacation_days = $user->vacation_days - 1;
+                $user->save();
             } else {
                 $response[] = $requestedDate . ' was already requested.';
             }
@@ -247,6 +241,15 @@ class VacationRequestController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $vacationRequest = VacationRequest::findOrFail($id);
+        if($vacationRequest) {
+            $vacationRequest->delete();
+            // Increment the user's vacation allotment
+            $user = User::find(auth()->user()->id);
+            $user->vacation_days = $user->vacation_days + 1;
+            $user->save();
+            return response()->json(null, 204);
+        }
+        return response()->json('Bad request', 400);
     }
 }

@@ -35,19 +35,7 @@ class VacationRequestController extends Controller
      */
     public function create()
     {
-        $user = auth()->user();
-        $restrictedDates = DB::table('restricted_dates')
-            ->select('date')
-            ->whereYear('date', '=', date('Y'))
-            ->get();
-
-        // Requests for the year (user will not be able to select these)
-        $previousRequests = DB::table('vacation_requests')
-            ->where('requested_by', $user->id)
-            ->whereYear('date_requested', '=', date('Y'))
-            ->get();
-
-        return view('vacationrequest', ['user' => $user, 'restrictedDates' => $restrictedDates, 'previousRequests' => $previousRequests]);
+        return view('vacationrequest', []);
     }
 
     /**

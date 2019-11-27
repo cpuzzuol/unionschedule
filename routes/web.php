@@ -21,7 +21,6 @@ Route::get('/', function () {
  */
 Auth::routes();
 
-//Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/dashboard', 'UserController@index')->name('userIndex');
 Route::get('/vacation-request', 'VacationRequestController@create')->name('vacationRequest');
 Route::get('/admin', 'AdminController@index')->name('adminIndex');

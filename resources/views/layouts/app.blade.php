@@ -59,7 +59,7 @@
                         <v-btn href="{{ route('adminIndex') }}" text>{{ __('Admin Home') }}</v-btn>
                         <v-btn href="{{ route('userMgmtIndex') }}" text>{{ __('User Management') }}</v-btn>
                     @endif
-                    <v-btn href="{{ route('userIndex') }}" text>{{ __('Manager Dashboard') }}</v-btn>
+                    <v-btn href="{{ route('userIndex') }}" text>{{ __('My Dashboard') }}</v-btn>
                     <v-btn href="{{ route('vacationRequest') }}" text>{{ __('New Vacation Request') }}</v-btn>
                 @endif
             </v-toolbar-items>

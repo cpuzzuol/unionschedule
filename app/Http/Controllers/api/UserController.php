@@ -71,7 +71,34 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show($id){
-        //
+        $userID = auth()->user()->id;
+        $response['restrictedDates'] = DB::table('restricted_dates')
+            ->select('date')
+            ->whereYear('date', '=', date('Y'))
+            ->get();
+
+        // Requests for the year (user will not be able to select these)
+        $response['previousRequests'] = DB::table('vacation_requests')
+            ->where('requested_by', $userID)
+            ->whereYear('date_requested', '=', date('Y'))
+            ->get();
+
+        $user = User::findOrFail($id);
+        $response['userDaysLeft'] = $user->vacation_days;
+
+        return response()->json($response);
+    }
+
+    /**
+     * Get the number of vacation days left
+     * @param $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function userDaysLeft($user) {
+        $user = User::findOrFail($user);
+        $response = $user->vacation_days;
+
+        return response()->json($response);
     }
 
     /**

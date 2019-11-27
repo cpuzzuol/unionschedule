@@ -1,91 +1,96 @@
 <template>
     <div class="vacation-container">
-        <v-row>
-            <v-col cols="12" sm="6" lg="4">
-                <v-date-picker
-                    v-model="dates"
-                    multiple
-                    full-width
-                    :min="minDate"
-                    :max="maxDate"
-                    :allowed-dates="allowedDates"
-                    :events="previousRequestMarkers"
-                    :event-color="previousRequestMarkerColor"
-                ></v-date-picker>
-                <p>
-                    <span class="success--text">&#x25CF;</span> = request approved on this date.<br>
-                    <span class="error--text">&#x25CF;</span> = request denied on this date.<br>
-                    <span class="warning--text">&#x25CF;</span> = request pending on this date.
-                </p>
-            </v-col>
-            <v-col cols="12" sm="6" lg="8">
-                <v-card
-                    class="mx-auto"
-                    shaped
-                >
-                    <v-card-title :class="{ 'error--text': daysLeft == 0, 'info--text': daysLeft > 0 }">{{ daysLeft }} vacation days left this year</v-card-title>
-                    <v-card-text>
-                        <p v-if="dates.length == 0">Select one or multiple dates from the picker...</p>
-                        <p v-else><strong>Your selected dates:</strong></p>
-                        <v-chip
-                            v-for="(dt, index) in dates"
-                            :key="'selected-date-' + index"
-                            class="mr-1 mb-2"
-                            close
-                            color="info"
-                            text-color="white"
-                            @click:close="removeDate(dt)"
-                        >
-                            {{ dt | slashdate }}
-                        </v-chip>
-                        <template v-if="serverStatus">
-                            <v-alert
-                                dense :type="submissionFormatting.color"
-                            >{{ submissionFormatting.msg }}</v-alert>
-                        </template>
-                    </v-card-text>
-                    <v-divider></v-divider>
-                    <v-card-actions v-if="serverStatus != 200">
-                        <v-btn color="success" :disabled="dates.length == 0" :loading="submitting" @click="submit">Submit for review</v-btn>
-                        <v-btn color="secondary" outlined :disabled="dates.length == 0 || submitting" @click="clearDates">Reset</v-btn>
-                    </v-card-actions>
-                </v-card>
-                <v-alert class="mt-3" type="info" outlined>
-                    Submitting this vacation request does not guarantee approval. You will be notified by email when a decision has been made. Contact your supervisor if you believe your vacation balance is incorrect.
-                </v-alert>
-            </v-col>
-        </v-row>
+        <v-btn color="info" outlined href="/dashboard">Back to Dashboard</v-btn>
+        <data-loading v-if="!loadingData">
+            <v-row>
+                <v-col cols="12" sm="6" lg="4">
+                    <v-date-picker
+                        v-model="dates"
+                        multiple
+                        full-width
+                        :min="minDate"
+                        :max="maxDate"
+                        :allowed-dates="allowedDates"
+                        :events="previousRequestMarkers"
+                        :event-color="previousRequestMarkerColor"
+                    ></v-date-picker>
+                    <p>
+                        <span class="success--text">&#x25CF;</span> = request approved on this date.<br>
+                        <span class="error--text">&#x25CF;</span> = request denied on this date.<br>
+                        <span class="warning--text">&#x25CF;</span> = request pending on this date.
+                    </p>
+                </v-col>
+                <v-col cols="12" sm="6" lg="8">
+                    <v-card
+                        class="mx-auto"
+                        shaped
+                    >
+                        <v-card-title :class="{ 'error--text': daysLeft == 0, 'info--text': daysLeft > 0 }">{{ daysLeft }} vacation days left this year</v-card-title>
+                        <v-card-text>
+                            <p v-if="dates.length == 0">Select one or multiple dates from the picker...</p>
+                            <p v-else><strong>Your selected dates:</strong></p>
+                            <v-chip
+                                v-for="(dt, index) in dates"
+                                :key="'selected-date-' + index"
+                                class="mr-1 mb-2"
+                                close
+                                color="info"
+                                text-color="white"
+                                @click:close="removeDate(dt)"
+                            >
+                                {{ dt | slashdate }}
+                            </v-chip>
+                            <template v-if="serverStatus">
+                                <v-alert
+                                    dense :type="submissionFormatting.color"
+                                >{{ submissionFormatting.msg }}</v-alert>
+                            </template>
+                        </v-card-text>
+                        <v-divider></v-divider>
+                        <v-card-actions v-if="serverStatus != 200">
+                            <v-btn color="success" :disabled="dates.length == 0" :loading="submitting" @click="submit">Submit for review</v-btn>
+                            <v-btn color="secondary" outlined :disabled="dates.length == 0 || submitting" @click="clearDates">Reset</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                    <v-alert class="mt-3" type="info" outlined>
+                        Submitting this vacation request does not guarantee approval. You will be notified by email when a decision has been made. Contact your supervisor if you believe your vacation balance is incorrect.
+                    </v-alert>
+                </v-col>
+            </v-row>
+        </data-loading>
     </div>
 </template>
 <script>
     import Vue from 'vue'
+    import DataLoading from "./DataLoading";
 	export default {
-		props: {
-			previousRequests: {
-			    type: Array,
-                required: true
-            },
-			restrictedDates: {
-				type: Array,
-                required: true
-            },
+			components: { DataLoading },
+			props: {
             user: {
 				type: Object,
                 required: true
             }
 		},
-        created() {},
+        created() {
+			this.loadingData = true
+			this.getData()
+        },
 		data: () => ({
             dates: [],
+            loadingData: false,
+            loadingDataError: false,
             menu: false,
             minDate: Vue.prototype.$moment().format('YYYY-MM-DD'),
             maxDate: Vue.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
+            previousRequests: [],
+            restrictedDates: [],
             serverStatus: null,
-            submitting: false
+            submitting: false,
+            userDaysLeft: 0
 		}),
         computed: {
-			daysLeft() {
-				return parseInt(this.user.vacation_days) - this.dates.length
+            daysLeft() {
+                return parseInt(this.userDaysLeft) - this.dates.length
             },
             previousRequestMarkers() {
 				let datesWithMarkers = []
@@ -133,6 +138,29 @@
 				this.dates = []
                 this.serverStatus = null
             },
+            getData() {
+                Vue.prototype.$http.get(`/api/users/${this.user.id}`,
+                    {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': 'Bearer ' + this.user.api_token
+                        }
+                    }
+                )
+                .then(response => {
+                    this.previousRequests = response.data.previousRequests
+                    this.restrictedDates = response.data.restrictedDates
+                    this.userDaysLeft = response.data.userDaysLeft
+                    this.loadingDataError = false
+                })
+                .catch(e => {
+                    console.log(e)
+                    this.loadingDataError = true
+                })
+                .finally(() => {
+                	this.loadingData = false
+                })
+            },
             // Based on the user's previous requests, return a different event color for the date picker
             previousRequestMarkerColor(val) {
                 const matchingDate = this.previousRequests.find(pr => {
@@ -166,8 +194,11 @@
                 .then(response => {
                     this.serverStatus = 200
                     setTimeout(() => {
-                    	location.reload()
-                    }, 2500)
+                    	this.submitting = false
+                        this.serverStatus = ''
+                        this.dates = []
+                    	this.getData() // refresh data
+                    }, 2000)
                 })
                 .catch(e => {
                 	console.log(e)

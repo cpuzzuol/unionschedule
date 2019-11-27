@@ -10651,3 +10651,7 @@ a.text-dark:focus {
   }
 }
 
+a.v-btn {
+  text-decoration: none;
+}
+

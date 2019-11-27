@@ -337,8 +337,7 @@
             yearsSince2019() {
             	let years = []
                 let dt = new Date()
-                //const year = dt.getYear()
-                const year = 2022
+                const year = dt.getFullYear()
                 for(let i = year; i >= 2019; i--) {
                 	years.push(i)
                 }
@@ -454,7 +453,6 @@
 
                 // If current year, get only requests up to this date
                 if(year == thisYear) {
-                	console.log(year + '==' + thisYear)
                     return this.pendingRequests.filter(pr => {
                         return pr.date_requested >= year + '-01-01' && pr.date_requested <= today
                     })

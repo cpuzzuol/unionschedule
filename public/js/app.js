@@ -3679,9 +3679,8 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
     // Used for years tabs for request history
     yearsSince2019: function yearsSince2019() {
       var years = [];
-      var dt = new Date(); //const year = dt.getYear()
-
-      var year = 2022;
+      var dt = new Date();
+      var year = dt.getFullYear();
 
       for (var i = year; i >= 2019; i--) {
         years.push(i);
@@ -3795,7 +3794,6 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
       var today = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'); // If current year, get only requests up to this date
 
       if (year == thisYear) {
-        console.log(year + '==' + thisYear);
         return this.pendingRequests.filter(function (pr) {
           return pr.date_requested >= year + '-01-01' && pr.date_requested <= today;
         });
@@ -4080,19 +4078,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -4180,10 +4165,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VacationSelection.vue?vue&type=script&lang=js&":
-/*!****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VacationSelection.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -4222,6 +4207,126 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    user: {
+      type: Object,
+      required: true
+    },
+    vacationRequest: {
+      type: Object,
+      required: true
+    }
+  },
+  created: function created() {},
+  data: function data() {
+    return {
+      dialog: false,
+      submitResult: {
+        color: 'info',
+        complete: false,
+        msg: ''
+      },
+      submitting: false
+    };
+  },
+  computed: {},
+  methods: {
+    cancelRequest: function cancelRequest() {
+      var _this = this;
+
+      this.submitting = true;
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http["delete"]("/api/vacationrequests/".concat(this.vacationRequest.id), {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.user.api_token
+        }
+      }).then(function (response) {
+        _this.submitResult.color = 'success';
+        _this.submitResult.msg = 'Cancellation successful.'; // Close the dialog and update the parent view by $emit-ing after 2 seconds
+
+        setTimeout(function () {
+          _this.closeDialog();
+
+          _this.$emit('request-canceled');
+        }, 2000);
+      })["catch"](function (e) {
+        _this.submitResult.color = 'error';
+        _this.submitResult.msg = 'There was a problem canceling the request. Please notify your supervisor.';
+      })["finally"](function (response) {
+        _this.submitResult.complete = true;
+        _this.submitting = false;
+      });
+    },
+    // Do a little cleanup when dialog closes
+    closeDialog: function closeDialog() {
+      this.dialog = false;
+      this.submitResult = {
+        color: 'info',
+        complete: false,
+        msg: ''
+      };
+    }
+  },
+  watch: {
+    dialog: function dialog() {}
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboard.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserDashboard.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _UserDashboardOutstandingRequests__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserDashboardOutstandingRequests */ "./resources/js/components/UserDashboardOutstandingRequests.vue");
+/* harmony import */ var _SystemUserVacationRequestLogModal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SystemUserVacationRequestLogModal */ "./resources/js/components/SystemUserVacationRequestLogModal.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4251,13 +4356,169 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    SystemUserVacationRequestLogModal: _SystemUserVacationRequestLogModal__WEBPACK_IMPORTED_MODULE_2__["default"],
+    UserDashboardOutstandingRequests: _UserDashboardOutstandingRequests__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  props: {
+    user: {
+      type: Object,
+      required: true
+    }
+  },
+  created: function created() {
+    this.userDaysLeft = this.user.vacation_days;
+    this.getRequestHistory();
+  },
+  data: function data() {
+    return {
+      pastRequestsTab: null,
+      outstandingRequests: [],
+      outstandingRequestsError: false,
+      sendResetPasswordLink: false,
+      userDaysLeft: 0
+    };
+  },
+  computed: {
+    futureOutstandingRequests: function futureOutstandingRequests() {
+      var today = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD');
+      return this.outstandingRequests.filter(function (pr) {
+        return pr.date_requested >= today;
+      });
+    },
+    // Used for years tabs for request history
+    yearsSince2019: function yearsSince2019() {
+      var years = [];
+      var dt = new Date();
+      var year = dt.getFullYear();
+
+      for (var i = year; i >= 2019; i--) {
+        years.push(i);
+      }
+
+      return years;
+    }
+  },
+  methods: {
+    getRequestHistory: function getRequestHistory() {
+      var _this = this;
+
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.get("/api/requestsbyuser/".concat(this.user.id), {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.user.api_token
+        }
+      }).then(function (response) {
+        _this.outstandingRequests = response.data;
+        _this.outstandingRequestsError = false;
+      })["catch"](function (e) {
+        console.log(e);
+        _this.outstandingRequestsError = true;
+      });
+    },
+    getUserDaysLeft: function getUserDaysLeft() {
+      var _this2 = this;
+
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.get("/api/userdaysleft/".concat(this.user.id), {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.user.api_token
+        }
+      }).then(function (response) {
+        _this2.userDaysLeft = response.data;
+      })["catch"](function (e) {
+        console.log(e);
+      });
+    },
+    handleRequestCanceled: function handleRequestCanceled() {
+      this.getRequestHistory();
+      this.getUserDaysLeft();
+    },
+    pastDecisionColor: function pastDecisionColor(decision) {
+      switch (decision) {
+        case 'approved':
+          return 'success--text';
+
+        case 'denied':
+          return 'error--text';
+
+        default:
+          return '';
+      }
+    },
+    pastDecisionText: function pastDecisionText(decision) {
+      switch (decision) {
+        case 'approved':
+          return 'Approved';
+
+        case 'denied':
+          return 'Denied';
+
+        default:
+          return 'No Action';
+      }
+    },
+    requestsForYear: function requestsForYear(year) {
+      var dt = new Date();
+      var thisYear = dt.getFullYear();
+      var today = vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'); // If current year, get only requests up to this date
+
+      if (year == thisYear) {
+        return this.outstandingRequests.filter(function (pr) {
+          return pr.date_requested >= year + '-01-01' && pr.date_requested <= today;
+        });
+      }
+
+      return this.outstandingRequests.filter(function (pr) {
+        return pr.date_requested >= year + '-01-01' && pr.date_requested <= year + '-12-31';
+      });
+    }
+  },
+  watch: {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UserCancelVacationRequestModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserCancelVacationRequestModal */ "./resources/js/components/UserCancelVacationRequestModal.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    previousRequests: {
-      type: Array,
-      required: true
-    },
-    restrictedDates: {
+    outstandingRequests: {
       type: Array,
       required: true
     },
@@ -4266,20 +4527,156 @@ __webpack_require__.r(__webpack_exports__);
       required: true
     }
   },
+  components: {
+    UserCancelVacationRequestModal: _UserCancelVacationRequestModal__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   created: function created() {},
+  data: function data() {
+    return {};
+  },
+  computed: {},
+  methods: {
+    handleRequestCanceled: function handleRequestCanceled() {
+      this.$emit('request-canceled');
+    },
+    pastDecisionColor: function pastDecisionColor(decision) {
+      switch (decision) {
+        case 'approved':
+          return 'success--text';
+
+        case 'denied':
+          return 'error--text';
+
+        default:
+          return '';
+      }
+    },
+    pastDecisionText: function pastDecisionText(decision) {
+      switch (decision) {
+        case 'approved':
+          return 'Approved';
+
+        case 'denied':
+          return 'Denied';
+
+        default:
+          return 'Pending Review';
+      }
+    }
+  },
+  watch: {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VacationSelection.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VacationSelection.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _DataLoading__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DataLoading */ "./resources/js/components/DataLoading.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    DataLoading: _DataLoading__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  props: {
+    user: {
+      type: Object,
+      required: true
+    }
+  },
+  created: function created() {
+    this.loadingData = true;
+    this.getData();
+  },
   data: function data() {
     return {
       dates: [],
+      loadingData: false,
+      loadingDataError: false,
       menu: false,
       minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'),
       maxDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
+      previousRequests: [],
+      restrictedDates: [],
       serverStatus: null,
-      submitting: false
+      submitting: false,
+      userDaysLeft: 0
     };
   },
   computed: {
     daysLeft: function daysLeft() {
-      return parseInt(this.user.vacation_days) - this.dates.length;
+      return parseInt(this.userDaysLeft) - this.dates.length;
     },
     previousRequestMarkers: function previousRequestMarkers() {
       var datesWithMarkers = [];
@@ -4343,6 +4740,26 @@ __webpack_require__.r(__webpack_exports__);
       this.dates = [];
       this.serverStatus = null;
     },
+    getData: function getData() {
+      var _this = this;
+
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.get("/api/users/".concat(this.user.id), {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.user.api_token
+        }
+      }).then(function (response) {
+        _this.previousRequests = response.data.previousRequests;
+        _this.restrictedDates = response.data.restrictedDates;
+        _this.userDaysLeft = response.data.userDaysLeft;
+        _this.loadingDataError = false;
+      })["catch"](function (e) {
+        console.log(e);
+        _this.loadingDataError = true;
+      })["finally"](function () {
+        _this.loadingData = false;
+      });
+    },
     // Based on the user's previous requests, return a different event color for the date picker
     previousRequestMarkerColor: function previousRequestMarkerColor(val) {
       var matchingDate = this.previousRequests.find(function (pr) {
@@ -4362,7 +4779,7 @@ __webpack_require__.r(__webpack_exports__);
       this.dates.splice(this.dates.indexOf(date), 1);
     },
     submit: function submit() {
-      var _this = this;
+      var _this2 = this;
 
       this.submitting = true;
       vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$http.post('/api/vacationrequests', {
@@ -4374,14 +4791,19 @@ __webpack_require__.r(__webpack_exports__);
           'Authorization': 'Bearer ' + this.user.api_token
         }
       }).then(function (response) {
-        _this.serverStatus = 200;
+        _this2.serverStatus = 200;
         setTimeout(function () {
-          location.reload();
-        }, 2500);
+          _this2.submitting = false;
+          _this2.serverStatus = '';
+          _this2.dates = [];
+
+          _this2.getData(); // refresh data
+
+        }, 2000);
       })["catch"](function (e) {
         console.log(e);
-        _this.submitting = false;
-        _this.serverStatus = e.response.status;
+        _this2.submitting = false;
+        _this2.serverStatus = e.response.status;
       });
     }
   },
@@ -8874,6 +9296,25 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, ".clickable[data-v-3a2ba25d] {\n  cursor: pointer;\n  text-decoration: underline;\n}", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".clickable[data-v-311aa22e] {\n  cursor: pointer;\n  text-decoration: underline;\n}", ""]);
 
 // exports
 
@@ -57416,6 +57857,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--7-2!../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../node_modules/vue-loader/lib??vue-loader-options!./UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true& */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -61357,11 +61828,11 @@ var render = function() {
                           },
                           [
                             _vm._v(
-                              "\n                            " +
+                              "\n                        " +
                                 _vm._s(
                                   item.last_name + ", " + item.first_name
                                 ) +
-                                "\n                            "
+                                "\n                        "
                             ),
                             item.is_admin
                               ? _c(
@@ -61395,6 +61866,523 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=template&id=4c0073cb&":
+/*!*********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=template&id=4c0073cb& ***!
+  \*********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "user-cancel-vacation-request-modal-container" },
+    [
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", scrollable: "", "max-width": "590px" },
+          scopedSlots: _vm._u([
+            {
+              key: "activator",
+              fn: function(ref) {
+                var on = ref.on
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._g(
+                      {
+                        staticClass: "mr-2",
+                        attrs: {
+                          color: "error",
+                          small: "",
+                          dark: "",
+                          icon: "",
+                          title: "Cancel this Vacation Request"
+                        }
+                      },
+                      on
+                    ),
+                    [_c("v-icon", [_vm._v("mdi-cancel")])],
+                    1
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.dialog,
+            callback: function($$v) {
+              _vm.dialog = $$v
+            },
+            expression: "dialog"
+          }
+        },
+        [
+          _vm._v(" "),
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-toolbar",
+                { attrs: { dark: "" } },
+                [
+                  _c("v-toolbar-title", [_vm._v("Cancel Vacation Request")]),
+                  _vm._v(" "),
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { icon: "", dark: "" },
+                      on: { click: _vm.closeDialog }
+                    },
+                    [_c("v-icon", [_vm._v("mdi-close")])],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                { staticClass: "mt-4" },
+                [
+                  _c("p", [
+                    _vm._v(
+                      "Please confirm you wish to cancel this vacation request for "
+                    ),
+                    _c("strong", [
+                      _vm._v(
+                        _vm._s(
+                          _vm._f("slashdatedow")(
+                            _vm.vacationRequest.date_requested
+                          )
+                        )
+                      )
+                    ]),
+                    _vm._v(".")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "v-alert",
+                    {
+                      attrs: {
+                        color: _vm.submitResult.color,
+                        value: _vm.submitResult.complete,
+                        dark: ""
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(_vm.submitResult.msg) +
+                          "\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("v-divider"),
+              _vm._v(" "),
+              _vm.submitResult.color != "success"
+                ? _c(
+                    "v-card-actions",
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            color: "error",
+                            disabled: _vm.submitting,
+                            loading: _vm.submitting
+                          },
+                          on: { click: _vm.cancelRequest }
+                        },
+                        [_vm._v("Confirm Cancellation")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            color: "secondary",
+                            disabled: _vm.submitting,
+                            outlined: ""
+                          },
+                          on: { click: _vm.closeDialog }
+                        },
+                        [_vm._v("Do Not Cancel")]
+                      )
+                    ],
+                    1
+                  )
+                : _vm._e()
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboard.vue?vue&type=template&id=311aa22e&scoped=true&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserDashboard.vue?vue&type=template&id=311aa22e&scoped=true& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "user-dashboard-container" },
+    [
+      _vm.outstandingRequestsError
+        ? [
+            _c("v-alert", { attrs: { value: true, type: "error" } }, [
+              _vm._v(
+                "\n            There was a problem loading your vacation requests.\n        "
+              )
+            ])
+          ]
+        : [
+            _c(
+              "v-row",
+              [
+                _c(
+                  "v-col",
+                  { attrs: { cols: "12", xs: "12" } },
+                  [
+                    _vm._v("\n                You have "),
+                    _c("strong", [_vm._v(_vm._s(_vm.userDaysLeft))]),
+                    _vm._v(" vacation days left this year."),
+                    _c("br"),
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: {
+                          color: "info",
+                          outlined: "",
+                          href: "/vacation-request"
+                        }
+                      },
+                      [_vm._v("New Vacation Request")]
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-col",
+                  { attrs: { xs: "12", sm: "12", md: "6" } },
+                  [
+                    _c(
+                      "v-card",
+                      { attrs: { outlined: "" } },
+                      [
+                        _c("v-card-title", { staticClass: "title" }, [
+                          _vm._v("Future Pending Requests")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-text",
+                          [
+                            _c("user-dashboard-outstanding-requests", {
+                              attrs: {
+                                user: _vm.user,
+                                "outstanding-requests":
+                                  _vm.futureOutstandingRequests
+                              },
+                              on: {
+                                "request-canceled": _vm.handleRequestCanceled
+                              }
+                            })
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-col",
+                  { attrs: { xs: "12", sm: "12", md: "6" } },
+                  [
+                    _c(
+                      "v-card",
+                      { attrs: { outlined: "" } },
+                      [
+                        _c("v-card-title", { staticClass: "title" }, [
+                          _vm._v("Past Vacation Requests")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-text",
+                          [
+                            _c(
+                              "v-tabs",
+                              {
+                                staticClass: "mt-3",
+                                attrs: {
+                                  "fixed-tabs": "",
+                                  "background-color": "primary",
+                                  dark: "",
+                                  "show-arrows": ""
+                                },
+                                model: {
+                                  value: _vm.pastRequestsTab,
+                                  callback: function($$v) {
+                                    _vm.pastRequestsTab = $$v
+                                  },
+                                  expression: "pastRequestsTab"
+                                }
+                              },
+                              [
+                                _c("v-tabs-slider", {
+                                  attrs: { color: "yellow" }
+                                }),
+                                _vm._v(" "),
+                                _vm._l(_vm.yearsSince2019, function(year) {
+                                  return _c(
+                                    "v-tab",
+                                    { key: "past-req-tab-" + year },
+                                    [_vm._v(_vm._s(year))]
+                                  )
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "v-tabs-items",
+                                  {
+                                    model: {
+                                      value: _vm.pastRequestsTab,
+                                      callback: function($$v) {
+                                        _vm.pastRequestsTab = $$v
+                                      },
+                                      expression: "pastRequestsTab"
+                                    }
+                                  },
+                                  _vm._l(_vm.yearsSince2019, function(year) {
+                                    return _c(
+                                      "v-tab-item",
+                                      { key: "past-req-tab-content-" + year },
+                                      [
+                                        _c(
+                                          "v-list",
+                                          {
+                                            attrs: {
+                                              dense: "",
+                                              "two-lines": ""
+                                            }
+                                          },
+                                          _vm._l(
+                                            _vm.requestsForYear(year),
+                                            function(req, index) {
+                                              return _c(
+                                                "v-list-item",
+                                                {
+                                                  key:
+                                                    "req-year-" +
+                                                    year +
+                                                    "-" +
+                                                    index
+                                                },
+                                                [
+                                                  _c("v-list-item-title", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        _vm._f("slashdatedow")(
+                                                          req.date_requested
+                                                        )
+                                                      )
+                                                    )
+                                                  ]),
+                                                  _vm._v(" "),
+                                                  _c("v-list-item-subtitle", [
+                                                    _c(
+                                                      "span",
+                                                      {
+                                                        class: _vm.pastDecisionColor(
+                                                          req.decision
+                                                        )
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            _vm.pastDecisionText(
+                                                              req.decision
+                                                            )
+                                                          )
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-list-item-icon",
+                                                    [
+                                                      _c(
+                                                        "system-user-vacation-request-log-modal",
+                                                        {
+                                                          attrs: {
+                                                            "vacation-request": req
+                                                          }
+                                                        }
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            }
+                                          ),
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  }),
+                                  1
+                                )
+                              ],
+                              2
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ]
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=template&id=4f6c2fa0&":
+/*!***********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=template&id=4f6c2fa0& ***!
+  \***********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "user-dashboard-outstanding-requests-container" },
+    [
+      _vm.outstandingRequests.length == 0
+        ? [
+            _c(
+              "v-alert",
+              {
+                staticClass: "mt-3",
+                attrs: { color: "info", value: true, dark: "" }
+              },
+              [
+                _vm._v(
+                  "\n            You have no future vacation requests.\n        "
+                )
+              ]
+            )
+          ]
+        : _c(
+            "v-list",
+            { attrs: { dense: "" } },
+            _vm._l(_vm.outstandingRequests, function(req, index) {
+              return _c(
+                "v-list-item",
+                { key: "req-pending-" + index },
+                [
+                  _c("v-list-item-title", [
+                    _vm._v(_vm._s(_vm._f("slashdatedow")(req.date_requested)))
+                  ]),
+                  _vm._v(" "),
+                  _c("v-list-item-subtitle", [
+                    _c("span", { class: _vm.pastDecisionColor(req.decision) }, [
+                      _vm._v(_vm._s(_vm.pastDecisionText(req.decision)))
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "v-list-item-icon",
+                    [
+                      req.decision == "pending"
+                        ? _c("user-cancel-vacation-request-modal", {
+                            attrs: { user: _vm.user, "vacation-request": req },
+                            on: {
+                              "request-canceled": _vm.handleRequestCanceled
+                            }
+                          })
+                        : _vm._e()
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            }),
+            1
+          )
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/VacationSelection.vue?vue&type=template&id=055a1658&":
 /*!********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/VacationSelection.vue?vue&type=template&id=055a1658& ***!
@@ -61415,183 +62403,216 @@ var render = function() {
     { staticClass: "vacation-container" },
     [
       _c(
-        "v-row",
-        [
-          _c(
-            "v-col",
-            { attrs: { cols: "12", sm: "6", lg: "4" } },
-            [
-              _c("v-date-picker", {
-                attrs: {
-                  multiple: "",
-                  "full-width": "",
-                  min: _vm.minDate,
-                  max: _vm.maxDate,
-                  "allowed-dates": _vm.allowedDates,
-                  events: _vm.previousRequestMarkers,
-                  "event-color": _vm.previousRequestMarkerColor
-                },
-                model: {
-                  value: _vm.dates,
-                  callback: function($$v) {
-                    _vm.dates = $$v
-                  },
-                  expression: "dates"
-                }
-              }),
-              _vm._v(" "),
-              _c("p", [
-                _c("span", { staticClass: "success--text" }, [_vm._v("●")]),
-                _vm._v(" = request approved on this date."),
-                _c("br"),
-                _vm._v(" "),
-                _c("span", { staticClass: "error--text" }, [_vm._v("●")]),
-                _vm._v(" = request denied on this date."),
-                _c("br"),
-                _vm._v(" "),
-                _c("span", { staticClass: "warning--text" }, [_vm._v("●")]),
-                _vm._v(" = request pending on this date.\n            ")
-              ])
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-col",
-            { attrs: { cols: "12", sm: "6", lg: "8" } },
+        "v-btn",
+        { attrs: { color: "info", outlined: "", href: "/dashboard" } },
+        [_vm._v("Back to Dashboard")]
+      ),
+      _vm._v(" "),
+      !_vm.loadingData
+        ? _c(
+            "data-loading",
             [
               _c(
-                "v-card",
-                { staticClass: "mx-auto", attrs: { shaped: "" } },
+                "v-row",
                 [
                   _c(
-                    "v-card-title",
-                    {
-                      class: {
-                        "error--text": _vm.daysLeft == 0,
-                        "info--text": _vm.daysLeft > 0
-                      }
-                    },
+                    "v-col",
+                    { attrs: { cols: "12", sm: "6", lg: "4" } },
                     [
-                      _vm._v(
-                        _vm._s(_vm.daysLeft) + " vacation days left this year"
-                      )
-                    ]
+                      _c("v-date-picker", {
+                        attrs: {
+                          multiple: "",
+                          "full-width": "",
+                          min: _vm.minDate,
+                          max: _vm.maxDate,
+                          "allowed-dates": _vm.allowedDates,
+                          events: _vm.previousRequestMarkers,
+                          "event-color": _vm.previousRequestMarkerColor
+                        },
+                        model: {
+                          value: _vm.dates,
+                          callback: function($$v) {
+                            _vm.dates = $$v
+                          },
+                          expression: "dates"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [
+                        _c("span", { staticClass: "success--text" }, [
+                          _vm._v("●")
+                        ]),
+                        _vm._v(" = request approved on this date."),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "error--text" }, [
+                          _vm._v("●")
+                        ]),
+                        _vm._v(" = request denied on this date."),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "warning--text" }, [
+                          _vm._v("●")
+                        ]),
+                        _vm._v(
+                          " = request pending on this date.\n                "
+                        )
+                      ])
+                    ],
+                    1
                   ),
                   _vm._v(" "),
                   _c(
-                    "v-card-text",
+                    "v-col",
+                    { attrs: { cols: "12", sm: "6", lg: "8" } },
                     [
-                      _vm.dates.length == 0
-                        ? _c("p", [
-                            _vm._v(
-                              "Select one or multiple dates from the picker..."
-                            )
-                          ])
-                        : _c("p", [
-                            _c("strong", [_vm._v("Your selected dates:")])
-                          ]),
-                      _vm._v(" "),
-                      _vm._l(_vm.dates, function(dt, index) {
-                        return _c(
-                          "v-chip",
-                          {
-                            key: "selected-date-" + index,
-                            staticClass: "mr-1 mb-2",
-                            attrs: {
-                              close: "",
-                              color: "info",
-                              "text-color": "white"
-                            },
-                            on: {
-                              "click:close": function($event) {
-                                return _vm.removeDate(dt)
-                              }
-                            }
-                          },
-                          [
-                            _vm._v(
-                              "\n                        " +
-                                _vm._s(_vm._f("slashdate")(dt)) +
-                                "\n                    "
-                            )
-                          ]
-                        )
-                      }),
-                      _vm._v(" "),
-                      _vm.serverStatus
-                        ? [
-                            _c(
-                              "v-alert",
-                              {
-                                attrs: {
-                                  dense: "",
-                                  type: _vm.submissionFormatting.color
-                                }
-                              },
-                              [_vm._v(_vm._s(_vm.submissionFormatting.msg))]
-                            )
-                          ]
-                        : _vm._e()
-                    ],
-                    2
-                  ),
-                  _vm._v(" "),
-                  _c("v-divider"),
-                  _vm._v(" "),
-                  _vm.serverStatus != 200
-                    ? _c(
-                        "v-card-actions",
+                      _c(
+                        "v-card",
+                        { staticClass: "mx-auto", attrs: { shaped: "" } },
                         [
                           _c(
-                            "v-btn",
+                            "v-card-title",
                             {
-                              attrs: {
-                                color: "success",
-                                disabled: _vm.dates.length == 0,
-                                loading: _vm.submitting
-                              },
-                              on: { click: _vm.submit }
+                              class: {
+                                "error--text": _vm.daysLeft == 0,
+                                "info--text": _vm.daysLeft > 0
+                              }
                             },
-                            [_vm._v("Submit for review")]
+                            [
+                              _vm._v(
+                                _vm._s(_vm.daysLeft) +
+                                  " vacation days left this year"
+                              )
+                            ]
                           ),
                           _vm._v(" "),
                           _c(
-                            "v-btn",
-                            {
-                              attrs: {
-                                color: "secondary",
-                                outlined: "",
-                                disabled:
-                                  _vm.dates.length == 0 || _vm.submitting
-                              },
-                              on: { click: _vm.clearDates }
-                            },
-                            [_vm._v("Reset")]
-                          )
+                            "v-card-text",
+                            [
+                              _vm.dates.length == 0
+                                ? _c("p", [
+                                    _vm._v(
+                                      "Select one or multiple dates from the picker..."
+                                    )
+                                  ])
+                                : _c("p", [
+                                    _c("strong", [
+                                      _vm._v("Your selected dates:")
+                                    ])
+                                  ]),
+                              _vm._v(" "),
+                              _vm._l(_vm.dates, function(dt, index) {
+                                return _c(
+                                  "v-chip",
+                                  {
+                                    key: "selected-date-" + index,
+                                    staticClass: "mr-1 mb-2",
+                                    attrs: {
+                                      close: "",
+                                      color: "info",
+                                      "text-color": "white"
+                                    },
+                                    on: {
+                                      "click:close": function($event) {
+                                        return _vm.removeDate(dt)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                            " +
+                                        _vm._s(_vm._f("slashdate")(dt)) +
+                                        "\n                        "
+                                    )
+                                  ]
+                                )
+                              }),
+                              _vm._v(" "),
+                              _vm.serverStatus
+                                ? [
+                                    _c(
+                                      "v-alert",
+                                      {
+                                        attrs: {
+                                          dense: "",
+                                          type: _vm.submissionFormatting.color
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          _vm._s(_vm.submissionFormatting.msg)
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                : _vm._e()
+                            ],
+                            2
+                          ),
+                          _vm._v(" "),
+                          _c("v-divider"),
+                          _vm._v(" "),
+                          _vm.serverStatus != 200
+                            ? _c(
+                                "v-card-actions",
+                                [
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      attrs: {
+                                        color: "success",
+                                        disabled: _vm.dates.length == 0,
+                                        loading: _vm.submitting
+                                      },
+                                      on: { click: _vm.submit }
+                                    },
+                                    [_vm._v("Submit for review")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      attrs: {
+                                        color: "secondary",
+                                        outlined: "",
+                                        disabled:
+                                          _vm.dates.length == 0 ||
+                                          _vm.submitting
+                                      },
+                                      on: { click: _vm.clearDates }
+                                    },
+                                    [_vm._v("Reset")]
+                                  )
+                                ],
+                                1
+                              )
+                            : _vm._e()
                         ],
                         1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-alert",
+                        {
+                          staticClass: "mt-3",
+                          attrs: { type: "info", outlined: "" }
+                        },
+                        [
+                          _vm._v(
+                            "\n                    Submitting this vacation request does not guarantee approval. You will be notified by email when a decision has been made. Contact your supervisor if you believe your vacation balance is incorrect.\n                "
+                          )
+                        ]
                       )
-                    : _vm._e()
+                    ],
+                    1
+                  )
                 ],
                 1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-alert",
-                { staticClass: "mt-3", attrs: { type: "info", outlined: "" } },
-                [
-                  _vm._v(
-                    "\n                Submitting this vacation request does not guarantee approval. You will be notified by email when a decision has been made. Contact your supervisor if you believe your vacation balance is incorrect.\n            "
-                  )
-                ]
               )
             ],
             1
           )
-        ],
-        1
-      )
+        : _vm._e()
     ],
     1
   )
@@ -112987,6 +114008,7 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
 Vue.component('vacation-selection', __webpack_require__(/*! ./components/VacationSelection.vue */ "./resources/js/components/VacationSelection.vue")["default"]);
 Vue.component('system-users', __webpack_require__(/*! ./components/SystemUsers.vue */ "./resources/js/components/SystemUsers.vue")["default"]);
 Vue.component('admin-home', __webpack_require__(/*! ./components/AdminHome.vue */ "./resources/js/components/AdminHome.vue")["default"]);
+Vue.component('user-dashboard', __webpack_require__(/*! ./components/UserDashboard.vue */ "./resources/js/components/UserDashboard.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -113933,6 +114955,231 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUsers_vue_vue_type_template_id_0cd61104___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SystemUsers_vue_vue_type_template_id_0cd61104___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/UserCancelVacationRequestModal.vue":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/UserCancelVacationRequestModal.vue ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UserCancelVacationRequestModal_vue_vue_type_template_id_4c0073cb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserCancelVacationRequestModal.vue?vue&type=template&id=4c0073cb& */ "./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=template&id=4c0073cb&");
+/* harmony import */ var _UserCancelVacationRequestModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserCancelVacationRequestModal.vue?vue&type=script&lang=js& */ "./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _UserCancelVacationRequestModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UserCancelVacationRequestModal_vue_vue_type_template_id_4c0073cb___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UserCancelVacationRequestModal_vue_vue_type_template_id_4c0073cb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/UserCancelVacationRequestModal.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCancelVacationRequestModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UserCancelVacationRequestModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCancelVacationRequestModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=template&id=4c0073cb&":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=template&id=4c0073cb& ***!
+  \***************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCancelVacationRequestModal_vue_vue_type_template_id_4c0073cb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UserCancelVacationRequestModal.vue?vue&type=template&id=4c0073cb& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserCancelVacationRequestModal.vue?vue&type=template&id=4c0073cb&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCancelVacationRequestModal_vue_vue_type_template_id_4c0073cb___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserCancelVacationRequestModal_vue_vue_type_template_id_4c0073cb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/UserDashboard.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/UserDashboard.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UserDashboard_vue_vue_type_template_id_311aa22e_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserDashboard.vue?vue&type=template&id=311aa22e&scoped=true& */ "./resources/js/components/UserDashboard.vue?vue&type=template&id=311aa22e&scoped=true&");
+/* harmony import */ var _UserDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserDashboard.vue?vue&type=script&lang=js& */ "./resources/js/components/UserDashboard.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _UserDashboard_vue_vue_type_style_index_0_id_311aa22e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true& */ "./resources/js/components/UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _UserDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UserDashboard_vue_vue_type_template_id_311aa22e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UserDashboard_vue_vue_type_template_id_311aa22e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "311aa22e",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/UserDashboard.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/UserDashboard.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/UserDashboard.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UserDashboard.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboard.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true&":
+/*!*************************************************************************************************************!*\
+  !*** ./resources/js/components/UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true& ***!
+  \*************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_style_index_0_id_311aa22e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--7-2!../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../node_modules/vue-loader/lib??vue-loader-options!./UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboard.vue?vue&type=style&index=0&id=311aa22e&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_style_index_0_id_311aa22e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_style_index_0_id_311aa22e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_style_index_0_id_311aa22e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_style_index_0_id_311aa22e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_style_index_0_id_311aa22e_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UserDashboard.vue?vue&type=template&id=311aa22e&scoped=true&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/UserDashboard.vue?vue&type=template&id=311aa22e&scoped=true& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_template_id_311aa22e_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UserDashboard.vue?vue&type=template&id=311aa22e&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboard.vue?vue&type=template&id=311aa22e&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_template_id_311aa22e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboard_vue_vue_type_template_id_311aa22e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/UserDashboardOutstandingRequests.vue":
+/*!**********************************************************************!*\
+  !*** ./resources/js/components/UserDashboardOutstandingRequests.vue ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UserDashboardOutstandingRequests_vue_vue_type_template_id_4f6c2fa0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserDashboardOutstandingRequests.vue?vue&type=template&id=4f6c2fa0& */ "./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=template&id=4f6c2fa0&");
+/* harmony import */ var _UserDashboardOutstandingRequests_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserDashboardOutstandingRequests.vue?vue&type=script&lang=js& */ "./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _UserDashboardOutstandingRequests_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UserDashboardOutstandingRequests_vue_vue_type_template_id_4f6c2fa0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UserDashboardOutstandingRequests_vue_vue_type_template_id_4f6c2fa0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/UserDashboardOutstandingRequests.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************!*\
+  !*** ./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboardOutstandingRequests_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UserDashboardOutstandingRequests.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboardOutstandingRequests_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=template&id=4f6c2fa0&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=template&id=4f6c2fa0& ***!
+  \*****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboardOutstandingRequests_vue_vue_type_template_id_4f6c2fa0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UserDashboardOutstandingRequests.vue?vue&type=template&id=4f6c2fa0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UserDashboardOutstandingRequests.vue?vue&type=template&id=4f6c2fa0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboardOutstandingRequests_vue_vue_type_template_id_4f6c2fa0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserDashboardOutstandingRequests_vue_vue_type_template_id_4f6c2fa0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

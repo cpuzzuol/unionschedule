@@ -32,6 +32,7 @@ Route::post('users/register', 'api\UserController@register');
 Route::get('vacationrequestsbydate/{date}', 'api\VacationRequestController@requestsByDate');
 Route::get('requestsbyuser/{user}', 'api\VacationRequestController@requestsByUser');
 Route::get('actionlogsbyuser/{user}', 'api\UserController@actionLogsByUser');
+Route::get('userdaysleft/{user}', 'api\UserController@userDaysLeft');
 
 Route::put('vacationrequeststatus', 'api\VacationRequestController@updateRequestStatus');
 Route::get('admin/homedata', 'api\AdminController@getHomeData');

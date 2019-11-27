@@ -30,19 +30,6 @@
                             <v-icon v-if="item.is_admin" color="warning"right>mdi-account-star</v-icon>
                         </EditUserModal>
                     </template>
-<!--                    <template v-slot:item.outstanding_requests="{ item }">-->
-<!--                        <template v-if="item.outstanding_requests == 0">-->
-<!--                            {{ item.outstanding_requests }}-->
-<!--                        </template>-->
-<!--                        <SystemUserOutstandingRequests-->
-<!--                            v-else-->
-<!--                            :user="item"-->
-<!--                            :can-edit-admin-setting="item.email != user.email"-->
-<!--                            @request-updated="getUsers"-->
-<!--                        >-->
-<!--                            {{ item.outstanding_requests }}-->
-<!--                        </SystemUserOutstandingRequestsModal>-->
-<!--                    </template>-->
                 </v-data-table>
             </v-col>
         </v-row>

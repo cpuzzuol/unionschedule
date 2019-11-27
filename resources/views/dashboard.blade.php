@@ -9,17 +9,15 @@
     @endif
 
     <v-row>
-        <v-col xs="4">Beer</v-col>
-        <v-col xs="4">Teer</v-col>
-        <v-col xs="4">Reer</v-col>
-        <v-col xs="12" cols="12">
-            @if (session('status'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            You are logged in!
+        <v-col cols="12" xs="12">
+            <h1>My Dashboard</h1>
+            <user-dashboard :user="{{ auth()->user() }}"></user-dashboard>
         </v-col>
     </v-row>
 @endsection
+<script>
+	import UserDashboard from "../js/components/UserDashboard";
+	export default {
+		components: { UserDashboard }
+	}
+</script>

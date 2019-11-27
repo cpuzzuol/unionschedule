@@ -51,6 +51,6 @@ class LoginController extends Controller
         if(auth()->user()->is_admin) {
             return redirect('/admin'); //put your redirect url here
         }
-        return redirect('/home');
+        return redirect('/dashboard');
     }
 }
