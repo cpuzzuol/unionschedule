@@ -35,7 +35,7 @@ class UserController extends Controller {
      */
     public function index(){
         $users = User::withCount(['vacationRequests as outstanding_requests' => function ($count) {
-            $count->where('decision', 'pending');
+            $count->where([['decision', 'pending'], ['date_requested', '>=', date('Y-m-d')]]);
         }])->orderBy('last_name')->get();
         return response()->json($users);
     }
