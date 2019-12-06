@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Helpers\VacationLogger;
 use App\Http\Controllers\Controller;
+use App\Mail\VacationRequestUpdate;
 use App\RequestLog;
 use App\User;
 use App\VacationRequest;
@@ -224,10 +225,7 @@ class VacationRequestController extends Controller
                 $noteAttachment = "$userFirstName has attached the following note: \"$note\"";
             }
 
-            Mail::raw("Your vacation request for $dateFormat is $emailStatus. You have $requester->vacation_days available vacation days this year. $noteAttachment", function ($message) use ($requester){
-                $message->to($requester->email);
-                $message->subject('An update to your vacation request.');
-            });
+            Mail::to($requester->email)->send(new VacationRequestUpdate($requester, $dateFormat, $emailStatus, $noteAttachment));
         }
 
         return response()->json($response, 201);

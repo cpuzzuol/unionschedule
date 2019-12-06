@@ -4,6 +4,8 @@ namespace App\Http\Controllers\api;
 
 use App\ActionLog;
 use App\Helpers\VacationLogger;
+use App\Mail\AllotmentChanged;
+use App\Mail\UserCreated;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -156,10 +158,7 @@ class UserController extends Controller {
             $isVacationChangeLogged = $log->logVacationDayAllotmentChange($user->id, $origVacationDays, $user->vacation_days);
             if($isVacationChangeLogged){
                 $response['vacationChangeLogged'] = true;
-                Mail::raw("Your vacation amount for the current year was updated by {$currentUser->name}. Your allotment changed from days $origVacationDays to {$user->vacation_days} days.", function ($message) use ($user){
-                    $message->to($user->email);
-                    $message->subject('Your vacation allotment has changed.');
-                });
+                Mail::to($user->email)->send(new AllotmentChanged($user, $origVacationDays));
             }
         }
 
@@ -198,10 +197,7 @@ class UserController extends Controller {
         $user = User::create($input);
 
         // Send a confirmation email to the user.
-        Mail::raw("Your account on the Union Sorters of America vacation request system has been created. Your username is {$user->email} and your password is {$input['password_confirm']}. Log in at http://unionschedule.test/login.", function ($message) use ($user){
-            $message->to($user->email);
-            $message->subject('Your account on Union Sorters Vacation Scheduler has been created.');
-        });
+        Mail::to($user->email)->send(new UserCreated($user, $input['password_confirm']));
 
         return response()->json(['user'=>$user], $this->successStatus);
     }

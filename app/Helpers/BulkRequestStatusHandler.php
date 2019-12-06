@@ -4,6 +4,7 @@
 namespace App\Helpers;
 
 
+use App\Mail\VacationRequestUpdate;
 use App\VacationRequest;
 use App\Helpers\VacationLogger;
 use Illuminate\Support\Facades\Mail;
@@ -59,10 +60,7 @@ class BulkRequestStatusHandler{
                 // Email all affected users (if necessary)
                 if($sendEmail) {
                     $dateFormat = date('D, M j, Y', strtotime($vacationRequest->date_requested));
-                    Mail::raw("Your vacation request for $dateFormat is $vstatus. You have $requester->vacation_days available vacation days this year.", function ($message) use ($requester){
-                        $message->to($requester->email);
-                        $message->subject('An update to your vacation request.');
-                    });
+                    Mail::to($requester->email)->send(new VacationRequestUpdate($requester, $dateFormat, $vstatus));
                 }
             }
         }

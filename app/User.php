@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Notifications\ResetPassword;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -51,6 +53,18 @@ class User extends Authenticatable
     protected $guarded = [
         'is_admin'
     ];
+
+    /**
+     * Overrides the standard password reset notification.
+     * TUTORIAL: https://stackoverflow.com/questions/40574001/how-to-change-reset-password-email-subject-in-laravel
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token));
+    }
 
     public function vacationRequests() {
         return $this->hasMany('App\VacationRequest', 'requested_by');
