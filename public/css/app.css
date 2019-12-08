@@ -10656,3 +10656,13 @@ a.v-btn,
   text-decoration: none;
 }
 
+.no-js {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.js {
+  visibility: visible;
+  opacity: 1;
+}
+

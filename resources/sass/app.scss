@@ -13,3 +13,13 @@
 a.v-btn, .v-navigation-drawer a.v-list-item {
     text-decoration: none;
 }
+
+.no-js {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.js {
+    visibility: visible;
+    opacity: 1;
+}

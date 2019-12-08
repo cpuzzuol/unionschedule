@@ -83,3 +83,6 @@ const app = new Vue({
         }
     }
 });
+
+// PREVENT FLASH OF UNSTYLED CONTENT ("FOUC") ON PAGE LOAD (requires class="no-js" in html element in app.blade.php and styles in app.scss)
+(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)
