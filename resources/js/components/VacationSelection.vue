@@ -1,6 +1,6 @@
 <template>
     <div class="vacation-container">
-        <v-btn color="info" outlined href="/dashboard">Back to Dashboard</v-btn>
+        <v-btn color="info" outlined href="/dashboard" title="Back to Dashboard"><v-icon>mdi-arrow-left</v-icon><v-icon>mdi-view-dashboard</v-icon></v-btn>
         <data-loading v-if="!loadingData">
             <v-row>
                 <v-col cols="12" sm="6" lg="4">

@@ -10651,7 +10651,8 @@ a.text-dark:focus {
   }
 }
 
-a.v-btn {
+a.v-btn,
+.v-navigation-drawer a.v-list-item {
   text-decoration: none;
 }
 

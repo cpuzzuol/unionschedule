@@ -8,7 +8,7 @@
         <template v-else>
             <v-row>
                 <v-col cols="12" xs="12">
-                    You have <strong>{{ userDaysLeft }}</strong> vacation days left this year.<br><v-btn color="info" outlined href="/vacation-request">New Vacation Request</v-btn>
+                    You have <strong>{{ userDaysLeft }}</strong> vacation days left this year.<br><v-btn color="info" href="/vacation-request" title="New vacation request"><v-icon>mdi-calendar-plus</v-icon></v-btn>
                 </v-col>
                 <v-col
                     xs="12"

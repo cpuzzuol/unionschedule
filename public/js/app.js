@@ -2073,6 +2073,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -58735,7 +58737,10 @@ var render = function() {
                                     : "mdi-eye-off",
                                   type: _vm.showPw1 ? "text" : "password",
                                   filled: "",
-                                  "error-messages": _vm.errorsPassword
+                                  "error-messages": _vm.errorsPassword,
+                                  hint:
+                                    "Must contain at least 8 characters with at least 1 number and one special character",
+                                  "persistent-hint": ""
                                 },
                                 on: {
                                   "click:append": function($event) {
@@ -62197,11 +62202,12 @@ var render = function() {
                       {
                         attrs: {
                           color: "info",
-                          outlined: "",
-                          href: "/vacation-request"
+                          href: "/vacation-request",
+                          title: "New vacation request"
                         }
                       },
-                      [_vm._v("New Vacation Request")]
+                      [_c("v-icon", [_vm._v("mdi-calendar-plus")])],
+                      1
                     )
                   ],
                   1
@@ -62531,8 +62537,19 @@ var render = function() {
     [
       _c(
         "v-btn",
-        { attrs: { color: "info", outlined: "", href: "/dashboard" } },
-        [_vm._v("Back to Dashboard")]
+        {
+          attrs: {
+            color: "info",
+            outlined: "",
+            href: "/dashboard",
+            title: "Back to Dashboard"
+          }
+        },
+        [
+          _c("v-icon", [_vm._v("mdi-arrow-left")]),
+          _c("v-icon", [_vm._v("mdi-view-dashboard")])
+        ],
+        1
       ),
       _vm._v(" "),
       !_vm.loadingData

@@ -53,6 +53,8 @@
                                     @click:append="showPw1 = !showPw1"
                                     :error-messages="errorsPassword"
                                     @input="$v.user.password.$touch()"
+                                    hint="Must contain at least 8 characters with at least 1 number and one special character"
+                                    persistent-hint
                                 >
                                 </v-text-field>
                             </v-col>
