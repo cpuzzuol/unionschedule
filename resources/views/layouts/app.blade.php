@@ -39,7 +39,7 @@
                 </v-list-item>
 
                 <v-divider></v-divider>
-
+                @if(Auth::check())
                 <v-list-item link href="{{ route('userIndex') }}">
                     <v-list-item-icon>
                         <v-icon>mdi-view-dashboard</v-icon>
@@ -59,7 +59,6 @@
 
                 <v-divider></v-divider>
 
-                @if(Auth::check())
                     @if(Auth::user()->is_admin)
                     <v-list-item link href="{{ route('adminIndex') }}">
                         <v-list-item-icon>
@@ -78,10 +77,10 @@
                         </v-list-item-content>
                     </v-list-item>
                     @endif
+                <v-divider></v-divider>
                 @endif
 
-                <v-divider></v-divider>
-
+                @if(Auth::check())
                 <v-list-item link @click.prevent="logout">
                     <v-list-item-icon>
                         <v-icon>mdi-logout</v-icon>
@@ -90,6 +89,16 @@
                         <v-list-item-title>{{ __('Logout ' . Auth::user()->first_name . ' ' . Auth::user()->last_name ) }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                @else
+                <v-list-item link href="{{ route('login') }}">
+                    <v-list-item-icon>
+                        <v-icon>mdi-login</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>{{ __('Login') }}</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                @endif
             </v-list>
         </v-navigation-drawer>
 
