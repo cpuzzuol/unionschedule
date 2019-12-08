@@ -16,9 +16,9 @@
                     md="6"
                 >
                     <v-card outlined>
-                        <v-card-title class="title">Future Pending Requests</v-card-title>
+                        <v-card-title class="title">Future Vacation Requests</v-card-title>
                         <v-card-text>
-                            <user-dashboard-outstanding-requests :user="user" :outstanding-requests="futureOutstandingRequests" @request-canceled="handleRequestCanceled"></user-dashboard-outstanding-requests>
+                            <user-dashboard-future-requests :user="user" :outstanding-requests="futureOutstandingRequests" @request-canceled="handleRequestCanceled"></user-dashboard-future-requests>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -46,13 +46,19 @@
                                         :key="'past-req-tab-content-' + year"
                                     >
                                         <v-list dense two-lines>
-                                            <v-list-item v-for="(req, index) in requestsForYear(year)" :key="'req-year-' + year + '-' + index">
-                                                <v-list-item-title>{{ req.date_requested | slashdatedow }}</v-list-item-title>
-                                                <v-list-item-subtitle><span :class="pastDecisionColor(req.decision)">{{ pastDecisionText(req.decision) }}</span></v-list-item-subtitle>
-                                                <v-list-item-icon>
-                                                    <system-user-vacation-request-log-modal :vacation-request="req"></system-user-vacation-request-log-modal>
-                                                </v-list-item-icon>
-                                            </v-list-item>
+                                            <template v-if="requestsForYear(year).length > 0">
+                                                <v-list-item
+                                                    v-for="(req, index) in requestsForYear(year)"
+                                                    :key="'req-year-' + year + '-' + index"
+                                                >
+                                                    <v-list-item-title>{{ req.date_requested | slashdatedow }}</v-list-item-title>
+                                                    <v-list-item-subtitle><span :class="pastDecisionColor(req.decision)">{{ pastDecisionText(req.decision) }}</span></v-list-item-subtitle>
+                                                    <v-list-item-icon>
+                                                        <system-user-vacation-request-log-modal :vacation-request="req"></system-user-vacation-request-log-modal>
+                                                    </v-list-item-icon>
+                                                </v-list-item>
+                                            </template>
+                                            <p v-else>No past vacation requests for {{ year }}.</p>
                                         </v-list>
                                     </v-tab-item>
                                 </v-tabs-items>
@@ -66,11 +72,11 @@
 </template>
 <script>
 	import Vue from 'vue'
-    import UserDashboardOutstandingRequests from "./UserDashboardOutstandingRequests";
+    import UserDashboardFutureRequests from "./UserDashboardFutureRequests";
     import SystemUserVacationRequestLogModal from "./SystemUserVacationRequestLogModal";
 
 	export default {
-        components: { SystemUserVacationRequestLogModal, UserDashboardOutstandingRequests  },
+        components: { SystemUserVacationRequestLogModal, UserDashboardFutureRequests  },
         props: {
             user: {
                 type: Object,

@@ -1,36 +1,34 @@
 <template>
-    <div class="admin-manage-vacation-request-modal-container">
-        <v-dialog v-model="dialog" persistent scrollable max-width="590px">
-            <template v-slot:activator="{ on }">
-                <v-btn :color="iconProps.color" small dark v-on="on" icon class="mr-2" :title="iconProps.title"><v-icon>{{ iconProps.icon }}</v-icon></v-btn>
-            </template>
-            <v-card>
-                <v-toolbar dark>
-                    <v-toolbar-title>{{ iconProps.title }}</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn icon dark @click="closeDialog"><v-icon>mdi-close</v-icon></v-btn>
-                </v-toolbar>
-                <v-card-text style="height: 500px;" class="mt-4">
-                    <p>Please confirm you wish to set this vacation request to <strong>{{ action }}</strong> for <strong>{{ vacationRequest.requester.first_name + ' ' + vacationRequest.requester.last_name }}</strong> on <strong>{{ vacationRequest.date_requested | slashdate }}</strong>.</p>
-                    <p>By default, the requester is notified when you make the decision. To disable email notification, flip the switch below. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email.</p>
-                    <v-textarea v-model="note" label="Optional Note to Requester"></v-textarea>
-                    <v-switch v-model="sendEmail" label="Email Decision to Requester"></v-switch>
-                    <v-alert
-                        :color="submitResult.color"
-                        :value="submitResult.complete"
-                        dark
-                    >
-                        {{ submitResult.msg }}
-                    </v-alert>
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions>
-                    <v-btn :color="buttonProps.color" :disabled="submitting" :loading="submitting" @click="updateRequest">{{ buttonProps.text }}</v-btn>
-                    <v-btn color="secondary" :disabled="submitting" outlined @click="closeDialog">Cancel</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-    </div>
+    <v-dialog v-model="dialog" persistent scrollable max-width="590px">
+        <template v-slot:activator="{ on }">
+            <v-btn :color="iconProps.color" small dark v-on="on" icon class="mr-2" :title="iconProps.title"><v-icon>{{ iconProps.icon }}</v-icon></v-btn>
+        </template>
+        <v-card>
+            <v-toolbar dark>
+                <v-toolbar-title>{{ iconProps.title }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon dark @click="closeDialog"><v-icon>mdi-close</v-icon></v-btn>
+            </v-toolbar>
+            <v-card-text style="height: 500px;" class="mt-4">
+                <p>Please confirm you wish to set this vacation request to <strong>{{ action }}</strong> for <strong>{{ vacationRequest.requester.first_name + ' ' + vacationRequest.requester.last_name }}</strong> on <strong>{{ vacationRequest.date_requested | slashdate }}</strong>.</p>
+                <p>By default, the requester is notified when you make the decision. To disable email notification, flip the switch below. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email.</p>
+                <v-textarea v-model="note" label="Optional Note to Requester"></v-textarea>
+                <v-switch v-model="sendEmail" label="Email Decision to Requester"></v-switch>
+                <v-alert
+                    :color="submitResult.color"
+                    :value="submitResult.complete"
+                    dark
+                >
+                    {{ submitResult.msg }}
+                </v-alert>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+                <v-btn :color="buttonProps.color" :disabled="submitting" :loading="submitting" @click="updateRequest">{{ buttonProps.text }}</v-btn>
+                <v-btn color="secondary" :disabled="submitting" outlined @click="closeDialog">Cancel</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 <script>
 	import Vue from 'vue'

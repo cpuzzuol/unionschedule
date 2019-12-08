@@ -143,9 +143,9 @@
                                                     md="6"
                                                 >
                                                     <v-card outlined>
-                                                        <v-card-title class="title">Future Pending Requests</v-card-title>
+                                                        <v-card-title class="title">Future Vacation Requests</v-card-title>
                                                         <v-card-text>
-                                                            <system-user-outstanding-requests :user="user" :pending-requests="futurePendingRequests" @request-updated="getRequestHistory"></system-user-outstanding-requests>
+                                                            <system-user-future-requests class="pr-2" :user="user" :future-requests="futureRequests" @request-updated="getRequestHistory"></system-user-future-requests>
                                                         </v-card-text>
                                                     </v-card>
                                                 </v-col>
@@ -155,7 +155,7 @@
                                                     md="6"
                                                 >
                                                     <v-card outlined>
-                                                        <v-card-title class="title">Past Requests</v-card-title>
+                                                        <v-card-title class="title">Past Vacation Requests</v-card-title>
                                                         <v-card-text>
                                                             <v-tabs
                                                                 v-model="pastRequestsTab"
@@ -172,15 +172,18 @@
                                                                         v-for="year in yearsSince2019"
                                                                         :key="'past-req-tab-content-' + year"
                                                                     >
-                                                                        <v-list dense two-lines>
-                                                                            <v-list-item v-for="(req, index) in requestsForYear(year)" :key="'req-year-' + year + '-' + index">
-                                                                                <v-list-item-title>{{ req.date_requested | slashdatedow }}</v-list-item-title>
-                                                                                <v-list-item-subtitle><span :class="pastDecisionColor(req.decision)">{{ pastDecisionText(req.decision) }}</span></v-list-item-subtitle>
-                                                                                <v-list-item-icon>
-                                                                                    <system-user-vacation-request-log-modal :vacation-request="req"></system-user-vacation-request-log-modal>
-                                                                                </v-list-item-icon>
-                                                                            </v-list-item>
-                                                                        </v-list>
+                                                                        <template v-if="requestsForYear(year).length > 0">
+                                                                            <v-list dense>
+                                                                                <v-list-item v-for="(req, index) in requestsForYear(year)" :key="'req-year-' + year + '-' + index">
+                                                                                    <v-list-item-title>{{ req.date_requested | slashdatedow }}</v-list-item-title>
+                                                                                    <v-list-item-subtitle><span :class="pastDecisionColor(req.decision)">{{ pastDecisionText(req.decision) }}</span></v-list-item-subtitle>
+                                                                                    <v-list-item-icon>
+                                                                                        <system-user-vacation-request-log-modal :vacation-request="req"></system-user-vacation-request-log-modal>
+                                                                                    </v-list-item-icon>
+                                                                                </v-list-item>
+                                                                            </v-list>
+                                                                        </template>
+                                                                        <p v-else>No past vacation requests for {{ year }}.</p>
                                                                     </v-tab-item>
                                                                 </v-tabs-items>
                                                             </v-tabs>
@@ -240,13 +243,13 @@
 	import Vue from 'vue'
 	import Vuelidate from 'vuelidate'
 	import { required, helpers, sameAs, numeric } from 'vuelidate/lib/validators'
-    import SystemUserOutstandingRequests from "./SystemUserOutstandingRequests";
-		import SystemUserVacationRequestLogModal from "./SystemUserVacationRequestLogModal";
+    import SystemUserFutureRequests from "./SystemUserFutureRequests";
+    import SystemUserVacationRequestLogModal from "./SystemUserVacationRequestLogModal";
 	Vue.use(Vuelidate)
 
 	const unionSortersEmail = helpers.regex('alpha', /.+@unionsorters\.com$/);
 	export default {
-			components: { SystemUserVacationRequestLogModal, SystemUserOutstandingRequests },
+			components: { SystemUserVacationRequestLogModal, SystemUserFutureRequests },
 			props: {
             apiToken: {
             	type: String,
@@ -269,7 +272,7 @@
                 userEditable: {
                     email: {
                         required,
-                        //unionSortersEmail
+                        unionSortersEmail
                     },
                     first_name: {
                         required
@@ -327,10 +330,10 @@
                 !this.$v.userEditable.vacation_days.numeric && errors.push('Must be a valid number of days')
                 return errors
             },
-            futurePendingRequests() {
+            futureRequests() {
             	const today = Vue.prototype.$moment().format('YYYY-MM-DD')
             	return this.pendingRequests.filter(pr => {
-            		return pr.date_requested >= today && pr.decision == 'pending'
+            		return pr.date_requested >= today
                 })
             },
             // Used for years tabs for request history

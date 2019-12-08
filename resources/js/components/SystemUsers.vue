@@ -39,7 +39,6 @@
     import Vue from 'vue'
     import EditUserModal from "./EditUserModal"
     import AddUserModal from "./AddUserModal"
-    import SystemUserOutstandingRequests from "./SystemUserOutstandingRequests";
 	export default {
 		props: {
 			user: {
@@ -47,7 +46,7 @@
                 required: true
             }
 		},
-        components: { SystemUserOutstandingRequests, EditUserModal, AddUserModal },
+        components: { EditUserModal, AddUserModal },
         created() {
 			this.getUsers()
         },
