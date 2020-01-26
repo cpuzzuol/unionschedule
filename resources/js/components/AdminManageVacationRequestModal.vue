@@ -10,7 +10,7 @@
                 <v-btn icon dark @click="closeDialog"><v-icon>mdi-close</v-icon></v-btn>
             </v-toolbar>
             <v-card-text style="height: 500px;" class="mt-4">
-                <p>Please confirm you wish to set this vacation request to <strong>{{ action }}</strong> for <strong>{{ vacationRequest.requester.first_name + ' ' + vacationRequest.requester.last_name }}</strong> on <strong>{{ vacationRequest.date_requested | slashdate }}</strong>.</p>
+                <p>Please confirm you wish to set this PTO request to <strong>{{ action }}</strong> for <strong>{{ vacationRequest.requester.first_name + ' ' + vacationRequest.requester.last_name }}</strong> on <strong>{{ vacationRequest.date_requested | slashdate }}</strong>.</p>
                 <p>By default, the requester is notified when you make the decision. To disable email notification, flip the switch below. If you would like to add an explanation for this action, please add it in the box below. The requester will see this note in the email.</p>
                 <v-textarea v-model="note" label="Optional Note to Requester"></v-textarea>
                 <v-switch v-model="sendEmail" label="Email Decision to Requester"></v-switch>

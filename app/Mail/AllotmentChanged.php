@@ -33,7 +33,7 @@ class AllotmentChanged extends Mailable
     public function build()
     {
         return $this
-            ->subject('[USA Manager Portal] Vacation Days Adjustment')
+            ->subject('[USA Manager Portal] PTO Days Adjustment')
             ->markdown('emails.allotment')
             ->with(['user' => $this->user, 'origVacationDays' => $this->origVacationDays]);
     }

@@ -2,16 +2,16 @@
     <div class="user-cancel-vacation-request-modal-container">
         <v-dialog v-model="dialog" persistent scrollable max-width="590px">
             <template v-slot:activator="{ on }">
-                <v-btn color="error" small dark v-on="on" icon class="mr-2" title="Cancel this Vacation Request"><v-icon>mdi-cancel</v-icon></v-btn>
+                <v-btn color="error" small dark v-on="on" icon class="mr-2" title="Cancel this PTO Request"><v-icon>mdi-cancel</v-icon></v-btn>
             </template>
             <v-card>
                 <v-toolbar dark>
-                    <v-toolbar-title>Cancel Vacation Request</v-toolbar-title>
+                    <v-toolbar-title>Cancel PTO Request</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn icon dark @click="closeDialog"><v-icon>mdi-close</v-icon></v-btn>
                 </v-toolbar>
                 <v-card-text class="mt-4">
-                    <p>Please confirm you wish to cancel this vacation request for <strong>{{ vacationRequest.date_requested | slashdatedow }}</strong>.</p>
+                    <p>Please confirm you wish to cancel this PTO request for <strong>{{ vacationRequest.date_requested | slashdatedow }}</strong>.</p>
                     <v-alert
                         :color="submitResult.color"
                         :value="submitResult.complete"

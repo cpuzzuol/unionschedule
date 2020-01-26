@@ -74,7 +74,7 @@
                             <v-col cols="12" xs="12" sm="6">
                                 <v-text-field
                                     v-model="user.vacation_days"
-                                    label="Vacation Days"
+                                    label="PTO Days"
                                     filled
                                     :error-messages="errorsVacationDays"
                                     @input="$v.user.vacation_days.$touch()"

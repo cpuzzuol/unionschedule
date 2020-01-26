@@ -2,13 +2,13 @@
     <div class="user-dashboard-container">
         <template v-if="outstandingRequestsError">
             <v-alert :value="true" type="error">
-                There was a problem loading your vacation requests.
+                There was a problem loading your PTO requests.
             </v-alert>
         </template>
         <template v-else>
             <v-row>
                 <v-col cols="12" xs="12">
-                    You have <strong>{{ userDaysLeft }}</strong> vacation days left this year.<br><v-btn color="info" href="/vacation-request" title="New vacation request"><v-icon>mdi-calendar-plus</v-icon></v-btn>
+                    You have <strong>{{ userDaysLeft }}</strong> PTO days left this year.<br><v-btn color="info" href="/vacation-request" title="New PTO request"><v-icon>mdi-calendar-plus</v-icon></v-btn>
                 </v-col>
                 <v-col
                     xs="12"
@@ -16,7 +16,7 @@
                     md="6"
                 >
                     <v-card outlined>
-                        <v-card-title class="title">Future Vacation Requests</v-card-title>
+                        <v-card-title class="title">Future PTO Requests</v-card-title>
                         <v-card-text>
                             <user-dashboard-future-requests :user="user" :outstanding-requests="futureOutstandingRequests" @request-canceled="handleRequestCanceled"></user-dashboard-future-requests>
                         </v-card-text>
@@ -28,7 +28,7 @@
                     md="6"
                 >
                     <v-card outlined>
-                        <v-card-title class="title">Past Vacation Requests</v-card-title>
+                        <v-card-title class="title">Past PTO Requests</v-card-title>
                         <v-card-text>
                             <v-tabs
                                 v-model="pastRequestsTab"
@@ -58,7 +58,7 @@
                                                     </v-list-item-icon>
                                                 </v-list-item>
                                             </template>
-                                            <p v-else>No past vacation requests for {{ year }}.</p>
+                                            <p v-else>No past PTO requests for {{ year }}.</p>
                                         </v-list>
                                     </v-tab-item>
                                 </v-tabs-items>

@@ -1,7 +1,7 @@
 @component('mail::message')
-# Notice of vacation allotment change
+# Notice of PTO allotment change
 
-You are receiving this message because your number of vacation days for the calendar year has been adjusted from {{ $origVacationDays }} to <strong>{{ $user->vacation_days }} days</strong>.
+You are receiving this message because your number of PTO days for the calendar year has been adjusted from {{ $origVacationDays }} to <strong>{{ $user->vacation_days }} days</strong>.
 
 Please contact management if you have any questions.
 

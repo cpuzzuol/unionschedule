@@ -26,7 +26,7 @@ class VacationLogger{
     public function logVacationDayAllotmentChange($affectedUser, $origDays, $newDays) {
         $log = new ActionLog();
         $log->affected_user = $affectedUser;
-        $log->description = "Changed vacation days from $origDays to $newDays";
+        $log->description = "Changed PTO days from $origDays to $newDays";
         $log->action_by = auth()->user()->id;
         return $log->save();
     }

@@ -60,7 +60,7 @@
                 	{ text: 'Name', value: 'last_name' },
                     { text: 'Email', value: 'email' },
                     { text: 'Pending Requests', value: 'outstanding_requests'},
-                    { text: 'Vacation Bank (Days)', value: 'vacation_days' }
+                    { text: 'PTO Bank (Days)', value: 'vacation_days' }
                 ]
             }
         },

@@ -7,7 +7,7 @@
                 :value="true"
                 dark
             >
-                This person has no future vacation requests.
+                This person has no future PTO requests.
             </v-alert>
         </template>
         <v-list v-else dense>

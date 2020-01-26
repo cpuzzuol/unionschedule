@@ -35,7 +35,7 @@
                                 @input="toggleNewRestriction"
                             ></v-date-picker>
                             <p>
-                                <span class="warning--text">&#x25CF;</span> = vacation requests submitted for this date.
+                                <span class="warning--text">&#x25CF;</span> = PTO requests submitted for this date.
                             </p>
                         </v-col>
                         <v-col cols="12">
@@ -61,7 +61,7 @@
                                     <template v-if="showExistingRequestOptions">
                                         <v-row>
                                             <v-col cols="12">
-                                                <p>One or more dates you are trying to restrict have approved or pending vacation requests. Choose what you would like to do with those requests:</p>
+                                                <p>One or more dates you are trying to restrict have approved or pending PTO requests. Choose what you would like to do with those requests:</p>
                                                 <v-radio-group v-model="bulkActions">
                                                     <v-radio label="Do Nothing" value="nothing"></v-radio>
                                                     <v-radio label="Deny Pending Only" value="denyPending"></v-radio>
@@ -115,7 +115,7 @@
 		data: () => ({
             bulkActions: 'nothing',
             dialog: false,
-            minDate: Vue.prototype.$moment().format('YYYY-MM-DD'),
+            minDate: Vue.prototype.$moment().startOf('year').format('YYYY-MM-DD'),
             maxDate: Vue.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
             newRestrictedDates: [],
             notifyOfBulk: true,

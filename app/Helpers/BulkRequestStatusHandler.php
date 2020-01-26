@@ -47,7 +47,7 @@ class BulkRequestStatusHandler{
             $vacationRequest->decision_by = auth()->user()->id;
 
             $requester = $vacationRequest->requester;
-            // give the requester a vacation day back since they're pending or previously-approved request is now denied
+            // give the requester a PTO day back since they're pending or previously-approved request is now denied
             if(($origStatus == 'pending' || $origStatus == 'approved') && $vstatus == 'denied') {
                 $requester->vacation_days = $requester->vacation_days + 1;
                 $requester->save();

@@ -71,7 +71,7 @@ class RestrictedDateController extends Controller {
                     $newRestriction->date = $date;
                     $newRestriction->save();
 
-                    // Handle bulk actions on existing vacation requests for this date
+                    // Handle bulk actions on existing PTO requests for this date
                     if($bulkActions){
                         $bulkHandler = new BulkRequestStatusHandler($bulkActions, $date);
                         $bulkHandler->bulkStatusUpdateOnDate($notifyOfBulk);

@@ -36,7 +36,7 @@ class VacationRequestUpdate extends Mailable
      */
     public function build()
     {
-        return $this->subject('[USA Manager Portal] Vacation Request Update')
+        return $this->subject('[USA Manager Portal] PTO Request Update')
             ->markdown('emails.vacationrequestupdate')
             ->with(['requester' => $this->requester, 'requestDate' => $this->requestDate, 'requestStatus' => $this->requestStatus, 'noteAttachment' => $this->noteAttachment]);
     }

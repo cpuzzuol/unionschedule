@@ -53,7 +53,7 @@
                         <v-icon>mdi-calendar-plus</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ __('New Vacation Request') }}</v-list-item-title>
+                        <v-list-item-title>{{ __('New PTO Request') }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -118,7 +118,7 @@
                             <v-btn href="{{ route('userMgmtIndex') }}" text>{{ __('User Management') }}</v-btn>
                         @endif
                         <v-btn href="{{ route('userIndex') }}" text>{{ __('My Dashboard') }}</v-btn>
-                        <v-btn href="{{ route('vacationRequest') }}" text>{{ __('New Vacation Request') }}</v-btn>
+                        <v-btn href="{{ route('vacationRequest') }}" text>{{ __('New PTO Request') }}</v-btn>
                     @endif
                 </v-toolbar-items>
                 <v-spacer></v-spacer>

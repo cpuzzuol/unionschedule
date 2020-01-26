@@ -11,7 +11,7 @@ class VacationRequest extends Model
     ];
 
     /**
-     * Get the user to which this vacation request belongs
+     * Get the user to which this PTO request belongs
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function requester() {

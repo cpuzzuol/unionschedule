@@ -151,7 +151,7 @@ class UserController extends Controller {
 
             $logVacationChange = new ActionLog();
             $logVacationChange->affected_user = $user->id;
-            $logVacationChange->description = "Changed vacation days from $origVacationDays to {$user->vacation_days}";
+            $logVacationChange->description = "Changed PTO days from $origVacationDays to {$user->vacation_days}";
             $logVacationChange->action_by = $currentUser->id;
 
             $log = new VacationLogger();

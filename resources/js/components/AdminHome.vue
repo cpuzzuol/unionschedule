@@ -50,9 +50,9 @@
                     sm="12"
                 >
                     <v-card>
-                        <v-card-title>Vacation Overview</v-card-title>
+                        <v-card-title>PTO Overview</v-card-title>
                         <v-card-text>
-                            <p>Click on a date to view the vacation requests for that date.</p>
+                            <p>Click on a date to view the PTO requests for that date.</p>
                             <admin-overview-calendar :restricted-dates="restrictedDates" :user="user" @request-updated="getData"></admin-overview-calendar>
                         </v-card-text>
                     </v-card>

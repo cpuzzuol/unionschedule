@@ -1,7 +1,7 @@
 @component('mail::message')
-# Notice of vacation request update
+# Notice of PTO request update
 
-Your vacation request for {{ $requestDate }} is <strong>{{ $requestStatus }}</strong>. You have {{ $requester->vacation_days }} available vacation days this year.
+Your PTO request for {{ $requestDate }} is <strong>{{ $requestStatus }}</strong>. You have {{ $requester->vacation_days }} available PTO days this year.
 
 {{ $noteAttachment }}
 

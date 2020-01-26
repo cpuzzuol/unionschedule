@@ -25,7 +25,7 @@
                         class="mx-auto"
                         shaped
                     >
-                        <v-card-title :class="{ 'error--text': daysLeft == 0, 'info--text': daysLeft > 0 }">{{ daysLeft }} vacation days left this year</v-card-title>
+                        <v-card-title :class="{ 'error--text': daysLeft == 0, 'info--text': daysLeft > 0 }">{{ daysLeft }} PTO days left this year</v-card-title>
                         <v-card-text>
                             <p v-if="dates.length == 0">Select one or multiple dates from the picker...</p>
                             <p v-else><strong>Your selected dates:</strong></p>
@@ -80,7 +80,7 @@
             loadingData: false,
             loadingDataError: false,
             menu: false,
-            minDate: Vue.prototype.$moment().format('YYYY-MM-DD'),
+            minDate: Vue.prototype.$moment().startOf('year').format('YYYY-MM-DD'),
             maxDate: Vue.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
             previousRequests: [],
             restrictedDates: [],

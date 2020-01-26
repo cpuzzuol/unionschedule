@@ -35,7 +35,7 @@ class VacationRequestController extends Controller
     }
 
     /**
-     * Get vacation requests for a specific date
+     * Get PTO requests for a specific date
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -45,7 +45,7 @@ class VacationRequestController extends Controller
     }
 
     /**
-     * Get ALL vacation requests for a specific user
+     * Get ALL PTO requests for a specific user
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -86,7 +86,7 @@ class VacationRequestController extends Controller
                 $response[] = $requestedDate . ' has been requested.';
                 // Make a log of this event
                 $logger = new VacationLogger();
-                $logger->logAction($newRequest->id, 'Vacation request initiated.');
+                $logger->logAction($newRequest->id, 'PTO request initiated.');
 
                 // Decrement user's vacation allotment
                 $user = User::find($userID);

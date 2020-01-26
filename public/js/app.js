@@ -2999,7 +2999,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       bulkActions: 'nothing',
       dialog: false,
-      minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'),
+      minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().startOf('year').format('YYYY-MM-DD'),
       maxDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
       newRestrictedDates: [],
       notifyOfBulk: true,
@@ -4147,7 +4147,7 @@ __webpack_require__.r(__webpack_exports__);
         text: 'Pending Requests',
         value: 'outstanding_requests'
       }, {
-        text: 'Vacation Bank (Days)',
+        text: 'PTO Bank (Days)',
         value: 'vacation_days'
       }];
     }
@@ -4703,7 +4703,7 @@ __webpack_require__.r(__webpack_exports__);
       loadingData: false,
       loadingDataError: false,
       menu: false,
-      minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().format('YYYY-MM-DD'),
+      minDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().startOf('year').format('YYYY-MM-DD'),
       maxDate: vue__WEBPACK_IMPORTED_MODULE_0___default.a.prototype.$moment().endOf('year').format('YYYY-MM-DD'),
       previousRequests: [],
       restrictedDates: [],
@@ -58802,7 +58802,7 @@ var render = function() {
                             [
                               _c("v-text-field", {
                                 attrs: {
-                                  label: "Vacation Days",
+                                  label: "PTO Days",
                                   filled: "",
                                   "error-messages": _vm.errorsVacationDays
                                 },
@@ -59106,14 +59106,14 @@ var render = function() {
                   _c(
                     "v-card",
                     [
-                      _c("v-card-title", [_vm._v("Vacation Overview")]),
+                      _c("v-card-title", [_vm._v("PTO Overview")]),
                       _vm._v(" "),
                       _c(
                         "v-card-text",
                         [
                           _c("p", [
                             _vm._v(
-                              "Click on a date to view the vacation requests for that date."
+                              "Click on a date to view the PTO requests for that date."
                             )
                           ]),
                           _vm._v(" "),
@@ -59236,9 +59236,7 @@ var render = function() {
             { staticClass: "mt-4", staticStyle: { height: "500px" } },
             [
               _c("p", [
-                _vm._v(
-                  "Please confirm you wish to set this vacation request to "
-                ),
+                _vm._v("Please confirm you wish to set this PTO request to "),
                 _c("strong", [_vm._v(_vm._s(_vm.action))]),
                 _vm._v(" for "),
                 _c("strong", [
@@ -60125,7 +60123,7 @@ var render = function() {
                               _vm._v("●")
                             ]),
                             _vm._v(
-                              " = vacation requests submitted for this date.\n                        "
+                              " = PTO requests submitted for this date.\n                        "
                             )
                           ])
                         ],
@@ -60200,7 +60198,7 @@ var render = function() {
                                               [
                                                 _c("p", [
                                                   _vm._v(
-                                                    "One or more dates you are trying to restrict have approved or pending vacation requests. Choose what you would like to do with those requests:"
+                                                    "One or more dates you are trying to restrict have approved or pending PTO requests. Choose what you would like to do with those requests:"
                                                   )
                                                 ]),
                                                 _vm._v(" "),
@@ -61646,7 +61644,7 @@ var render = function() {
               },
               [
                 _vm._v(
-                  "\n            This person has no future vacation requests.\n        "
+                  "\n            This person has no future PTO requests.\n        "
                 )
               ]
             )
@@ -62019,7 +62017,7 @@ var render = function() {
                           small: "",
                           dark: "",
                           icon: "",
-                          title: "Cancel this Vacation Request"
+                          title: "Cancel this PTO Request"
                         }
                       },
                       on
@@ -62048,7 +62046,7 @@ var render = function() {
                 "v-toolbar",
                 { attrs: { dark: "" } },
                 [
-                  _c("v-toolbar-title", [_vm._v("Cancel Vacation Request")]),
+                  _c("v-toolbar-title", [_vm._v("Cancel PTO Request")]),
                   _vm._v(" "),
                   _c("v-spacer"),
                   _vm._v(" "),
@@ -62071,7 +62069,7 @@ var render = function() {
                 [
                   _c("p", [
                     _vm._v(
-                      "Please confirm you wish to cancel this vacation request for "
+                      "Please confirm you wish to cancel this PTO request for "
                     ),
                     _c("strong", [
                       _vm._v(
@@ -62181,7 +62179,7 @@ var render = function() {
         ? [
             _c("v-alert", { attrs: { value: true, type: "error" } }, [
               _vm._v(
-                "\n            There was a problem loading your vacation requests.\n        "
+                "\n            There was a problem loading your PTO requests.\n        "
               )
             ])
           ]
@@ -62195,7 +62193,7 @@ var render = function() {
                   [
                     _vm._v("\n                You have "),
                     _c("strong", [_vm._v(_vm._s(_vm.userDaysLeft))]),
-                    _vm._v(" vacation days left this year."),
+                    _vm._v(" PTO days left this year."),
                     _c("br"),
                     _c(
                       "v-btn",
@@ -62203,7 +62201,7 @@ var render = function() {
                         attrs: {
                           color: "info",
                           href: "/vacation-request",
-                          title: "New vacation request"
+                          title: "New PTO request"
                         }
                       },
                       [_c("v-icon", [_vm._v("mdi-calendar-plus")])],
@@ -62222,7 +62220,7 @@ var render = function() {
                       { attrs: { outlined: "" } },
                       [
                         _c("v-card-title", { staticClass: "title" }, [
-                          _vm._v("Future Vacation Requests")
+                          _vm._v("Future PTO Requests")
                         ]),
                         _vm._v(" "),
                         _c(
@@ -62257,7 +62255,7 @@ var render = function() {
                       { attrs: { outlined: "" } },
                       [
                         _c("v-card-title", { staticClass: "title" }, [
-                          _vm._v("Past Vacation Requests")
+                          _vm._v("Past PTO Requests")
                         ]),
                         _vm._v(" "),
                         _c(
@@ -62392,7 +62390,7 @@ var render = function() {
                                                 )
                                               : _c("p", [
                                                   _vm._v(
-                                                    "No past vacation requests for " +
+                                                    "No past PTO requests for " +
                                                       _vm._s(year) +
                                                       "."
                                                   )
@@ -62462,7 +62460,7 @@ var render = function() {
               },
               [
                 _vm._v(
-                  "\n            You have no future vacation requests.\n        "
+                  "\n            You have no future PTO requests.\n        "
                 )
               ]
             )
@@ -62625,7 +62623,7 @@ var render = function() {
                             [
                               _vm._v(
                                 _vm._s(_vm.daysLeft) +
-                                  " vacation days left this year"
+                                  " PTO days left this year"
                               )
                             ]
                           ),
