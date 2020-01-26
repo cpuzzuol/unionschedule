@@ -40,10 +40,10 @@ class AdminController extends Controller
             ->groupBy('date_requested')
             ->get();
 
-        // Get outstanding requests in the FUTURE only and get user info along with it
+        // Get outstanding requests for THIS YEAR ONLY and get user info along with it
         $response['outstandingRequests'] = VacationRequest::with('requester')->where([
             ['decision', '=', 'pending'],
-            ['date_requested', '>=', date('Y-m-d')]
+            ['date_requested', '>=', date('Y-01-01')]
         ])->orderBy('date_requested', 'ASC')->get();
 
         return response()->json($response);
