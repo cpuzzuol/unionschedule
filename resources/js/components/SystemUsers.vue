@@ -84,28 +84,6 @@
                 .finally(e => {
                 	this.dataLoading = false
                 })
-            },
-            submit() {
-				// this.submitting = true
-				// Vue.prototype.$http.post('/api/vacationrequests',
-                //   {
-                //   	requestedDates: this.dates,
-                //     userID: this.user.id
-                //   },
-                //   {
-                //   	headers: {
-                //   		'Accept': 'application/json',
-                //         'Authorization': 'Bearer ' + this.user.api_token
-                //     }
-                //   }
-                // )
-                // .then(response => {
-                // 	console.log(response.data)
-                //     this.submitting = false
-                // })
-                // .catch(e => {
-                // 	console.log(e)
-                // })
             }
         },
         watch: {

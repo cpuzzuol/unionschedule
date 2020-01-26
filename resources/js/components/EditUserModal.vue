@@ -176,7 +176,15 @@
                                                                             <v-list dense>
                                                                                 <v-list-item v-for="(req, index) in requestsForYear(year)" :key="'req-year-' + year + '-' + index">
                                                                                     <v-list-item-title>{{ req.date_requested | slashdatedow }}</v-list-item-title>
-                                                                                    <v-list-item-subtitle><span :class="pastDecisionColor(req.decision)">{{ pastDecisionText(req.decision) }}</span></v-list-item-subtitle>
+                                                                                    <v-list-item-subtitle>
+                                                                                        <template v-if="req.decision == 'pending'">
+                                                                                            <admin-manage-vacation-request-modal action="approve" :user="user" :vacation-request="req" @request-updated="getRequestHistory"></admin-manage-vacation-request-modal>
+                                                                                            <admin-manage-vacation-request-modal action="deny" :user="user" :vacation-request="req" @request-updated="getRequestHistory"></admin-manage-vacation-request-modal>
+                                                                                        </template>
+                                                                                        <template v-else>
+                                                                                            <span :class="pastDecisionColor(req.decision)">{{ pastDecisionText(req.decision) }}</span>
+                                                                                        </template>
+                                                                                    </v-list-item-subtitle>
                                                                                     <v-list-item-icon>
                                                                                         <system-user-vacation-request-log-modal :vacation-request="req"></system-user-vacation-request-log-modal>
                                                                                     </v-list-item-icon>
@@ -244,12 +252,13 @@
 	import Vuelidate from 'vuelidate'
 	import { required, helpers, sameAs, numeric } from 'vuelidate/lib/validators'
     import SystemUserFutureRequests from "./SystemUserFutureRequests";
+    import AdminManageVacationRequestModal from "./AdminManageVacationRequestModal"
     import SystemUserVacationRequestLogModal from "./SystemUserVacationRequestLogModal";
 	Vue.use(Vuelidate)
 
 	const unionSortersEmail = helpers.regex('alpha', /.+@unionsorters\.com$/);
 	export default {
-			components: { SystemUserVacationRequestLogModal, SystemUserFutureRequests },
+			components: { SystemUserVacationRequestLogModal, SystemUserFutureRequests, AdminManageVacationRequestModal },
 			props: {
             apiToken: {
             	type: String,

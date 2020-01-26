@@ -3322,7 +3322,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _SystemUserFutureRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SystemUserFutureRequests */ "./resources/js/components/SystemUserFutureRequests.vue");
-/* harmony import */ var _SystemUserVacationRequestLogModal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./SystemUserVacationRequestLogModal */ "./resources/js/components/SystemUserVacationRequestLogModal.vue");
+/* harmony import */ var _AdminManageVacationRequestModal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AdminManageVacationRequestModal */ "./resources/js/components/AdminManageVacationRequestModal.vue");
+/* harmony import */ var _SystemUserVacationRequestLogModal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./SystemUserVacationRequestLogModal */ "./resources/js/components/SystemUserVacationRequestLogModal.vue");
 //
 //
 //
@@ -3564,6 +3565,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -3573,8 +3583,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuelidate__WEBPACK_IMPORTED_MODUL
 var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["helpers"].regex('alpha', /.+@unionsorters\.com$/);
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    SystemUserVacationRequestLogModal: _SystemUserVacationRequestLogModal__WEBPACK_IMPORTED_MODULE_4__["default"],
-    SystemUserFutureRequests: _SystemUserFutureRequests__WEBPACK_IMPORTED_MODULE_3__["default"]
+    SystemUserVacationRequestLogModal: _SystemUserVacationRequestLogModal__WEBPACK_IMPORTED_MODULE_5__["default"],
+    SystemUserFutureRequests: _SystemUserFutureRequests__WEBPACK_IMPORTED_MODULE_3__["default"],
+    AdminManageVacationRequestModal: _AdminManageVacationRequestModal__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   props: {
     apiToken: {
@@ -4169,27 +4180,6 @@ __webpack_require__.r(__webpack_exports__);
       })["finally"](function (e) {
         _this.dataLoading = false;
       });
-    },
-    submit: function submit() {// this.submitting = true
-      // Vue.prototype.$http.post('/api/vacationrequests',
-      //   {
-      //   	requestedDates: this.dates,
-      //     userID: this.user.id
-      //   },
-      //   {
-      //   	headers: {
-      //   		'Accept': 'application/json',
-      //         'Authorization': 'Bearer ' + this.user.api_token
-      //     }
-      //   }
-      // )
-      // .then(response => {
-      // 	console.log(response.data)
-      //     this.submitting = false
-      // })
-      // .catch(e => {
-      // 	console.log(e)
-      // })
     }
   },
   watch: {}
@@ -61295,24 +61285,66 @@ var render = function() {
                                                                                             _c(
                                                                                               "v-list-item-subtitle",
                                                                                               [
-                                                                                                _c(
-                                                                                                  "span",
-                                                                                                  {
-                                                                                                    class: _vm.pastDecisionColor(
-                                                                                                      req.decision
-                                                                                                    )
-                                                                                                  },
-                                                                                                  [
-                                                                                                    _vm._v(
-                                                                                                      _vm._s(
-                                                                                                        _vm.pastDecisionText(
-                                                                                                          req.decision
-                                                                                                        )
+                                                                                                req.decision ==
+                                                                                                "pending"
+                                                                                                  ? [
+                                                                                                      _c(
+                                                                                                        "admin-manage-vacation-request-modal",
+                                                                                                        {
+                                                                                                          attrs: {
+                                                                                                            action:
+                                                                                                              "approve",
+                                                                                                            user:
+                                                                                                              _vm.user,
+                                                                                                            "vacation-request": req
+                                                                                                          },
+                                                                                                          on: {
+                                                                                                            "request-updated":
+                                                                                                              _vm.getRequestHistory
+                                                                                                          }
+                                                                                                        }
+                                                                                                      ),
+                                                                                                      _vm._v(
+                                                                                                        " "
+                                                                                                      ),
+                                                                                                      _c(
+                                                                                                        "admin-manage-vacation-request-modal",
+                                                                                                        {
+                                                                                                          attrs: {
+                                                                                                            action:
+                                                                                                              "deny",
+                                                                                                            user:
+                                                                                                              _vm.user,
+                                                                                                            "vacation-request": req
+                                                                                                          },
+                                                                                                          on: {
+                                                                                                            "request-updated":
+                                                                                                              _vm.getRequestHistory
+                                                                                                          }
+                                                                                                        }
                                                                                                       )
-                                                                                                    )
-                                                                                                  ]
-                                                                                                )
-                                                                                              ]
+                                                                                                    ]
+                                                                                                  : [
+                                                                                                      _c(
+                                                                                                        "span",
+                                                                                                        {
+                                                                                                          class: _vm.pastDecisionColor(
+                                                                                                            req.decision
+                                                                                                          )
+                                                                                                        },
+                                                                                                        [
+                                                                                                          _vm._v(
+                                                                                                            _vm._s(
+                                                                                                              _vm.pastDecisionText(
+                                                                                                                req.decision
+                                                                                                              )
+                                                                                                            )
+                                                                                                          )
+                                                                                                        ]
+                                                                                                      )
+                                                                                                    ]
+                                                                                              ],
+                                                                                              2
                                                                                             ),
                                                                                             _vm._v(
                                                                                               " "
