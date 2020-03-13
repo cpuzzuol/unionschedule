@@ -125,7 +125,7 @@
 <script>
 	import Vue from 'vue'
 	import Vuelidate from 'vuelidate'
-    import { required, helpers, sameAs, numeric } from 'vuelidate/lib/validators'
+    import { required, helpers, sameAs, numeric, decimal } from 'vuelidate/lib/validators'
 	Vue.use(Vuelidate)
 
     const unionSortersEmail = helpers.regex('alpha', /.+@unionsorters\.com$/);
@@ -165,7 +165,7 @@
                     },
                     vacation_days: {
                     	required,
-                    	numeric
+                    	decimal
                     }
                 }
             }
@@ -226,7 +226,8 @@
             },
             errorsVacationDays () {
                 const errors = []
-                !this.$v.user.vacation_days.numeric && errors.push('Must be a valid number of days')
+                if (!this.$v.user.vacation_days.$dirty) { return errors } // clean
+                !this.$v.user.vacation_days.decimal && errors.push('Must be a valid number of days')
                 return errors
             }
         },

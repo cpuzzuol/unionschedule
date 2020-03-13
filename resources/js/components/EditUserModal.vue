@@ -250,7 +250,7 @@
 <script>
 	import Vue from 'vue'
 	import Vuelidate from 'vuelidate'
-	import { required, helpers, sameAs, numeric } from 'vuelidate/lib/validators'
+	import { required, helpers, sameAs, numeric, decimal } from 'vuelidate/lib/validators'
     import SystemUserFutureRequests from "./SystemUserFutureRequests";
     import AdminManageVacationRequestModal from "./AdminManageVacationRequestModal"
     import SystemUserVacationRequestLogModal from "./SystemUserVacationRequestLogModal";
@@ -291,7 +291,7 @@
                     },
                     vacation_days: {
                         required,
-                        numeric
+                        decimal
                     }
                 }
             }
@@ -336,7 +336,7 @@
             },
             errorsVacationDays () {
                 const errors = []
-                !this.$v.userEditable.vacation_days.numeric && errors.push('Must be a valid number of days')
+                !this.$v.userEditable.vacation_days.decimal && errors.push('Must be a valid number of days')
                 return errors
             },
             futureRequests() {

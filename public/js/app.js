@@ -2113,7 +2113,7 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
         },
         vacation_days: {
           required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
-          numeric: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["numeric"]
+          decimal: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["decimal"]
         }
       }
     };
@@ -2200,7 +2200,13 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
     },
     errorsVacationDays: function errorsVacationDays() {
       var errors = [];
-      !this.$v.user.vacation_days.numeric && errors.push('Must be a valid number of days');
+
+      if (!this.$v.user.vacation_days.$dirty) {
+        return errors;
+      } // clean
+
+
+      !this.$v.user.vacation_days.decimal && errors.push('Must be a valid number of days');
       return errors;
     }
   },
@@ -3619,7 +3625,7 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
         },
         vacation_days: {
           required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
-          numeric: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["numeric"]
+          decimal: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["decimal"]
         }
       }
     };
@@ -3681,7 +3687,7 @@ var unionSortersEmail = vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["h
     },
     errorsVacationDays: function errorsVacationDays() {
       var errors = [];
-      !this.$v.userEditable.vacation_days.numeric && errors.push('Must be a valid number of days');
+      !this.$v.userEditable.vacation_days.decimal && errors.push('Must be a valid number of days');
       return errors;
     },
     futureRequests: function futureRequests() {
@@ -4704,7 +4710,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     daysLeft: function daysLeft() {
-      return parseInt(this.userDaysLeft) - this.dates.length;
+      return parseFloat(this.userDaysLeft) - this.dates.length;
     },
     previousRequestMarkers: function previousRequestMarkers() {
       var datesWithMarkers = [];

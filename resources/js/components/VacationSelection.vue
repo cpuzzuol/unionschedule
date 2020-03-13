@@ -90,7 +90,7 @@
 		}),
         computed: {
             daysLeft() {
-                return parseInt(this.userDaysLeft) - this.dates.length
+                return parseFloat(this.userDaysLeft) - this.dates.length
             },
             previousRequestMarkers() {
 				let datesWithMarkers = []
